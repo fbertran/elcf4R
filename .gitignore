@@ -1,0 +1,36 @@
+# History files
+.Rhistory
+.Rapp.history
+# Session Data files
+.RData
+^extra-docs$
+# Example code in package build process
+*-Ex.R
+# Output files from R CMD build
+/*.tar.gz
+# Output files from R CMD check
+/*.Rcheck/
+# RStudio files
+.Rproj.user/
+.Rproj.user/*
+.DS_Store
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+rsconnect/
+.Rproj.user
+# Files for review
+review/
+#doc
+Meta
+# User-specific files
+.RData
+.Ruserdata
+doc
+inst/doc
+*.tar.gz
+extra_docs
+Sobol4R.Rproj
+*_cache
+cache
+TODO.md
