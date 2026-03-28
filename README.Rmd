@@ -1,0 +1,56 @@
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  dpi=300,fig.width=7,
+  fig.keep="all"
+)
+```
+# eclf4R, Sobol Indices for Models with Fixed and Stochastic Parameters <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
+
+## Frédéric Bertrand, Fatima Fahs and Myriam Maum
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml)
+[![R-hub](https://github.com/fbertran/eclf4R/actions/workflows/rhub.yaml/badge.svg)](https://github.com/fbertran/eclf4R/actions/workflows/rhub.yaml)
+<!-- badges: end -->
+
+Implements Kernel Wavelet Functional (KWF),
+    Generalized Additive Models (GAM), Multivariate Adaptive
+    Regression Splines (MARS) and RNN LSTM models to forecast
+    individual electricity load curves, following the methodology
+    described in Fahs (2023) and related articles and posters.
+    Includes small demo datasets and helper functions to download
+    large public datasets such as ELMAS, StoreNet Ireland and IDEAL.
+    
+This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.
+
+## Installation
+
+You can install the latest version of the eclf4R package from [github](https://github.com) with:
+
+```{r, eval = FALSE}
+devtools::install_github("fbertran/eclf4R")
+```
+
+## Two complementary analysis paths
+
+
+
+### Vignettes
+
+There are more insights and examples in the vignettes.
+
+```{r, eval=FALSE}
+vignette("aaa", package = "eclf4R")
+vignette("bbb", package = "eclf4R")
+vignette("ccc", package = "eclf4R")
+vignette("ddd", package = "eclf4R")
+```
+
+
+
