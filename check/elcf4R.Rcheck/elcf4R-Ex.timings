@@ -1,7 +1,0 @@
-name	user	system	elapsed
-elcf4R-package	0	0	0	
-elcf4r_build_daily_segments	0.044	0.004	0.047	
-elcf4r_fit_gam	0.387	0.017	0.405	
-elcf4r_fit_kwf	0.012	0.001	0.013	
-elcf4r_fit_lstm	0.001	0.000	0.001	
-elcf4r_fit_mars	0.021	0.002	0.022	
