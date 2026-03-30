@@ -39,18 +39,27 @@ devtools::install_github("fbertran/eclf4R")
 
 ## Two complementary analysis paths
 
-
+The package now ships a compact iFlex example panel and saved benchmark
+results, so the documentation can run without external downloads.
 
 ### Vignettes
 
 There are more insights and examples in the vignettes.
 
 ```{r, eval=FALSE}
-vignette("aaa", package = "eclf4R")
-vignette("bbb", package = "eclf4R")
-vignette("ccc", package = "eclf4R")
-vignette("ddd", package = "eclf4R")
+vignette("elcf4R-iflex-workflow", package = "eclf4R")
+vignette("elcf4R-datasets-vignette", package = "eclf4R")
 ```
 
+## Quick Benchmark Summary
 
+The shipped iFlex benchmark now includes `gam`, `mars`, `kwf` and `lstm`
+results on the same fixed rolling-origin design.
 
+```{r}
+aggregate(
+  cbind(nmae, nrmse, smape, fit_seconds) ~ method,
+  data = elcf4r_iflex_benchmark_results,
+  FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+)
+```

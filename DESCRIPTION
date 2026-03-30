@@ -1,6 +1,6 @@
 Package: elcf4R
 Title: Electricity Load Curves Forecasting at Individual Level
-Version: 0.1.0
+Version: 0.2.0
 Date: 2025-11-26
 Depends: R (>= 3.5.0)
 Imports:
@@ -8,14 +8,14 @@ Imports:
     utils,
     mgcv,
     earth,
-    keras,
+    keras3,
     Rcpp,
     tensorflow,
-    zoo,
     data.table
 LinkingTo: Rcpp
 Suggests:
     knitr,
+    reticulate,
     rmarkdown,
     testthat (>= 3.0.0)
 Authors@R: c(
@@ -36,7 +36,6 @@ LazyData: yes
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
-Classification/MSC:
 URL: https://fbertran.github.io/eclf4R/, https://github.com/fbertran/eclf4R
 BugReports: https://github.com/fbertran/eclf4R/issues
 Roxygen: list(markdown = TRUE)

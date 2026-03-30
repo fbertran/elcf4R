@@ -1,0 +1,239 @@
+
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "elcf4R"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> base::assign(".ExTimings", "elcf4R-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('elcf4R')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("elcf4R-package")
+> ### * elcf4R-package
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4R-package
+> ### Title: elcf4R-package
+> ### Aliases: elcf4R elcf4R-package
+> 
+> ### ** Examples
+> 
+> # TODO
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4R-package", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("elcf4r_build_daily_segments")
+> ### * elcf4r_build_daily_segments
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4r_build_daily_segments
+> ### Title: Build daily load-curve segments from a normalized panel
+> ### Aliases: elcf4r_build_daily_segments
+> 
+> ### ** Examples
+> 
+> id1 <- subset(
++   elcf4r_iflex_example,
++   entity_id == unique(elcf4r_iflex_example$entity_id)[1]
++ )
+> daily <- elcf4r_build_daily_segments(id1, carry_cols = "participation_phase")
+> dim(daily$segments)
+[1] 14 24
+> names(daily$covariates)
+ [1] "day_key"             "entity_id"           "date"               
+ [4] "n_points"            "n_unique_index"      "has_duplicate_index"
+ [7] "has_missing_value"   "dow"                 "month"              
+[10] "temp_mean"           "temp_min"            "temp_max"           
+[13] "participation_phase"
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4r_build_daily_segments", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("elcf4r_fit_gam")
+> ### * elcf4r_fit_gam
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4r_fit_gam
+> ### Title: Fit a GAM model for load curves
+> ### Aliases: elcf4r_fit_gam
+> 
+> ### ** Examples
+> 
+> id1 <- subset(
++   elcf4r_iflex_example,
++   entity_id == unique(elcf4r_iflex_example$entity_id)[1]
++ )
+> train_data <- subset(id1, date < sort(unique(id1$date))[11])
+> test_data <- subset(id1, date == sort(unique(id1$date))[11])
+> fit <- elcf4r_fit_gam(train_data[, c("y", "time_index", "dow", "month", "temp")], TRUE)
+> pred <- predict(fit, newdata = test_data[, c("y", "time_index", "dow", "month", "temp")])
+> length(pred)
+[1] 24
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4r_fit_gam", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("elcf4r_fit_kwf")
+> ### * elcf4r_fit_kwf
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4r_fit_kwf
+> ### Title: Fit a simple KWF-style model for daily load curves
+> ### Aliases: elcf4r_fit_kwf
+> 
+> ### ** Examples
+> 
+> id1 <- subset(
++   elcf4r_iflex_example,
++   entity_id == unique(elcf4r_iflex_example$entity_id)[1]
++ )
+> daily <- elcf4r_build_daily_segments(id1, carry_cols = "participation_phase")
+> fit <- elcf4r_fit_kwf(
++   segments = daily$segments[1:10, ],
++   covariates = daily$covariates[1:10, ],
++   target_covariates = daily$covariates[11, , drop = FALSE],
++   use_temperature = TRUE
++ )
+> length(predict(fit))
+[1] 24
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4r_fit_kwf", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("elcf4r_fit_lstm")
+> ### * elcf4r_fit_lstm
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4r_fit_lstm
+> ### Title: Fit an LSTM model for daily load curves
+> ### Aliases: elcf4r_fit_lstm
+> 
+> ### ** Examples
+> 
+> ## Don't show: 
+> if (interactive()) withAutoprint({ # examplesIf
++ ## End(Don't show)
++ if (requireNamespace("keras3", quietly = TRUE) &&
++     requireNamespace("tensorflow", quietly = TRUE) &&
++     suppressWarnings(
++       tryCatch(
++         utils::getFromNamespace("is_keras_available", "keras3")(),
++         error = function(e) FALSE
++       )
++     )) {
++   id1 <- subset(
++     elcf4r_iflex_example,
++     entity_id == unique(elcf4r_iflex_example$entity_id)[1]
++   )
++   daily <- elcf4r_build_daily_segments(id1)
++   fit <- elcf4r_fit_lstm(
++     segments = daily$segments[1:10, ],
++     covariates = daily$covariates[1:10, ],
++     use_temperature = TRUE,
++     epochs = 1,
++     units = 4,
++     batch_size = 2,
++     verbose = 0
++   )
++   length(predict(fit))
++ }
++ ## Don't show: 
++ }) # examplesIf
+> ## End(Don't show)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4r_fit_lstm", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("elcf4r_fit_mars")
+> ### * elcf4r_fit_mars
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: elcf4r_fit_mars
+> ### Title: Fit a MARS model for load curves
+> ### Aliases: elcf4r_fit_mars
+> 
+> ### ** Examples
+> 
+> id1 <- subset(
++   elcf4r_iflex_example,
++   entity_id == unique(elcf4r_iflex_example$entity_id)[1]
++ )
+> train_data <- subset(id1, date < sort(unique(id1$date))[11])
+> test_data <- subset(id1, date == sort(unique(id1$date))[11])
+> fit <- elcf4r_fit_mars(train_data[, c("y", "time_index", "dow", "month", "temp")], TRUE)
+> pred <- predict(fit, newdata = test_data[, c("y", "time_index", "dow", "month", "temp")])
+> length(pred)
+[1] 24
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("elcf4r_fit_mars", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  0.788 0.031 0.819 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

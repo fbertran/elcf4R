@@ -1,0 +1,25 @@
+elcf4R-package          elcf4R-package
+elcf4r_build_daily_segments
+                        Build daily load-curve segments from a
+                        normalized panel
+elcf4r_download_elmas   Download the ELMAS dataset from figshare
+elcf4r_download_storenet
+                        Download the StoreNet Ireland dataset
+elcf4r_elmas_toy        Toy subset of ELMAS hourly cluster profiles
+elcf4r_fit_gam          Fit a GAM model for load curves
+elcf4r_fit_kwf          Fit a simple KWF-style model for daily load
+                        curves
+elcf4r_fit_lstm         Fit an LSTM model for daily load curves
+elcf4r_fit_mars         Fit a MARS model for load curves
+elcf4r_iflex_benchmark_index
+                        iFlex benchmark index of complete
+                        participant-days
+elcf4r_iflex_benchmark_results
+                        iFlex benchmark results for shipped forecasting
+                        methods
+elcf4r_iflex_example    iFlex example panel for package examples
+elcf4r_metrics          Forecast accuracy metrics for load curves
+elcf4r_normalize_panel
+                        Normalize a load panel to the elcf4R schema
+elcf4r_read_iflex       Read and normalize the iFlex hourly dataset
+predict.elcf4r_model    Predict from an 'elcf4r_model'

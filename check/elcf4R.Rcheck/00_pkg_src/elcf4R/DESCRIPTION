@@ -1,0 +1,34 @@
+Package: elcf4R
+Title: Electricity Load Curves Forecasting at Individual Level
+Version: 0.1.0
+Date: 2025-11-26
+Depends: R (>= 3.5.0)
+Imports: stats, utils, mgcv, earth, keras3, Rcpp, tensorflow,
+        data.table
+LinkingTo: Rcpp
+Suggests: knitr, reticulate, rmarkdown, testthat (>= 3.0.0)
+Authors@R: c(
+	person(given = "Frederic", family= "Bertrand", role = c("cre", "aut"), email = "frederic.bertrand@lecnam.net", comment = c(ORCID = "0000-0002-0837-8281")),
+	person(given = "Fatima", family= "Fahs", role = c("aut"), email = "fatima.fahs@es.fr"),
+	person(given = "Myriam", family= "Maumy-Bertrand", role = c("aut"), email = "myriam.maumy@ehesp.fr", comment = c(ORCID = "0000-0002-4615-1512")))
+Author: Frederic Bertrand [cre, aut] (<https://orcid.org/0000-0002-0837-8281>), Fatima Fahs [aut], Myriam Maumy-Bertrand [aut] (<https://orcid.org/0000-0002-4615-1512>)
+Maintainer: Frederic Bertrand <frederic.bertrand@lecnam.net>
+Description: Implements Kernel Wavelet Functional (KWF),
+    Generalized Additive Models (GAM), Multivariate Adaptive
+    Regression Splines (MARS) and RNN LSTM models to forecast
+    individual electricity load curves, following the methodology
+    described in Fahs (2023) and related articles and posters.
+    Includes small demo datasets and helper functions to download
+    large public datasets such as ELMAS, StoreNet Ireland and IDEAL.
+LazyLoad: yes
+LazyData: yes
+VignetteBuilder: knitr
+License: GPL-3
+Encoding: UTF-8
+URL: https://fbertran.github.io/eclf4R/,
+        https://github.com/fbertran/eclf4R
+BugReports: https://github.com/fbertran/eclf4R/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+NeedsCompilation: yes
+Packaged: 2026-03-29 22:32:38 UTC; bertran7

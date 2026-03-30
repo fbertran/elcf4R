@@ -1,0 +1,133 @@
+* using log directory ‘/Users/bertran7/Documents/GitHub/eclf4R/check/elcf4R.Rcheck’
+* using R version 4.5.2 (2025-10-31)
+* using platform: aarch64-apple-darwin20
+* R was compiled by
+    Apple clang version 16.0.0 (clang-1600.0.26.6)
+    GNU Fortran (GCC) 14.2.0
+* running under: macOS Sonoma 14.7.1
+* using session charset: UTF-8
+* using options ‘--no-manual --as-cran’
+* checking for file ‘elcf4R/DESCRIPTION’ ... OK
+* this is package ‘elcf4R’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘Frederic Bertrand <frederic.bertrand@lecnam.net>’
+
+Found the following (possibly) invalid URLs:
+  URL: https://fbertran.github.io/Sobol4R/
+    From: inst/CITATION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: fbertran.github.io
+  URL: https://fbertran.github.io/eclf4R/
+    From: DESCRIPTION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: fbertran.github.io
+  URL: https://github.com/fbertran/eclf4R
+    From: DESCRIPTION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: github.com
+  URL: https://github.com/fbertran/eclf4R/issues
+    From: DESCRIPTION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: github.com
+  URL: https://hal.science/hal-05371795
+    From: inst/CITATION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: hal.science
+  URL: https://hal.science/hal-05371798
+    From: inst/CITATION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: hal.science
+  URL: https://hal.science/hal-05371803
+    From: inst/CITATION
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: hal.science
+  URL: https://orcid.org/0000-0002-0837-8281
+    From: man/elcf4R-package.Rd
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: orcid.org
+  URL: https://orcid.org/0000-0002-4615-1512
+    From: man/elcf4R-package.Rd
+    Status: Error
+    Message: libcurl error code 6:
+      	Could not resolve host: orcid.org
+
+Found the following (possibly) invalid ORCID iDs:
+  iD: 0000-0002-0837-8281	(from: DESCRIPTION)
+  iD: 0000-0002-4615-1512	(from: DESCRIPTION)
+
+The Date field is over a month old.
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘elcf4R’ can be installed ... [6s/10s] OK
+* used C++ compiler: ‘Apple clang version 16.0.0 (clang-1600.0.26.6)’
+* used SDK: ‘MacOSX2026-03-30 00:32:45.471 xcodebuild[95092:25359951]  DVTFilePathFSEvents: Failed to start fs event stream..sdk’‘MacOSX2026-03-30 00:32:45.544 xcodebuild[95092:25359950] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 "Input/output error". Using NSCachesDirectory instead..sdk’‘MacOSX15.2.sdk’
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... NOTE
+unable to verify current time
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... OK
+* checking compiled code ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking examples ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... OK
+  Running ‘testthat.R’
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes ... OK
+* checking re-building of vignette outputs ... OK
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... NOTE
+Found the following files/directories:
+  ‘xcrun_db’
+* DONE
+Status: 3 NOTEs
