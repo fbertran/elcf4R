@@ -6,15 +6,14 @@ figshare URL and unpacks it to a local directory.
 ## Usage
 
 ``` r
-elcf4r_download_elmas(dest_dir = tempdir())
+elcf4r_download_elmas(dest_dir)
 ```
 
 ## Arguments
 
 - dest_dir:
 
-  Directory where the files should be unpacked. Defaults to a temporary
-  directory.
+  Directory where the files should be unpacked.
 
 ## Value
 

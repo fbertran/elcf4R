@@ -4,10 +4,10 @@
 #' figshare URL and unpacks it to a local directory.
 #'
 #' @param dest_dir Directory where the files should be unpacked.
-#'   Defaults to a temporary directory.
 #' @return A character vector with the paths of the extracted files.
 #' @export
-elcf4r_download_elmas <- function(dest_dir = tempdir()) {
+elcf4r_download_elmas <- function(dest_dir) {
+  dest_dir <- .elcf4r_require_dest_dir(dest_dir)
   url <- "https://figshare.com/ndownloader/files/41895786"  # update
   zip_path <- file.path(dest_dir, "elmas.zip")
   utils::download.file(url, destfile = zip_path, mode = "wb")
@@ -40,7 +40,7 @@ elcf4r_download_elmas <- function(dest_dir = tempdir()) {
 #' @return A character vector with the downloaded local file paths.
 #' @export
 elcf4r_download_storenet <- function(
-    dest_dir = tempdir(),
+    dest_dir,
     ids = "H6_W",
     article_ids = NULL,
     overwrite = FALSE,
@@ -49,6 +49,8 @@ elcf4r_download_storenet <- function(
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     stop("Package `jsonlite` is required for `elcf4r_download_storenet()`.")
   }
+
+  dest_dir <- .elcf4r_require_dest_dir(dest_dir)
 
   if (is.null(ids)) {
     ids <- character()
@@ -233,13 +235,14 @@ elcf4r_download_storenet <- function(
 #' @return A character vector with the downloaded local file paths.
 #' @export
 elcf4r_download_ideal <- function(
-    dest_dir = tempdir(),
+    dest_dir,
     components = "documentation",
     overwrite = FALSE
 ) {
   if (!requireNamespace("xml2", quietly = TRUE)) {
     stop("Package `xml2` is required for `elcf4r_download_ideal()`.")
   }
+  dest_dir <- .elcf4r_require_dest_dir(dest_dir)
 
   components <- .elcf4r_validate_components(
     components = components,
@@ -270,10 +273,11 @@ elcf4r_download_ideal <- function(
 #'   are extracted into `dest_dir` and the extracted paths are returned.
 #' @export
 elcf4r_download_gx <- function(
-    dest_dir = tempdir(),
+    dest_dir,
     components = "shapefile",
     overwrite = FALSE
 ) {
+  dest_dir <- .elcf4r_require_dest_dir(dest_dir)
   components <- .elcf4r_validate_components(
     components = components,
     supported = c("shapefile", "database"),
@@ -312,6 +316,17 @@ elcf4r_download_gx <- function(
   }
 
   components
+}
+
+.elcf4r_require_dest_dir <- function(dest_dir) {
+  if (missing(dest_dir) || is.null(dest_dir)) {
+    stop("`dest_dir` must be supplied explicitly.")
+  }
+  dest_dir <- as.character(dest_dir)
+  if (length(dest_dir) != 1L || is.na(dest_dir) || !nzchar(trimws(dest_dir))) {
+    stop("`dest_dir` must be a single non-empty path.")
+  }
+  dest_dir
 }
 
 .elcf4r_ideal_component_map <- function() {

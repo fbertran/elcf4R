@@ -71,6 +71,7 @@ benchmark_obj <- elcf4r_benchmark(
   dataset = "iflex",
   use_temperature = TRUE,
   include_predictions = FALSE,
+  seed = 1L,
   thermosensitivity_panel = iflex_panel_full,
   method_args = list(
     kwf_clustered = list(

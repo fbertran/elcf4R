@@ -17,14 +17,70 @@ knitr::opts_chunk$set(
 )
 library(elcf4R)
 
-data("elcf4r_iflex_example", package = "elcf4R")
-data("elcf4r_iflex_benchmark_results", package = "elcf4R")
-data("elcf4r_storenet_example", package = "elcf4R")
-data("elcf4r_storenet_benchmark_results", package = "elcf4R")
-data("elcf4r_lcl_example", package = "elcf4R")
-data("elcf4r_lcl_benchmark_results", package = "elcf4R")
-data("elcf4r_refit_example", package = "elcf4R")
-data("elcf4r_refit_benchmark_results", package = "elcf4R")
+.elcf4r_available_data <- local({
+  pkg_data <- utils::data(package = "elcf4R")
+  if (is.null(pkg_data$results)) {
+    character()
+  } else {
+    as.character(pkg_data$results[, "Item"])
+  }
+})
+
+.elcf4r_load_data <- function(name) {
+  if (!(name %in% .elcf4r_available_data)) {
+    return(FALSE)
+  }
+  utils::data(list = name, package = "elcf4R", envir = environment())
+  TRUE
+}
+
+.elcf4r_example_size_row <- function(object_name, dataset_label) {
+  if (!exists(object_name, inherits = FALSE)) {
+    return(NULL)
+  }
+  x <- get(object_name, inherits = FALSE)
+  if (!is.data.frame(x)) {
+    return(NULL)
+  }
+  data.frame(
+    dataset = dataset_label,
+    rows = nrow(x),
+    ids = length(unique(x$entity_id)),
+    stringsAsFactors = FALSE
+  )
+}
+
+.elcf4r_benchmark_summary <- function(object_name, dataset_label) {
+  if (!exists(object_name, inherits = FALSE)) {
+    return(NULL)
+  }
+  x <- get(object_name, inherits = FALSE)
+  if (!is.data.frame(x) || nrow(x) == 0L) {
+    return(NULL)
+  }
+  transform(
+    aggregate(
+      cbind(nmae, nrmse, smape, mase) ~ method,
+      data = x,
+      FUN = function(v) round(mean(v, na.rm = TRUE), 4)
+    ),
+    dataset = dataset_label
+  )
+}
+
+invisible(lapply(
+  c(
+    "elcf4r_iflex_example",
+    "elcf4r_iflex_benchmark_results",
+    "elcf4r_storenet_example",
+    "elcf4r_storenet_benchmark_results",
+    "elcf4r_lcl_example",
+    "elcf4r_lcl_benchmark_results",
+    "elcf4r_refit_example",
+    "elcf4r_refit_benchmark_results"
+  ),
+  .elcf4r_load_data
+))
 ```
 
 # Overview
@@ -100,23 +156,21 @@ The shipped examples are small normalized panels intended for package examples
 and vignette code.
 
 ```{r}
-example_sizes <- data.frame(
-  dataset = c("iflex", "storenet", "lcl", "refit"),
-  rows = c(
-    nrow(elcf4r_iflex_example),
-    nrow(elcf4r_storenet_example),
-    nrow(elcf4r_lcl_example),
-    nrow(elcf4r_refit_example)
-  ),
-  ids = c(
-    length(unique(elcf4r_iflex_example$entity_id)),
-    length(unique(elcf4r_storenet_example$entity_id)),
-    length(unique(elcf4r_lcl_example$entity_id)),
-    length(unique(elcf4r_refit_example$entity_id))
+example_sizes <- Filter(
+  Negate(is.null),
+  list(
+    .elcf4r_example_size_row("elcf4r_iflex_example", "iflex"),
+    .elcf4r_example_size_row("elcf4r_storenet_example", "storenet"),
+    .elcf4r_example_size_row("elcf4r_lcl_example", "lcl"),
+    .elcf4r_example_size_row("elcf4r_refit_example", "refit")
   )
 )
 
-example_sizes
+if (length(example_sizes) == 0L) {
+  data.frame()
+} else {
+  do.call(rbind, example_sizes)
+}
 ```
 
 These objects can be passed directly to:
@@ -131,37 +185,22 @@ Each supported household dataset now has a saved benchmark-result object built
 from a fixed local cohort and a deterministic rolling-origin design.
 
 ```{r}
-benchmark_summary <- do.call(
-  rbind,
+benchmark_summary <- Filter(
+  Negate(is.null),
   list(
-    transform(
-      aggregate(cbind(nmae, nrmse, smape, mase) ~ method,
-                data = elcf4r_iflex_benchmark_results,
-                FUN = function(x) round(mean(x, na.rm = TRUE), 4)),
-      dataset = "iflex"
-    ),
-    transform(
-      aggregate(cbind(nmae, nrmse, smape, mase) ~ method,
-                data = elcf4r_storenet_benchmark_results,
-                FUN = function(x) round(mean(x, na.rm = TRUE), 4)),
-      dataset = "storenet"
-    ),
-    transform(
-      aggregate(cbind(nmae, nrmse, smape, mase) ~ method,
-                data = elcf4r_lcl_benchmark_results,
-                FUN = function(x) round(mean(x, na.rm = TRUE), 4)),
-      dataset = "lcl"
-    ),
-    transform(
-      aggregate(cbind(nmae, nrmse, smape, mase) ~ method,
-                data = elcf4r_refit_benchmark_results,
-                FUN = function(x) round(mean(x, na.rm = TRUE), 4)),
-      dataset = "refit"
-    )
+    .elcf4r_benchmark_summary("elcf4r_iflex_benchmark_results", "iflex"),
+    .elcf4r_benchmark_summary("elcf4r_storenet_benchmark_results", "storenet"),
+    .elcf4r_benchmark_summary("elcf4r_lcl_benchmark_results", "lcl"),
+    .elcf4r_benchmark_summary("elcf4r_refit_benchmark_results", "refit")
   )
 )
 
-benchmark_summary[, c("dataset", "method", "nmae", "nrmse", "smape", "mase")]
+if (length(benchmark_summary) == 0L) {
+  data.frame()
+} else {
+  benchmark_summary <- do.call(rbind, benchmark_summary)
+  benchmark_summary[, c("dataset", "method", "nmae", "nrmse", "smape", "mase")]
+}
 ```
 
 These shipped benchmark tables are poster-style artifacts. They are not
@@ -191,32 +230,40 @@ benchmark summaries reproducible.
 # Example: daily segments from a shipped panel
 
 ```{r}
-iflex_segments <- elcf4r_build_daily_segments(
-  elcf4r_iflex_example,
-  carry_cols = c("dataset", "participation_phase", "price_signal")
-)
+if (exists("elcf4r_iflex_example", inherits = FALSE)) {
+  iflex_segments <- elcf4r_build_daily_segments(
+    elcf4r_iflex_example,
+    carry_cols = c("dataset", "participation_phase", "price_signal")
+  )
 
-dim(iflex_segments$segments)
-head(iflex_segments$covariates[, c("entity_id", "date", "temp_mean", "price_signal")])
+  dim(iflex_segments$segments)
+  head(iflex_segments$covariates[, c("entity_id", "date", "temp_mean", "price_signal")])
+} else {
+  data.frame()
+}
 ```
 
 # Example: rerun a tiny benchmark locally
 
 ```{r}
-tiny_index <- elcf4r_build_benchmark_index(
-  elcf4r_lcl_example,
-  carry_cols = "dataset"
-)
+if (exists("elcf4r_lcl_example", inherits = FALSE)) {
+  tiny_index <- elcf4r_build_benchmark_index(
+    elcf4r_lcl_example,
+    carry_cols = "dataset"
+  )
 
-tiny_benchmark <- elcf4r_benchmark(
-  panel = elcf4r_lcl_example,
-  benchmark_index = tiny_index,
-  methods = c("gam", "kwf"),
-  cohort_size = 1,
-  train_days = 10,
-  test_days = 2,
-  include_predictions = FALSE
-)
+  tiny_benchmark <- elcf4r_benchmark(
+    panel = elcf4r_lcl_example,
+    benchmark_index = tiny_index,
+    methods = c("gam", "kwf"),
+    cohort_size = 1,
+    train_days = 10,
+    test_days = 2,
+    include_predictions = FALSE
+  )
 
-tiny_benchmark$results[, c("entity_id", "method", "test_date", "nmae", "mase")]
+  tiny_benchmark$results[, c("entity_id", "method", "test_date", "nmae", "mase")]
+} else {
+  data.frame()
+}
 ```

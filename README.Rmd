@@ -10,10 +10,51 @@ knitr::opts_chunk$set(
   fig.keep="all"
 )
 library(elcf4R)
-data("elcf4r_iflex_benchmark_results", package = "elcf4R")
-data("elcf4r_storenet_benchmark_results", package = "elcf4R")
-data("elcf4r_lcl_benchmark_results", package = "elcf4R")
-data("elcf4r_refit_benchmark_results", package = "elcf4R")
+
+.elcf4r_available_data <- local({
+  pkg_data <- utils::data(package = "elcf4R")
+  if (is.null(pkg_data$results)) {
+    character()
+  } else {
+    as.character(pkg_data$results[, "Item"])
+  }
+})
+
+.elcf4r_load_data <- function(name) {
+  if (!(name %in% .elcf4r_available_data)) {
+    return(FALSE)
+  }
+  utils::data(list = name, package = "elcf4R", envir = environment())
+  TRUE
+}
+
+.elcf4r_benchmark_summary <- function(object_name, dataset_label) {
+  if (!exists(object_name, inherits = FALSE)) {
+    return(NULL)
+  }
+  x <- get(object_name, inherits = FALSE)
+  if (!is.data.frame(x) || nrow(x) == 0L) {
+    return(NULL)
+  }
+  transform(
+    aggregate(
+      cbind(nmae, nrmse, smape, mase) ~ method,
+      data = x,
+      FUN = function(v) round(mean(v, na.rm = TRUE), 4)
+    ),
+    dataset = dataset_label
+  )
+}
+
+invisible(lapply(
+  c(
+    "elcf4r_iflex_benchmark_results",
+    "elcf4r_storenet_benchmark_results",
+    "elcf4r_lcl_benchmark_results",
+    "elcf4r_refit_benchmark_results"
+  ),
+  .elcf4r_load_data
+))
 ```
 # eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
 
@@ -116,41 +157,19 @@ and REFIT. The same workflow is available programmatically through
 `elcf4r_build_benchmark_index()` and `elcf4r_benchmark()`.
 
 ```{r}
-do.call(
-  rbind,
+benchmark_summary <- Filter(
+  Negate(is.null),
   list(
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_iflex_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "iflex"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_storenet_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "storenet"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_lcl_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "lcl"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_refit_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "refit"
-    )
+    .elcf4r_benchmark_summary("elcf4r_iflex_benchmark_results", "iflex"),
+    .elcf4r_benchmark_summary("elcf4r_storenet_benchmark_results", "storenet"),
+    .elcf4r_benchmark_summary("elcf4r_lcl_benchmark_results", "lcl"),
+    .elcf4r_benchmark_summary("elcf4r_refit_benchmark_results", "refit")
   )
 )
+
+if (length(benchmark_summary) == 0L) {
+  data.frame()
+} else {
+  do.call(rbind, benchmark_summary)
+}
 ```

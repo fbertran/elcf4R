@@ -18,7 +18,7 @@ elcf4r_fit_lstm(
   epochs = 10L,
   batch_size = 8L,
   validation_split = 0,
-  seed = 123L,
+  seed = NULL,
   verbose = 0L
 )
 ```
@@ -63,7 +63,8 @@ elcf4r_fit_lstm(
 
 - seed:
 
-  Random seed passed to TensorFlow.
+  Optional integer seed passed to TensorFlow. When `NULL`, the current
+  backend RNG state is used.
 
 - verbose:
 

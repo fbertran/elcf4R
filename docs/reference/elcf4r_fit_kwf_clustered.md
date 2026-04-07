@@ -16,7 +16,7 @@ elcf4r_fit_kwf_clustered(
   use_mean_correction = TRUE,
   max_clusters = 10L,
   nstart = 30L,
-  cluster_seed = 1L,
+  cluster_seed = NULL,
   weights = NULL,
   recency_decay = NULL,
   clustering = NULL
@@ -64,8 +64,8 @@ elcf4r_fit_kwf_clustered(
 
 - cluster_seed:
 
-  Optional integer seed used to make clustering deterministic for
-  benchmark use.
+  Deprecated and ignored. Clustered KWF now uses deterministic
+  non-random starts.
 
 - weights:
 

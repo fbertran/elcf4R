@@ -19,7 +19,7 @@ elcf4r_benchmark(
   include_predictions = TRUE,
   thermosensitivity_panel = NULL,
   benchmark_index_carry_cols = NULL,
-  seed = 1L,
+  seed = NULL,
   tz = "UTC"
 )
 }
@@ -64,8 +64,8 @@ thermosensitivity classification. Defaults to \code{panel}.}
 \item{benchmark_index_carry_cols}{Optional \code{carry_cols} passed to
 \code{elcf4r_build_benchmark_index()} when \code{benchmark_index} is not supplied.}
 
-\item{seed}{Integer seed forwarded to seeded methods such as clustered KWF
-and LSTM unless overridden in \code{method_args}.}
+\item{seed}{Optional integer seed forwarded to methods that support
+user-supplied seeding, such as LSTM, unless overridden in \code{method_args}.}
 
 \item{tz}{Time zone used to derive dates and within-day positions.}
 }

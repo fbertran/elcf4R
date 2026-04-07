@@ -15,7 +15,8 @@
 #' @param epochs Number of training epochs.
 #' @param batch_size Batch size used in `keras3::fit()`.
 #' @param validation_split Validation split passed to `keras3::fit()`.
-#' @param seed Random seed passed to TensorFlow.
+#' @param seed Optional integer seed passed to TensorFlow. When `NULL`, the
+#'   current backend RNG state is used.
 #' @param verbose Verbosity level passed to `keras3::fit()` and `predict()`.
 #'
 #' @return An object of class `elcf4r_model` with `method = "lstm"`.
@@ -55,7 +56,7 @@ elcf4r_fit_lstm <- function(
     epochs = 10L,
     batch_size = 8L,
     validation_split = 0,
-    seed = 123L,
+    seed = NULL,
     verbose = 0L
 ) {
   if (!requireNamespace("keras3", quietly = TRUE)) {
@@ -78,6 +79,12 @@ elcf4r_fit_lstm <- function(
   epochs <- as.integer(epochs)
   batch_size <- as.integer(batch_size)
   verbose <- as.integer(verbose)
+  if (!is.null(seed)) {
+    seed <- as.integer(seed)[1L]
+    if (!is.finite(seed)) {
+      stop("`seed` must be NULL or a finite integer.")
+    }
+  }
 
   if (lookback_days < 1L) {
     stop("`lookback_days` must be at least 1.")
@@ -100,7 +107,9 @@ elcf4r_fit_lstm <- function(
     lookback_days = lookback_days
   )
 
-  tensorflow::set_random_seed(seed)
+  if (!is.null(seed)) {
+    tensorflow::set_random_seed(seed)
+  }
   keras3::clear_session()
 
   model <- keras3::keras_model_sequential()

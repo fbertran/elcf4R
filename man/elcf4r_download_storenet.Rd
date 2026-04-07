@@ -5,7 +5,7 @@
 \title{Download one or more StoreNet household files from figshare}
 \usage{
 elcf4r_download_storenet(
-  dest_dir = tempdir(),
+  dest_dir,
   ids = "H6_W",
   article_ids = NULL,
   overwrite = FALSE,

@@ -105,43 +105,20 @@ and REFIT. The same workflow is available programmatically through
 
 
 ``` r
-do.call(
-  rbind,
+benchmark_summary <- Filter(
+  Negate(is.null),
   list(
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_iflex_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "iflex"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_storenet_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "storenet"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_lcl_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "lcl"
-    ),
-    transform(
-      aggregate(
-        cbind(nmae, nrmse, smape, mase) ~ method,
-        data = elcf4r_refit_benchmark_results,
-        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
-      ),
-      dataset = "refit"
-    )
+    .elcf4r_benchmark_summary("elcf4r_iflex_benchmark_results", "iflex"),
+    .elcf4r_benchmark_summary("elcf4r_storenet_benchmark_results", "storenet"),
+    .elcf4r_benchmark_summary("elcf4r_lcl_benchmark_results", "lcl"),
+    .elcf4r_benchmark_summary("elcf4r_refit_benchmark_results", "refit")
   )
 )
-#> Error in `aggregate.data.frame()`:
-#> ! no rows to aggregate
+
+if (length(benchmark_summary) == 0L) {
+  data.frame()
+} else {
+  do.call(rbind, benchmark_summary)
+}
+#> data frame with 0 columns and 0 rows
 ```

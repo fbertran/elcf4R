@@ -4,11 +4,7 @@
 \alias{elcf4r_download_gx}
 \title{Download selected GX dataset components}
 \usage{
-elcf4r_download_gx(
-  dest_dir = tempdir(),
-  components = "shapefile",
-  overwrite = FALSE
-)
+elcf4r_download_gx(dest_dir, components = "shapefile", overwrite = FALSE)
 }
 \arguments{
 \item{dest_dir}{Directory where the downloaded files should be stored.}

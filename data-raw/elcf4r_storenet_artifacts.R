@@ -72,6 +72,7 @@ storenet_benchmark <- api$elcf4r_benchmark(
   dataset = "storenet",
   use_temperature = FALSE,
   include_predictions = FALSE,
+  seed = 1L,
   thermosensitivity_panel = storenet_panel,
   method_args = list(
     kwf_clustered = list(

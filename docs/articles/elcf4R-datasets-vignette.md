@@ -1,211 +1,198 @@
-# Public datasets for individual electricity load forecasting
+# Datasets and shipped artifacts
 
-## Introduction
+## Overview
 
-This vignette gives a short overview of several open datasets that are
-useful to benchmark the methods implemented in the `elcf4R` package for
-forecasting individual or small group electricity load curves. It
-focuses on datasets that provide relatively high temporal resolution and
-that can be linked to local weather conditions, especially outdoor
-temperature.
+`elcf4R` now supports four household-oriented public data sources
+through a common normalized panel schema:
 
-We do not redistribute the original datasets inside the package when
-their license is not compatible with redistribution on CRAN. Instead, we
-provide small synthetic or heavily downsampled examples and helper
-functions that download the original data directly from the authors
-repositories when allowed.
+- [`elcf4r_read_iflex()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_iflex.md)
+- [`elcf4r_read_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_storenet.md)
+- [`elcf4r_read_lcl()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_lcl.md)
+- [`elcf4r_read_refit()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_refit.md)
 
-The main datasets covered are:
+The package also ships compact example panels and saved benchmark
+results so the main vignettes run without external downloads. Raw source
+files stay in `data-raw/` and are not redistributed through the package
+unless a compact derived artifact has been explicitly built and saved.
 
-- **ELMAS**: hourly commercial and industrial profiles for France.
-- **StoreNet Ireland**: an energy community dataset from Ireland.
-- **IDEAL**: detailed electricity, gas and contextual data for UK homes.
-- **GX-residential**: transformer level residential loads in Guangxi,
-  China.
+Two additional unshipped scaffolds are also available:
 
-We also briefly mention other datasets that might be of interest for
-specific applications.
+- [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md)
+  /
+  [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md)
+  for aggregate-electricity hourly summaries from IDEAL.
+- [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md)
+  /
+  [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md)
+  for the GX transformer/community-level dataset.
 
-## ELMAS dataset
+## Supported dataset matrix
 
-The ELMAS dataset is a collection of 18 typical hourly load profiles
-derived from 55,730 French industrial and tertiary customers, aggregated
-into 424 fields of activity and three subscribed power levels over one
-year. It was released by Bellinguer et al. in Scientific Data (2023) as
-a figshare collection.
+The current dataset surface is:
 
-- Resolution: hourly.
-- Spatial level: load profiles per business segment, not individual
-  meters.
-- Time span: 1 year.
-- Weather: not included, but the profiles can be joined with external
-  weather data at regional level.
-- License: Creative Commons Attribution 4.0 (CC BY 4.0) at the time of
-  writing, which allows redistribution with proper attribution.
+| Dataset | Reader | Resolution | Temperature in normalized panel | Shipped example | Shipped benchmark |
+|:---|:---|:---|:---|:---|:---|
+| iFlex | [`elcf4r_read_iflex()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_iflex.md) | hourly | yes | `elcf4r_iflex_example` | `elcf4r_iflex_benchmark_results` |
+| StoreNet (`H6_W`) | [`elcf4r_read_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_storenet.md) | 1 minute | optional, source-dependent | `elcf4r_storenet_example` | `elcf4r_storenet_benchmark_results` |
+| Low Carbon London | [`elcf4r_read_lcl()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_lcl.md) | 30 minutes | no | `elcf4r_lcl_example` | `elcf4r_lcl_benchmark_results` |
+| REFIT | [`elcf4r_read_refit()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_refit.md) | user-selected resample | no | `elcf4r_refit_example` | `elcf4r_refit_benchmark_results` |
+| ELMAS | not part of the common household reader set | hourly | no | `elcf4r_elmas_toy` | none |
 
-The full dataset can be downloaded from figshare. In R you can use:
+All four household readers return the same core columns:
 
-``` r
-elmas_url <- "https://figshare.com/ndownloader/files/41479693"
-dest <- tempfile(fileext = ".zip")
-utils::download.file(elmas_url, destfile = dest, mode = "wb")
-unzip(dest, exdir = tempdir())
-```
+- `dataset`
+- `entity_id`
+- `timestamp`
+- `date`
+- `time_index`
+- `y`
+- `temp`
+- `dow`
+- `month`
+- `resolution_minutes`
 
-The `elcf4R` package provides a small subset of these profiles in the
-dataset `elcf4r_elmas_demo`, restricted to a few activity sectors and a
-shorter time window. This subset is stored inside the package under a CC
-BY 4.0 compatible license with explicit attribution in `DESCRIPTION` and
-the help page of the dataset.
+Dataset-specific metadata columns are preserved when available.
 
-## StoreNet Ireland dataset
+## Scaffolded, unshipped datasets
 
-Trivedi et al. (2024) describe a comprehensive dataset on electrical
-load profiles for an energy community in Ireland. The dataset contains
-per household power and energy measurements, photovoltaic production,
-battery state of charge, grid imports and exports, and local weather
-variables such as temperature, wind speed and solar irradiance.
+`IDEAL` and `GX` are intentionally documented separately from the core
+shipped household matrix.
 
-- Resolution: 1 minute for power, 15 minutes for some energy quantities.
-- Spatial level: individual households within an energy community.
-- Time span: multiple years.
-- Weather: included at community level.
-- License: Creative Commons Attribution 4.0 (CC BY 4.0) for the data
-  repository at the time of writing.
+| Dataset | Helper surface | Level | Current scaffold scope | Shipped example | Shipped benchmark | Licence note |
+|:---|:---|:---|:---|:---|:---|:---|
+| IDEAL | [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md), [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md) | household | aggregate-electricity hourly summaries from `auxiliarydata.zip` | no | no | the current Edinburgh DataShare record states `CC BY 4.0` |
+| GX | [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md), [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md) | transformer/community | SQLite or flat-export normalization to the common panel schema | no | no | treat licence terms as dataset-record specific and recheck before redistribution |
 
-The authors host the data and code on a public repository linked from
-the Scientific Data article. A typical way to download the data in R is:
+Notes:
 
-``` r
-storenet_zip <- "https://figshare.com/ndownloader/files/45123456"
-dest <- tempfile(fileext = ".zip")
-utils::download.file(storenet_zip, destfile = dest, mode = "wb")
-unzip(dest, exdir = tempdir())
-```
+- IDEAL support in this release is limited to aggregate electricity and
+  does not attempt to parse the raw 1 Hz stream.
+- GX is not an individual-household dataset. It is useful as a secondary
+  benchmark source for weather and community-level demand behavior, but
+  it is not folded into the package’s core household benchmark claims.
 
-The exact URL can change, so the helper function
-[`elcf4r_download_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_storenet.md)
-shipped with this package queries the figshare API and returns the local
-path of the extracted files. See its documentation for details.
+## Shipped example panels
 
-Because the original dataset is large, `elcf4R` only ships a very small
-subsample named `elcf4r_storenet_demo` containing a few households and a
-few weeks of data with temperature.
-
-## IDEAL household energy dataset
-
-The IDEAL dataset contains whole house and appliance level electricity
-data, gas consumption and contextual sensor readings from 255 homes in
-the United Kingdom collected over 23 months, with typical resolutions of
-1 second for aggregate electricity and 12 seconds for temperature,
-humidity and light. Sensor data are complemented by detailed survey and
-building metadata.
-
-- Resolution: 1 second for aggregate electricity, 12 seconds for
-  sensors.
-- Spatial level: individual homes, some with appliance level detail.
-- Time span: up to 23 months per home.
-- Weather: not directly given, but households are concentrated in and
-  around Edinburgh so external weather data can be joined.
-- License: Creative Commons Attribution Non Commercial 4.0 (CC BY NC
-  4.0).
-
-Because of the non commercial clause, the original data are not
-redistributed inside `elcf4R`. Instead, we provide a helper function
-`elcf4r_download_ideal()` that downloads the data from the Edinburgh
-DataShare repository after the user has accepted the licence terms in a
-web browser.
-
-Example:
+The shipped examples are small normalized panels intended for package
+examples and vignette code.
 
 ``` r
-path_ideal <- elcf4r_download_ideal()
-list.files(path_ideal, recursive = TRUE)[1:20]
+example_sizes <- Filter(
+  Negate(is.null),
+  list(
+    .elcf4r_example_size_row("elcf4r_iflex_example", "iflex"),
+    .elcf4r_example_size_row("elcf4r_storenet_example", "storenet"),
+    .elcf4r_example_size_row("elcf4r_lcl_example", "lcl"),
+    .elcf4r_example_size_row("elcf4r_refit_example", "refit")
+  )
+)
+
+if (length(example_sizes) == 0L) {
+  data.frame()
+} else {
+  do.call(rbind, example_sizes)
+}
+#> data frame with 0 columns and 0 rows
 ```
 
-For examples and tests, we rely on a small synthetic dataset
-`elcf4r_synth` that mimics the temporal structure of a single household
-but does not reuse IDEAL measurements.
+These objects can be passed directly to:
 
-## GX residential transformer level dataset
+- [`elcf4r_build_daily_segments()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_daily_segments.md)
+- [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md)
+- [`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md)
 
-Li et al. (2025) release hourly transformer level residential
-consumption data for 23 communities in Guangxi Province, China, covering
-2022 to 2023. The dataset includes meteorological variables such as
-temperature and humidity and flags for extreme weather events and
-holidays.
+## Shipped benchmark result datasets
 
-- Resolution: hourly.
-- Spatial level: transformer level aggregated demand.
-- Time span: two years.
-- Weather: multiple meteorological variables and calendar indicators.
-- License: Creative Commons Attribution Non Commercial No Derivatives
-  4.0 (CC BY NC ND 4.0).
+Each supported household dataset now has a saved benchmark-result object
+built from a fixed local cohort and a deterministic rolling-origin
+design.
 
-Due to the non commercial and no derivatives restrictions, `elcf4R` does
-not redistribute any part of this dataset. We only provide a convenience
-function `elcf4r_download_gx()` that retrieves the original archive from
-its figshare location or associated GitHub repository and returns a
-local path.
+``` r
+benchmark_summary <- Filter(
+  Negate(is.null),
+  list(
+    .elcf4r_benchmark_summary("elcf4r_iflex_benchmark_results", "iflex"),
+    .elcf4r_benchmark_summary("elcf4r_storenet_benchmark_results", "storenet"),
+    .elcf4r_benchmark_summary("elcf4r_lcl_benchmark_results", "lcl"),
+    .elcf4r_benchmark_summary("elcf4r_refit_benchmark_results", "refit")
+  )
+)
 
-## Other datasets worth mentioning
+if (length(benchmark_summary) == 0L) {
+  data.frame()
+} else {
+  benchmark_summary <- do.call(rbind, benchmark_summary)
+  benchmark_summary[, c("dataset", "method", "nmae", "nrmse", "smape", "mase")]
+}
+#> data frame with 0 columns and 0 rows
+```
 
-The literature contains many other public datasets that are useful for
-benchmarking load forecasting models. A recent survey by Baur et
-al. provides a structured list of 25 open datasets for electric load
-forecasting focusing on transparency and reproducibility.
+These shipped benchmark tables are poster-style artifacts. They are not
+intended to replace full local benchmarking on the raw datasets.
 
-A few examples that are not directly used in `elcf4R` but might be
-relevant are:
+## Rebuilding the shipped artifacts
 
-- **UK-DALE**: domestic appliance level electricity demand at 16 kHz to
-  1 second sampling in UK homes, useful for non intrusve load
-  monitoring.
-- **ENERTALK**: 15 Hz electricity consumption from 22 Korean homes.
-- **REFIT**: whole house and submetered appliance loads at 8 second
-  resolution for UK households.
-- **Synthetic French residential curves**: a recently released synthetic
-  dataset of French individual load curves generated by a latent
-  diffusion model, which is attractive for privacy preserving
-  experiments.
+Each shipped dataset is reproducible from a `data-raw/` script:
 
-When using any of these datasets, always check the licence and citation
-requirements and ensure that your intended use complies with them.
+- `data-raw/elcf4r_iflex_subsets.R`
+- `data-raw/elcf4r_iflex_benchmark_results.R`
+- `data-raw/elcf4r_storenet_artifacts.R`
+- `data-raw/elcf4r_lcl_artifacts.R`
+- `data-raw/elcf4r_refit_artifacts.R`
 
-## Demo datasets shipped with elcf4R
+The general pattern is:
 
-To make the examples and vignettes reproducible without large downloads,
-`elcf4R` currently ships the following compact datasets:
+1.  Place the original raw files in `data-raw/`.
+2.  Read them through `elcf4r_read_*()`.
+3.  Build a normalized day index with
+    [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md).
+4.  Save a compact example panel.
+5.  Run
+    [`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md)
+    on a fixed cohort and save the result table.
 
-- `elcf4r_elmas_toy`: a toy subset of the ELMAS 18-cluster hourly
-  profiles.
-- `elcf4r_iflex_example`: a compact hourly household-level panel from
-  iFlex with temperature and price-signal metadata.
-- `elcf4r_iflex_benchmark_index`: an index of complete participant-days
-  from the iFlex hourly panel.
-- `elcf4r_iflex_benchmark_results`: saved rolling-origin benchmark
-  results for the current GAM, MARS, KWF and LSTM wrappers on a fixed
-  iFlex cohort.
+This keeps the package lightweight while making the shipped examples and
+benchmark summaries reproducible.
 
-Each dataset has its own help page with details on variables and
-provenance.
+## Example: daily segments from a shipped panel
 
-## Reproducible workflows
+``` r
+if (exists("elcf4r_iflex_example", inherits = FALSE)) {
+  iflex_segments <- elcf4r_build_daily_segments(
+    elcf4r_iflex_example,
+    carry_cols = c("dataset", "participation_phase", "price_signal")
+  )
 
-For serious benchmarking, the recommended workflow is:
+  dim(iflex_segments$segments)
+  head(iflex_segments$covariates[, c("entity_id", "date", "temp_mean", "price_signal")])
+} else {
+  data.frame()
+}
+#> data frame with 0 columns and 0 rows
+```
 
-1.  Use the helper download functions to obtain the full original
-    datasets on your machine.
-2.  Use preprocessing functions from `elcf4R` to create clean daily load
-    segments, join weather data and build panel data frames suitable for
-    KWF, GAM, MARS or LSTM models.
-3.  Run the forecasting functions with a rolling origin evaluation
-    scheme and compute NMAE, NRMSE, MASE and sMAPE using
-    [`elcf4r_metrics()`](https://fbertran.github.io/eclf4R/reference/elcf4r_metrics.md).
-4.  Store the resulting scores and plots together with the exact dataset
-    versions to ensure reproducibility. The shipped object
-    `elcf4r_iflex_benchmark_results` illustrates this pattern on a fixed
-    iFlex cohort.
+## Example: rerun a tiny benchmark locally
 
-The remainder of the package documentation describes these steps in more
-detail.
+``` r
+if (exists("elcf4r_lcl_example", inherits = FALSE)) {
+  tiny_index <- elcf4r_build_benchmark_index(
+    elcf4r_lcl_example,
+    carry_cols = "dataset"
+  )
+
+  tiny_benchmark <- elcf4r_benchmark(
+    panel = elcf4r_lcl_example,
+    benchmark_index = tiny_index,
+    methods = c("gam", "kwf"),
+    cohort_size = 1,
+    train_days = 10,
+    test_days = 2,
+    include_predictions = FALSE
+  )
+
+  tiny_benchmark$results[, c("entity_id", "method", "test_date", "nmae", "mase")]
+} else {
+  data.frame()
+}
+#> data frame with 0 columns and 0 rows
+```

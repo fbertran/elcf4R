@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Electricity Load Curves Forecasting at Individual Level">
-<meta name="description" content="Implements Kernel Wavelet Functional (KWF), Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes small demo datasets and helper functions to download large public datasets such as ELMAS, StoreNet Ireland and IDEAL.">
-<meta property="og:description" content="Implements Kernel Wavelet Functional (KWF), Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes small demo datasets and helper functions to download large public datasets such as ELMAS, StoreNet Ireland and IDEAL.">
+<meta name="description" content="Implements Kernel Wavelet Functional (KWF), clustered KWF, Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes normalized dataset adapters for iFlex, StoreNet, Low Carbon London and REFIT, scaffolded download/read support for IDEAL and GX, daily segmentation and rolling-origin benchmark helpers, compact shipped example panels, and saved benchmark-result datasets.">
+<meta property="og:description" content="Implements Kernel Wavelet Functional (KWF), clustered KWF, Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes normalized dataset adapters for iFlex, StoreNet, Low Carbon London and REFIT, scaffolded download/read support for IDEAL and GX, daily segmentation and rolling-origin benchmark helpers, compact shipped example panels, and saved benchmark-result datasets.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">elcf4R</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/elcf4R-datasets-vignette.html">Public datasets for individual electricity load forecasting</a></li>
+<li><a class="dropdown-item" href="articles/elcf4R-datasets-vignette.html">Datasets and shipped artifacts</a></li>
     <li><a class="dropdown-item" href="articles/elcf4R-iflex-workflow.html">iFlex Workflow with Shipped Example Data</a></li>
   </ul>
 </li>
@@ -54,14 +54,14 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="eclf4r-sobol-indices-for-models-with-fixed-and-stochastic-parameters-">eclf4R, Sobol Indices for Models with Fixed and Stochastic Parameters <img src="reference/figures/eclf4R_hex.svg" align="right" width="200"><a class="anchor" aria-label="anchor" href="#eclf4r-sobol-indices-for-models-with-fixed-and-stochastic-parameters-"></a>
+<div class="page-header"><h1 id="eclf4r-forecasting-individual-electricity-load-curves-">eclf4R: Forecasting Individual Electricity Load Curves <img src="reference/figures/eclf4R_hex.svg" align="right" width="200"><a class="anchor" aria-label="anchor" href="#eclf4r-forecasting-individual-electricity-load-curves-"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="frédéric-bertrand-fatima-fahs-and-myriam-maumy">Frédéric Bertrand, Fatima Fahs and Myriam Maumy<a class="anchor" aria-label="anchor" href="#fr%C3%A9d%C3%A9ric-bertrand-fatima-fahs-and-myriam-maumy"></a>
 </h2>
 <!-- badges: start -->
 
-<p>Implements Kernel Wavelet Functional (KWF), Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes small demo datasets and helper functions to download large public datasets such as ELMAS, StoreNet Ireland and IDEAL.</p>
+<p>Implements Kernel Wavelet Functional (KWF), clustered KWF, Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes normalized dataset adapters for iFlex, StoreNet, Low Carbon London and REFIT, scaffolded download/read support for IDEAL and GX, compact shipped example panels, and saved benchmark artifacts.</p>
 <p>This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.</p>
 </div>
 <div class="section level2">
@@ -72,9 +72,54 @@
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"fbertran/eclf4R"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="two-complementary-analysis-paths">Two complementary analysis paths<a class="anchor" aria-label="anchor" href="#two-complementary-analysis-paths"></a>
+<h2 id="current-scope">Current Scope<a class="anchor" aria-label="anchor" href="#current-scope"></a>
 </h2>
-<p>The package now ships a compact iFlex example panel and saved benchmark results, so the documentation can run without external downloads.</p>
+<p>The exported forecasting methods currently covered by the package are:</p>
+<ul>
+<li><code><a href="reference/elcf4r_fit_gam.html">elcf4r_fit_gam()</a></code></li>
+<li><code><a href="reference/elcf4r_fit_mars.html">elcf4r_fit_mars()</a></code></li>
+<li><code><a href="reference/elcf4r_fit_kwf.html">elcf4r_fit_kwf()</a></code></li>
+<li><code><a href="reference/elcf4r_fit_kwf_clustered.html">elcf4r_fit_kwf_clustered()</a></code></li>
+<li><code><a href="reference/elcf4r_fit_lstm.html">elcf4r_fit_lstm()</a></code></li>
+</ul>
+<p>The current dataset adapters and shipped benchmark artifacts cover:</p>
+<ul>
+<li>iFlex</li>
+<li>StoreNet (<code>H6_W</code>)</li>
+<li>Low Carbon London</li>
+<li>REFIT</li>
+</ul>
+<p>The current download helpers are:</p>
+<ul>
+<li><code><a href="reference/elcf4r_download_elmas.html">elcf4r_download_elmas()</a></code></li>
+<li><code><a href="reference/elcf4r_download_storenet.html">elcf4r_download_storenet()</a></code></li>
+<li><code><a href="reference/elcf4r_download_ideal.html">elcf4r_download_ideal()</a></code></li>
+<li><code><a href="reference/elcf4r_download_gx.html">elcf4r_download_gx()</a></code></li>
+</ul>
+<p>Scaffolded, unshipped dataset adapters:</p>
+<ul>
+<li>
+<code>IDEAL</code>: <code><a href="reference/elcf4r_download_ideal.html">elcf4r_download_ideal()</a></code> and <code><a href="reference/elcf4r_read_ideal.html">elcf4r_read_ideal()</a></code> provide a first-pass aggregate-electricity scaffold built around the hourly summaries in <code>auxiliarydata.zip</code>. The current Edinburgh DataShare record states <code>CC BY   4.0</code>. No IDEAL-derived package dataset is shipped in this release.</li>
+<li>
+<code>GX</code>: <code><a href="reference/elcf4r_download_gx.html">elcf4r_download_gx()</a></code> and <code><a href="reference/elcf4r_read_gx.html">elcf4r_read_gx()</a></code> provide a secondary transformer/community-level scaffold from the official figshare dataset record. GX is not treated as part of the package’s core individual-household benchmark set, and no GX-derived package dataset is shipped in this release. Licence terms should be rechecked against the official dataset record before any redistribution.</li>
+</ul>
+<p>The current unshipped scaffold readers are:</p>
+<ul>
+<li><code><a href="reference/elcf4r_read_ideal.html">elcf4r_read_ideal()</a></code></li>
+<li><code><a href="reference/elcf4r_read_gx.html">elcf4r_read_gx()</a></code></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="shipped-example-and-benchmark-datasets">Shipped example and benchmark datasets<a class="anchor" aria-label="anchor" href="#shipped-example-and-benchmark-datasets"></a>
+</h2>
+<p>The package now ships compact example panels and saved benchmark results for iFlex, StoreNet, Low Carbon London and REFIT, so the main documentation can run without external downloads. These artifacts are derived from local raw files through the reproducible scripts in <code>data-raw/</code>.</p>
+<p>The current shipped benchmark artifacts are:</p>
+<ul>
+<li>iFlex: <code>15</code> households, <code>28</code> train days, <code>7</code> test days</li>
+<li>StoreNet: <code>1</code> household (<code>H6_W</code>), <code>5</code> train days, <code>2</code> test days</li>
+<li>Low Carbon London: <code>1</code> thermosensitive household, <code>56</code> train days, <code>7</code> test days</li>
+<li>REFIT: <code>2</code> thermosensitive households, <code>56</code> train days, <code>7</code> test days</li>
+</ul>
 <div class="section level3">
 <h3 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h3>
@@ -87,18 +132,24 @@
 <div class="section level2">
 <h2 id="quick-benchmark-summary">Quick Benchmark Summary<a class="anchor" aria-label="anchor" href="#quick-benchmark-summary"></a>
 </h2>
-<p>The shipped iFlex benchmark now includes <code>gam</code>, <code>mars</code>, <code>kwf</code> and <code>lstm</code> results on the same fixed rolling-origin design.</p>
+<p>The shipped benchmark artifacts now cover iFlex, StoreNet, Low Carbon London and REFIT. The same workflow is available programmatically through <code><a href="reference/elcf4r_build_benchmark_index.html">elcf4r_build_benchmark_index()</a></code> and <code><a href="reference/elcf4r_benchmark.html">elcf4r_benchmark()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">nmae</span>, <span class="va">nrmse</span>, <span class="va">smape</span>, <span class="va">fit_seconds</span><span class="op">)</span> <span class="op">~</span> <span class="va">method</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">elcf4r_iflex_benchmark_results</span>,</span>
-<span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">benchmark_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_iflex_benchmark_results"</span>, <span class="st">"iflex"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_storenet_benchmark_results"</span>, <span class="st">"storenet"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_lcl_benchmark_results"</span>, <span class="st">"lcl"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_refit_benchmark_results"</span>, <span class="st">"refit"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   method   nmae  nrmse  smape fit_seconds</span></span>
-<span><span class="co">#&gt; 1    gam 0.2435 0.3121 0.3222      0.0269</span></span>
-<span><span class="co">#&gt; 2    kwf 0.2224 0.2861 0.2946      0.0007</span></span>
-<span><span class="co">#&gt; 3   lstm 0.2296 0.2919 0.3188      1.1992</span></span>
-<span><span class="co">#&gt; 4   mars 0.2319 0.2946 0.3092      0.0145</span></span></code></pre></div>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">benchmark_summary</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">benchmark_summary</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

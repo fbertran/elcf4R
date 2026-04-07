@@ -110,6 +110,7 @@ lcl_benchmark <- api$elcf4r_benchmark(
   dataset = "lcl",
   use_temperature = FALSE,
   include_predictions = FALSE,
+  seed = 1L,
   thermosensitivity_panel = lcl_panel[lcl_panel$entity_id %in% benchmark_ids, , drop = FALSE],
   method_args = list(
     kwf_clustered = list(

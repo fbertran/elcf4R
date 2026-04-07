@@ -11,7 +11,7 @@ elcf4r_kwf_cluster_days(
   wavelet = "la12",
   max_clusters = 10L,
   nstart = 30L,
-  cluster_seed = 1L
+  cluster_seed = NULL
 )
 ```
 
@@ -38,7 +38,8 @@ elcf4r_kwf_cluster_days(
 
 - cluster_seed:
 
-  Optional integer seed used to make clustering deterministic.
+  Deprecated and ignored. Clustering now uses deterministic non-random
+  starts.
 
 ## Value
 

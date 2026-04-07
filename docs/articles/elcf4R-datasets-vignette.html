@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Public datasets for individual electricity load forecasting • elcf4R</title>
+<title>Datasets and shipped artifacts • elcf4R</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Public datasets for individual electricity load forecasting">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Datasets and shipped artifacts">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">elcf4R</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Public datasets for individual electricity load forecasting</a></li>
+<li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Datasets and shipped artifacts</a></li>
     <li><a class="dropdown-item" href="../articles/elcf4R-iflex-workflow.html">iFlex Workflow with Shipped Example Data</a></li>
   </ul>
 </li>
@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Public datasets for individual electricity load forecasting</h1>
+      <h1>Datasets and shipped artifacts</h1>
                         <h4 data-toc-skip class="author">elcf4R
 package</h4>
             
@@ -69,234 +69,301 @@ package</h4>
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This vignette gives a short overview of several open datasets that
-are useful to benchmark the methods implemented in the
-<code>elcf4R</code> package for forecasting individual or small group
-electricity load curves. It focuses on datasets that provide relatively
-high temporal resolution and that can be linked to local weather
-conditions, especially outdoor temperature.</p>
-<p>We do not redistribute the original datasets inside the package when
-their license is not compatible with redistribution on CRAN. Instead, we
-provide small synthetic or heavily downsampled examples and helper
-functions that download the original data directly from the authors
-repositories when allowed.</p>
-<p>The main datasets covered are:</p>
+<p><code>elcf4R</code> now supports four household-oriented public data
+sources through a common normalized panel schema:</p>
+<ul>
+<li><code><a href="../reference/elcf4r_read_iflex.html">elcf4r_read_iflex()</a></code></li>
+<li><code><a href="../reference/elcf4r_read_storenet.html">elcf4r_read_storenet()</a></code></li>
+<li><code><a href="../reference/elcf4r_read_lcl.html">elcf4r_read_lcl()</a></code></li>
+<li><code><a href="../reference/elcf4r_read_refit.html">elcf4r_read_refit()</a></code></li>
+</ul>
+<p>The package also ships compact example panels and saved benchmark
+results so the main vignettes run without external downloads. Raw source
+files stay in <code>data-raw/</code> and are not redistributed through
+the package unless a compact derived artifact has been explicitly built
+and saved.</p>
+<p>Two additional unshipped scaffolds are also available:</p>
 <ul>
 <li>
-<strong>ELMAS</strong>: hourly commercial and industrial profiles
-for France.</li>
+<code><a href="../reference/elcf4r_download_ideal.html">elcf4r_download_ideal()</a></code> /
+<code><a href="../reference/elcf4r_read_ideal.html">elcf4r_read_ideal()</a></code> for aggregate-electricity hourly
+summaries from IDEAL.</li>
 <li>
-<strong>StoreNet Ireland</strong>: an energy community dataset from
-Ireland.</li>
-<li>
-<strong>IDEAL</strong>: detailed electricity, gas and contextual
-data for UK homes.</li>
-<li>
-<strong>GX-residential</strong>: transformer level residential loads
-in Guangxi, China.</li>
+<code><a href="../reference/elcf4r_download_gx.html">elcf4r_download_gx()</a></code> / <code><a href="../reference/elcf4r_read_gx.html">elcf4r_read_gx()</a></code>
+for the GX transformer/community-level dataset.</li>
 </ul>
-<p>We also briefly mention other datasets that might be of interest for
-specific applications.</p>
 </div>
 <div class="section level2">
-<h2 id="elmas-dataset">ELMAS dataset<a class="anchor" aria-label="anchor" href="#elmas-dataset"></a>
+<h2 id="supported-dataset-matrix">Supported dataset matrix<a class="anchor" aria-label="anchor" href="#supported-dataset-matrix"></a>
 </h2>
-<p>The ELMAS dataset is a collection of 18 typical hourly load profiles
-derived from 55,730 French industrial and tertiary customers, aggregated
-into 424 fields of activity and three subscribed power levels over one
-year. It was released by Bellinguer et al. in Scientific Data (2023) as
-a figshare collection.</p>
+<p>The current dataset surface is:</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Dataset</th>
+<th align="left">Reader</th>
+<th align="left">Resolution</th>
+<th align="left">Temperature in normalized panel</th>
+<th align="left">Shipped example</th>
+<th align="left">Shipped benchmark</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">iFlex</td>
+<td align="left"><code><a href="../reference/elcf4r_read_iflex.html">elcf4r_read_iflex()</a></code></td>
+<td align="left">hourly</td>
+<td align="left">yes</td>
+<td align="left"><code>elcf4r_iflex_example</code></td>
+<td align="left"><code>elcf4r_iflex_benchmark_results</code></td>
+</tr>
+<tr class="even">
+<td align="left">StoreNet (<code>H6_W</code>)</td>
+<td align="left"><code><a href="../reference/elcf4r_read_storenet.html">elcf4r_read_storenet()</a></code></td>
+<td align="left">1 minute</td>
+<td align="left">optional, source-dependent</td>
+<td align="left"><code>elcf4r_storenet_example</code></td>
+<td align="left"><code>elcf4r_storenet_benchmark_results</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Low Carbon London</td>
+<td align="left"><code><a href="../reference/elcf4r_read_lcl.html">elcf4r_read_lcl()</a></code></td>
+<td align="left">30 minutes</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_lcl_example</code></td>
+<td align="left"><code>elcf4r_lcl_benchmark_results</code></td>
+</tr>
+<tr class="even">
+<td align="left">REFIT</td>
+<td align="left"><code><a href="../reference/elcf4r_read_refit.html">elcf4r_read_refit()</a></code></td>
+<td align="left">user-selected resample</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_refit_example</code></td>
+<td align="left"><code>elcf4r_refit_benchmark_results</code></td>
+</tr>
+<tr class="odd">
+<td align="left">ELMAS</td>
+<td align="left">not part of the common household reader set</td>
+<td align="left">hourly</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_elmas_toy</code></td>
+<td align="left">none</td>
+</tr>
+</tbody>
+</table>
+<p>All four household readers return the same core columns:</p>
 <ul>
-<li>Resolution: hourly.</li>
-<li>Spatial level: load profiles per business segment, not individual
-meters.</li>
-<li>Time span: 1 year.</li>
-<li>Weather: not included, but the profiles can be joined with external
-weather data at regional level.</li>
-<li>License: Creative Commons Attribution 4.0 (CC BY 4.0) at the time of
-writing, which allows redistribution with proper attribution.</li>
+<li><code>dataset</code></li>
+<li><code>entity_id</code></li>
+<li><code>timestamp</code></li>
+<li><code>date</code></li>
+<li><code>time_index</code></li>
+<li><code>y</code></li>
+<li><code>temp</code></li>
+<li><code>dow</code></li>
+<li><code>month</code></li>
+<li><code>resolution_minutes</code></li>
 </ul>
-<p>The full dataset can be downloaded from figshare. In R you can
-use:</p>
+<p>Dataset-specific metadata columns are preserved when available.</p>
+</div>
+<div class="section level2">
+<h2 id="scaffolded-unshipped-datasets">Scaffolded, unshipped datasets<a class="anchor" aria-label="anchor" href="#scaffolded-unshipped-datasets"></a>
+</h2>
+<p><code>IDEAL</code> and <code>GX</code> are intentionally documented
+separately from the core shipped household matrix.</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Dataset</th>
+<th align="left">Helper surface</th>
+<th align="left">Level</th>
+<th align="left">Current scaffold scope</th>
+<th align="left">Shipped example</th>
+<th align="left">Shipped benchmark</th>
+<th align="left">Licence note</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">IDEAL</td>
+<td align="left">
+<code><a href="../reference/elcf4r_download_ideal.html">elcf4r_download_ideal()</a></code>,
+<code><a href="../reference/elcf4r_read_ideal.html">elcf4r_read_ideal()</a></code>
+</td>
+<td align="left">household</td>
+<td align="left">aggregate-electricity hourly summaries from
+<code>auxiliarydata.zip</code>
+</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">the current Edinburgh DataShare record states
+<code>CC BY 4.0</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">GX</td>
+<td align="left">
+<code><a href="../reference/elcf4r_download_gx.html">elcf4r_download_gx()</a></code>,
+<code><a href="../reference/elcf4r_read_gx.html">elcf4r_read_gx()</a></code>
+</td>
+<td align="left">transformer/community</td>
+<td align="left">SQLite or flat-export normalization to the common panel
+schema</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">treat licence terms as dataset-record specific and
+recheck before redistribution</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ul>
+<li>IDEAL support in this release is limited to aggregate electricity
+and does not attempt to parse the raw 1 Hz stream.</li>
+<li>GX is not an individual-household dataset. It is useful as a
+secondary benchmark source for weather and community-level demand
+behavior, but it is not folded into the package’s core household
+benchmark claims.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="shipped-example-panels">Shipped example panels<a class="anchor" aria-label="anchor" href="#shipped-example-panels"></a>
+</h2>
+<p>The shipped examples are small normalized panels intended for package
+examples and vignette code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">elmas_url</span> <span class="op">&lt;-</span> <span class="st">"https://figshare.com/ndownloader/files/41479693"</span></span>
-<span><span class="va">dest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span></span>
-<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">elmas_url</span>, destfile <span class="op">=</span> <span class="va">dest</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">dest</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>elcf4R</code> package provides a small subset of these
-profiles in the dataset <code>elcf4r_elmas_demo</code>, restricted to a
-few activity sectors and a shorter time window. This subset is stored
-inside the package under a CC BY 4.0 compatible license with explicit
-attribution in <code>DESCRIPTION</code> and the help page of the
-dataset.</p>
+<code class="sourceCode R"><span><span class="va">example_sizes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu">.elcf4r_example_size_row</span><span class="op">(</span><span class="st">"elcf4r_iflex_example"</span>, <span class="st">"iflex"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_example_size_row</span><span class="op">(</span><span class="st">"elcf4r_storenet_example"</span>, <span class="st">"storenet"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_example_size_row</span><span class="op">(</span><span class="st">"elcf4r_lcl_example"</span>, <span class="st">"lcl"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_example_size_row</span><span class="op">(</span><span class="st">"elcf4r_refit_example"</span>, <span class="st">"refit"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">example_sizes</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">example_sizes</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+<p>These objects can be passed directly to:</p>
+<ul>
+<li><code><a href="../reference/elcf4r_build_daily_segments.html">elcf4r_build_daily_segments()</a></code></li>
+<li><code><a href="../reference/elcf4r_build_benchmark_index.html">elcf4r_build_benchmark_index()</a></code></li>
+<li><code><a href="../reference/elcf4r_benchmark.html">elcf4r_benchmark()</a></code></li>
+</ul>
 </div>
 <div class="section level2">
-<h2 id="storenet-ireland-dataset">StoreNet Ireland dataset<a class="anchor" aria-label="anchor" href="#storenet-ireland-dataset"></a>
+<h2 id="shipped-benchmark-result-datasets">Shipped benchmark result datasets<a class="anchor" aria-label="anchor" href="#shipped-benchmark-result-datasets"></a>
 </h2>
-<p>Trivedi et al. (2024) describe a comprehensive dataset on electrical
-load profiles for an energy community in Ireland. The dataset contains
-per household power and energy measurements, photovoltaic production,
-battery state of charge, grid imports and exports, and local weather
-variables such as temperature, wind speed and solar irradiance.</p>
-<ul>
-<li>Resolution: 1 minute for power, 15 minutes for some energy
-quantities.</li>
-<li>Spatial level: individual households within an energy
-community.</li>
-<li>Time span: multiple years.</li>
-<li>Weather: included at community level.</li>
-<li>License: Creative Commons Attribution 4.0 (CC BY 4.0) for the data
-repository at the time of writing.</li>
-</ul>
-<p>The authors host the data and code on a public repository linked from
-the Scientific Data article. A typical way to download the data in R
-is:</p>
+<p>Each supported household dataset now has a saved benchmark-result
+object built from a fixed local cohort and a deterministic
+rolling-origin design.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">storenet_zip</span> <span class="op">&lt;-</span> <span class="st">"https://figshare.com/ndownloader/files/45123456"</span></span>
-<span><span class="va">dest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span></span>
-<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">storenet_zip</span>, destfile <span class="op">=</span> <span class="va">dest</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">dest</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The exact URL can change, so the helper function
-<code><a href="../reference/elcf4r_download_storenet.html">elcf4r_download_storenet()</a></code> shipped with this package
-queries the figshare API and returns the local path of the extracted
-files. See its documentation for details.</p>
-<p>Because the original dataset is large, <code>elcf4R</code> only ships
-a very small subsample named <code>elcf4r_storenet_demo</code>
-containing a few households and a few weeks of data with
-temperature.</p>
+<code class="sourceCode R"><span><span class="va">benchmark_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_iflex_benchmark_results"</span>, <span class="st">"iflex"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_storenet_benchmark_results"</span>, <span class="st">"storenet"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_lcl_benchmark_results"</span>, <span class="st">"lcl"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">.elcf4r_benchmark_summary</span><span class="op">(</span><span class="st">"elcf4r_refit_benchmark_results"</span>, <span class="st">"refit"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">benchmark_summary</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">benchmark_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">benchmark_summary</span><span class="op">)</span></span>
+<span>  <span class="va">benchmark_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset"</span>, <span class="st">"method"</span>, <span class="st">"nmae"</span>, <span class="st">"nrmse"</span>, <span class="st">"smape"</span>, <span class="st">"mase"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+<p>These shipped benchmark tables are poster-style artifacts. They are
+not intended to replace full local benchmarking on the raw datasets.</p>
 </div>
 <div class="section level2">
-<h2 id="ideal-household-energy-dataset">IDEAL household energy dataset<a class="anchor" aria-label="anchor" href="#ideal-household-energy-dataset"></a>
+<h2 id="rebuilding-the-shipped-artifacts">Rebuilding the shipped artifacts<a class="anchor" aria-label="anchor" href="#rebuilding-the-shipped-artifacts"></a>
 </h2>
-<p>The IDEAL dataset contains whole house and appliance level
-electricity data, gas consumption and contextual sensor readings from
-255 homes in the United Kingdom collected over 23 months, with typical
-resolutions of 1 second for aggregate electricity and 12 seconds for
-temperature, humidity and light. Sensor data are complemented by
-detailed survey and building metadata.</p>
+<p>Each shipped dataset is reproducible from a <code>data-raw/</code>
+script:</p>
 <ul>
-<li>Resolution: 1 second for aggregate electricity, 12 seconds for
-sensors.</li>
-<li>Spatial level: individual homes, some with appliance level
-detail.</li>
-<li>Time span: up to 23 months per home.</li>
-<li>Weather: not directly given, but households are concentrated in and
-around Edinburgh so external weather data can be joined.</li>
-<li>License: Creative Commons Attribution Non Commercial 4.0 (CC BY NC
-4.0).</li>
+<li><code>data-raw/elcf4r_iflex_subsets.R</code></li>
+<li><code>data-raw/elcf4r_iflex_benchmark_results.R</code></li>
+<li><code>data-raw/elcf4r_storenet_artifacts.R</code></li>
+<li><code>data-raw/elcf4r_lcl_artifacts.R</code></li>
+<li><code>data-raw/elcf4r_refit_artifacts.R</code></li>
 </ul>
-<p>Because of the non commercial clause, the original data are not
-redistributed inside <code>elcf4R</code>. Instead, we provide a helper
-function <code>elcf4r_download_ideal()</code> that downloads the data
-from the Edinburgh DataShare repository after the user has accepted the
-licence terms in a web browser.</p>
-<p>Example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">path_ideal</span> <span class="op">&lt;-</span> <span class="fu">elcf4r_download_ideal</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">path_ideal</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span></span></code></pre></div>
-<p>For examples and tests, we rely on a small synthetic dataset
-<code>elcf4r_synth</code> that mimics the temporal structure of a single
-household but does not reuse IDEAL measurements.</p>
-</div>
-<div class="section level2">
-<h2 id="gx-residential-transformer-level-dataset">GX residential transformer level dataset<a class="anchor" aria-label="anchor" href="#gx-residential-transformer-level-dataset"></a>
-</h2>
-<p>Li et al. (2025) release hourly transformer level residential
-consumption data for 23 communities in Guangxi Province, China, covering
-2022 to 2023. The dataset includes meteorological variables such as
-temperature and humidity and flags for extreme weather events and
-holidays.</p>
-<ul>
-<li>Resolution: hourly.</li>
-<li>Spatial level: transformer level aggregated demand.</li>
-<li>Time span: two years.</li>
-<li>Weather: multiple meteorological variables and calendar
-indicators.</li>
-<li>License: Creative Commons Attribution Non Commercial No Derivatives
-4.0 (CC BY NC ND 4.0).</li>
-</ul>
-<p>Due to the non commercial and no derivatives restrictions,
-<code>elcf4R</code> does not redistribute any part of this dataset. We
-only provide a convenience function <code>elcf4r_download_gx()</code>
-that retrieves the original archive from its figshare location or
-associated GitHub repository and returns a local path.</p>
-</div>
-<div class="section level2">
-<h2 id="other-datasets-worth-mentioning">Other datasets worth mentioning<a class="anchor" aria-label="anchor" href="#other-datasets-worth-mentioning"></a>
-</h2>
-<p>The literature contains many other public datasets that are useful
-for benchmarking load forecasting models. A recent survey by Baur et
-al. provides a structured list of 25 open datasets for electric load
-forecasting focusing on transparency and reproducibility.</p>
-<p>A few examples that are not directly used in <code>elcf4R</code> but
-might be relevant are:</p>
-<ul>
-<li>
-<strong>UK-DALE</strong>: domestic appliance level electricity
-demand at 16 kHz to 1 second sampling in UK homes, useful for non
-intrusve load monitoring.</li>
-<li>
-<strong>ENERTALK</strong>: 15 Hz electricity consumption from 22
-Korean homes.</li>
-<li>
-<strong>REFIT</strong>: whole house and submetered appliance loads
-at 8 second resolution for UK households.</li>
-<li>
-<strong>Synthetic French residential curves</strong>: a recently
-released synthetic dataset of French individual load curves generated by
-a latent diffusion model, which is attractive for privacy preserving
-experiments.</li>
-</ul>
-<p>When using any of these datasets, always check the licence and
-citation requirements and ensure that your intended use complies with
-them.</p>
-</div>
-<div class="section level2">
-<h2 id="demo-datasets-shipped-with-elcf4r">Demo datasets shipped with elcf4R<a class="anchor" aria-label="anchor" href="#demo-datasets-shipped-with-elcf4r"></a>
-</h2>
-<p>To make the examples and vignettes reproducible without large
-downloads, <code>elcf4R</code> currently ships the following compact
-datasets:</p>
-<ul>
-<li>
-<code>elcf4r_elmas_toy</code>: a toy subset of the ELMAS 18-cluster
-hourly profiles.</li>
-<li>
-<code>elcf4r_iflex_example</code>: a compact hourly household-level
-panel from iFlex with temperature and price-signal metadata.</li>
-<li>
-<code>elcf4r_iflex_benchmark_index</code>: an index of complete
-participant-days from the iFlex hourly panel.</li>
-<li>
-<code>elcf4r_iflex_benchmark_results</code>: saved rolling-origin
-benchmark results for the current GAM, MARS, KWF and LSTM wrappers on a
-fixed iFlex cohort.</li>
-</ul>
-<p>Each dataset has its own help page with details on variables and
-provenance.</p>
-</div>
-<div class="section level2">
-<h2 id="reproducible-workflows">Reproducible workflows<a class="anchor" aria-label="anchor" href="#reproducible-workflows"></a>
-</h2>
-<p>For serious benchmarking, the recommended workflow is:</p>
+<p>The general pattern is:</p>
 <ol style="list-style-type: decimal">
-<li>Use the helper download functions to obtain the full original
-datasets on your machine.</li>
-<li>Use preprocessing functions from <code>elcf4R</code> to create clean
-daily load segments, join weather data and build panel data frames
-suitable for KWF, GAM, MARS or LSTM models.</li>
-<li>Run the forecasting functions with a rolling origin evaluation
-scheme and compute NMAE, NRMSE, MASE and sMAPE using
-<code><a href="../reference/elcf4r_metrics.html">elcf4r_metrics()</a></code>.</li>
-<li>Store the resulting scores and plots together with the exact dataset
-versions to ensure reproducibility. The shipped object
-<code>elcf4r_iflex_benchmark_results</code> illustrates this pattern on
-a fixed iFlex cohort.</li>
+<li>Place the original raw files in <code>data-raw/</code>.</li>
+<li>Read them through <code>elcf4r_read_*()</code>.</li>
+<li>Build a normalized day index with
+<code><a href="../reference/elcf4r_build_benchmark_index.html">elcf4r_build_benchmark_index()</a></code>.</li>
+<li>Save a compact example panel.</li>
+<li>Run <code><a href="../reference/elcf4r_benchmark.html">elcf4r_benchmark()</a></code> on a fixed cohort and save the
+result table.</li>
 </ol>
-<p>The remainder of the package documentation describes these steps in
-more detail.</p>
+<p>This keeps the package lightweight while making the shipped examples
+and benchmark summaries reproducible.</p>
+</div>
+<div class="section level2">
+<h2 id="example-daily-segments-from-a-shipped-panel">Example: daily segments from a shipped panel<a class="anchor" aria-label="anchor" href="#example-daily-segments-from-a-shipped-panel"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"elcf4r_iflex_example"</span>, inherits <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">iflex_segments</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/elcf4r_build_daily_segments.html">elcf4r_build_daily_segments</a></span><span class="op">(</span></span>
+<span>    <span class="va">elcf4r_iflex_example</span>,</span>
+<span>    carry_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset"</span>, <span class="st">"participation_phase"</span>, <span class="st">"price_signal"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">iflex_segments</span><span class="op">$</span><span class="va">segments</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">iflex_segments</span><span class="op">$</span><span class="va">covariates</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entity_id"</span>, <span class="st">"date"</span>, <span class="st">"temp_mean"</span>, <span class="st">"price_signal"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example-rerun-a-tiny-benchmark-locally">Example: rerun a tiny benchmark locally<a class="anchor" aria-label="anchor" href="#example-rerun-a-tiny-benchmark-locally"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"elcf4r_lcl_example"</span>, inherits <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">tiny_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/elcf4r_build_benchmark_index.html">elcf4r_build_benchmark_index</a></span><span class="op">(</span></span>
+<span>    <span class="va">elcf4r_lcl_example</span>,</span>
+<span>    carry_cols <span class="op">=</span> <span class="st">"dataset"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">tiny_benchmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/elcf4r_benchmark.html">elcf4r_benchmark</a></span><span class="op">(</span></span>
+<span>    panel <span class="op">=</span> <span class="va">elcf4r_lcl_example</span>,</span>
+<span>    benchmark_index <span class="op">=</span> <span class="va">tiny_index</span>,</span>
+<span>    methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gam"</span>, <span class="st">"kwf"</span><span class="op">)</span>,</span>
+<span>    cohort_size <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    train_days <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    test_days <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    include_predictions <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">tiny_benchmark</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entity_id"</span>, <span class="st">"method"</span>, <span class="st">"test_date"</span>, <span class="st">"nmae"</span>, <span class="st">"mase"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

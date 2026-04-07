@@ -13,7 +13,7 @@ feature repeated across the within-day time steps."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">elcf4R</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,7 @@ feature repeated across the within-day time steps."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Public datasets for individual electricity load forecasting</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Datasets and shipped artifacts</a></li>
     <li><a class="dropdown-item" href="../articles/elcf4R-iflex-workflow.html">iFlex Workflow with Shipped Example Data</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,7 +62,7 @@ feature repeated across the within-day time steps.</p>
 <span>  epochs <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  batch_size <span class="op">=</span> <span class="fl">8L</span>,</span>
 <span>  validation_split <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">123L</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -106,7 +106,8 @@ feature repeated across the within-day time steps.</p>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Random seed passed to TensorFlow.</p></dd>
+<dd><p>Optional integer seed passed to TensorFlow. When <code>NULL</code>, the
+current backend RNG state is used.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

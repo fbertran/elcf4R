@@ -5,7 +5,7 @@
 \title{Download selected IDEAL dataset components}
 \usage{
 elcf4r_download_ideal(
-  dest_dir = tempdir(),
+  dest_dir,
   components = "documentation",
   overwrite = FALSE
 )

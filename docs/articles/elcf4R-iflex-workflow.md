@@ -130,11 +130,55 @@ fit_lstm <- elcf4r_fit_lstm(
 pred_lstm <- predict(fit_lstm)
 unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 #>      nmae     nrmse     smape      mase 
-#> 0.2215960 0.2522648 0.2061798 1.0477434
+#> 0.2247825 0.2573687 0.2088922 1.0628101
 ```
 
 ``` r
 "LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."
+```
+
+## Run a small rolling benchmark
+
+The package also exposes a reusable rolling-origin benchmark runner that
+works on normalized panels produced by the `elcf4r_read_*()` adapters.
+
+``` r
+benchmark_index <- elcf4r_build_benchmark_index(
+  elcf4r_iflex_example,
+  carry_cols = c("dataset", "participation_phase", "price_signal")
+)
+
+benchmark_small <- elcf4r_benchmark(
+  panel = elcf4r_iflex_example,
+  benchmark_index = benchmark_index,
+  methods = c("gam", "kwf"),
+  cohort_size = 1,
+  train_days = 10,
+  test_days = 2,
+  include_predictions = FALSE
+)
+
+benchmark_small$results
+#>                                 benchmark_name dataset entity_id method
+#> 1 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    gam
+#> 2 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    kwf
+#> 3 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    gam
+#> 4 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    kwf
+#>    test_date train_start  train_end train_days test_points use_temperature
+#> 1 2020-01-16  2020-01-06 2020-01-15         10          24            TRUE
+#> 2 2020-01-16  2020-01-06 2020-01-15         10          24            TRUE
+#> 3 2020-01-17  2020-01-07 2020-01-16         10          24            TRUE
+#> 4 2020-01-17  2020-01-07 2020-01-16         10          24            TRUE
+#>   thermosensitive     thermosensitivity_status thermosensitivity_ratio
+#> 1              NA insufficient_summer_coverage                      NA
+#> 2              NA insufficient_summer_coverage                      NA
+#> 3              NA insufficient_summer_coverage                      NA
+#> 4              NA insufficient_summer_coverage                      NA
+#>   fit_seconds status error_message      nmae     nrmse     smape      mase
+#> 1       0.018     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
+#> 2       0.012     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
+#> 3       0.018     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
+#> 4       0.012     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
 ```
 
 ## Inspect shipped benchmark results
@@ -146,12 +190,12 @@ cohort. In the current build these results cover `gam`, `mars`, `kwf`,
 ``` r
 head(elcf4r_iflex_benchmark_results)
 #>                                  benchmark_name dataset entity_id        method
-#> 1 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1           gam
-#> 2 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1          mars
-#> 3 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1           kwf
-#> 4 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1 kwf_clustered
-#> 5 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1          lstm
-#> 6 iflex_hourly_10_ids_28_train_5_test_5_methods   iflex     Exp_1           gam
+#> 1 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1           gam
+#> 2 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1          mars
+#> 3 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1           kwf
+#> 4 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1 kwf_clustered
+#> 5 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1          lstm
+#> 6 iflex_hourly_15_ids_28_train_7_test_5_methods   iflex     Exp_1           gam
 #>    test_date train_start  train_end train_days test_points use_temperature
 #> 1 2020-02-03  2020-01-06 2020-02-02         28          24            TRUE
 #> 2 2020-02-03  2020-01-06 2020-02-02         28          24            TRUE
@@ -167,12 +211,12 @@ head(elcf4r_iflex_benchmark_results)
 #> 5              NA insufficient_summer_coverage                      NA
 #> 6              NA insufficient_summer_coverage                      NA
 #>   fit_seconds status error_message      nmae     nrmse      smape      mase
-#> 1       0.057     ok          <NA> 0.2241390 0.3029546 0.11050062 0.7570273
-#> 2       0.037     ok          <NA> 0.2986949 0.3565707 0.15316209 1.0088391
-#> 3       0.065     ok          <NA> 0.2622522 0.3346779 0.13014701 0.8857544
-#> 4       0.142     ok          <NA> 0.2039969 0.2643067 0.09952173 0.6889975
-#> 5       1.203     ok          <NA> 0.3218673 0.4079799 0.16103600 1.0871037
-#> 6       0.031     ok          <NA> 0.1502679 0.2054841 0.12878440 0.8595982
+#> 1       0.073     ok          <NA> 0.2241390 0.3029546 0.11050062 0.7570273
+#> 2       0.062     ok          <NA> 0.2986949 0.3565707 0.15316209 1.0088391
+#> 3       0.067     ok          <NA> 0.2622522 0.3346779 0.13014701 0.8857544
+#> 4       0.184     ok          <NA> 0.2039969 0.2643067 0.09952173 0.6889975
+#> 5       1.229     ok          <NA> 0.3100784 0.3850647 0.15454029 1.0472868
+#> 6       0.024     ok          <NA> 0.1502679 0.2054841 0.12878440 0.8595982
 
 aggregate(
   cbind(nmae, nrmse, smape, mase, fit_seconds) ~ method,
@@ -180,11 +224,11 @@ aggregate(
   FUN = function(x) round(mean(x, na.rm = TRUE), 4)
 )
 #>          method   nmae  nrmse  smape   mase fit_seconds
-#> 1           gam 0.2435 0.3121 0.3222 0.8782      0.0250
-#> 2           kwf 0.2740 0.3479 0.3477 0.9756      0.0379
-#> 3 kwf_clustered 0.2640 0.3388 0.3295 0.9115      0.0904
-#> 4          lstm 0.2296 0.2919 0.3188 0.8538      1.1791
-#> 5          mars 0.2319 0.2946 0.3092 0.8310      0.0142
+#> 1           gam 0.2275 0.2908 0.3116 0.8519      0.0238
+#> 2           kwf 0.2469 0.3125 0.3303 0.9083      0.0344
+#> 3 kwf_clustered 0.2561 0.3289 0.3351 0.9335      0.1276
+#> 4          lstm 0.2365 0.2967 0.3373 0.9129      1.2425
+#> 5          mars 0.2209 0.2808 0.3031 0.8220      0.0132
 ```
 
 This object is intended to support reproducible package examples and to

@@ -10,8 +10,8 @@
 #' @param max_clusters Maximum number of candidate clusters considered by the
 #'   Sugar jump heuristic.
 #' @param nstart Number of random starts for `kmeans`.
-#' @param cluster_seed Optional integer seed used to make clustering
-#'   deterministic.
+#' @param cluster_seed Deprecated and ignored. Clustering now uses
+#'   deterministic non-random starts.
 #'
 #' @return An object of class `elcf4r_kwf_clusters`.
 #' @export
@@ -20,7 +20,7 @@ elcf4r_kwf_cluster_days <- function(
     wavelet = "la12",
     max_clusters = 10L,
     nstart = 30L,
-    cluster_seed = 1L
+    cluster_seed = NULL
 ) {
   segments <- .elcf4r_as_numeric_matrix(segments, "segments")
   n_segments <- nrow(segments)
@@ -71,13 +71,10 @@ elcf4r_kwf_cluster_days <- function(
     nstart = nstart,
     cluster_seed = cluster_seed
   )
-  km <- .elcf4r_with_seed(
-    cluster_seed + 2000L,
-    stats::kmeans(
-      x = clustering_input,
-      centers = k_info$k,
-      nstart = as.integer(nstart)
-    )
+  km <- .elcf4r_kmeans_fit(
+    x = clustering_input,
+    centers = k_info$k,
+    nstart = nstart
   )
 
   labels <- paste0("cluster_", km$cluster)
@@ -100,7 +97,7 @@ elcf4r_kwf_cluster_days <- function(
       cluster_jump_values = k_info$jumps,
       cluster_distortions = k_info$distortions,
       nstart = as.integer(nstart),
-      cluster_seed = as.integer(cluster_seed),
+      cluster_seed = if (is.null(cluster_seed)) NA_integer_ else as.integer(cluster_seed)[1L],
       n_segments = n_segments,
       n_time = n_time
     ),
@@ -197,23 +194,90 @@ elcf4r_assign_kwf_clusters <- function(object, segments) {
   sweep(scaled, 2L, feature_scales, "/", check.margin = FALSE)
 }
 
-.elcf4r_with_seed <- function(seed, expr) {
-  if (is.null(seed) || is.na(seed)) {
-    return(eval.parent(substitute(expr)))
-  }
+.elcf4r_kmeans_fit <- function(x, centers, nstart = 1L, iter.max = 100L) {
+  x <- as.matrix(x)
+  storage.mode(x) <- "double"
 
-  old_seed_exists <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
-  if (old_seed_exists) {
-    old_seed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
-  }
-  on.exit({
-    if (old_seed_exists) {
-      assign(".Random.seed", old_seed, envir = .GlobalEnv)
-    } else if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
-      rm(".Random.seed", envir = .GlobalEnv)
+  if (length(centers) == 1L) {
+    k <- as.integer(centers)[1L]
+    if (!is.finite(k) || k < 1L) {
+      stop("`centers` must be a positive integer or an initial-center matrix.")
     }
-  }, add = TRUE)
+    if (k == 1L) {
+      return(stats::kmeans(x = x, centers = 1L, iter.max = as.integer(iter.max)))
+    }
 
-  set.seed(as.integer(seed)[1L])
-  eval.parent(substitute(expr))
+    starts <- .elcf4r_kmeans_initial_centers(
+      x = x,
+      k = k,
+      nstart = nstart
+    )
+    fits <- lapply(
+      starts,
+      function(init) {
+        stats::kmeans(x = x, centers = init, iter.max = as.integer(iter.max))
+      }
+    )
+    totals <- vapply(fits, function(fit) fit$tot.withinss, numeric(1))
+    return(fits[[which.min(totals)[1L]]])
+  }
+
+  stats::kmeans(x = x, centers = centers, iter.max = as.integer(iter.max))
+}
+
+.elcf4r_kmeans_initial_centers <- function(x, k, nstart = 1L) {
+  x_unique <- unique(as.data.frame(x, stringsAsFactors = FALSE))
+  x_unique <- as.matrix(x_unique)
+  storage.mode(x_unique) <- "double"
+
+  if (nrow(x_unique) < k) {
+    stop("Not enough distinct rows to initialise ", k, " cluster centers.")
+  }
+
+  ord <- do.call(order, as.data.frame(x_unique, stringsAsFactors = FALSE))
+  x_unique <- x_unique[ord, , drop = FALSE]
+  requested_starts <- max(1L, as.integer(nstart)[1L])
+  anchor_count <- min(requested_starts, nrow(x_unique))
+  anchor_idx <- unique(round(seq(1, nrow(x_unique), length.out = anchor_count)))
+
+  starts <- lapply(
+    anchor_idx,
+    function(anchor) {
+      .elcf4r_kmeans_farthest_start(x_unique, anchor = anchor, k = k)
+    }
+  )
+
+  start_keys <- vapply(
+    starts,
+    function(mat) paste(format(mat, digits = 14), collapse = "|"),
+    character(1)
+  )
+  starts[!duplicated(start_keys)]
+}
+
+.elcf4r_kmeans_farthest_start <- function(x, anchor, k) {
+  selected <- integer(k)
+  selected[[1L]] <- as.integer(anchor)[1L]
+
+  if (k > 1L) {
+    for (idx in 2:k) {
+      remaining <- setdiff(seq_len(nrow(x)), selected[seq_len(idx - 1L)])
+      distance_to_selected <- vapply(
+        remaining,
+        function(candidate) {
+          candidate_row <- matrix(
+            x[candidate, ],
+            nrow = idx - 1L,
+            ncol = ncol(x),
+            byrow = TRUE
+          )
+          min(rowSums((x[selected[seq_len(idx - 1L)], , drop = FALSE] - candidate_row)^2))
+        },
+        numeric(1)
+      )
+      selected[[idx]] <- remaining[[which.max(distance_to_selected)[1L]]]
+    }
+  }
+
+  x[selected, , drop = FALSE]
 }

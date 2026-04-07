@@ -183,8 +183,8 @@ elcf4r_build_benchmark_index <- function(
 #'   thermosensitivity classification. Defaults to `panel`.
 #' @param benchmark_index_carry_cols Optional `carry_cols` passed to
 #'   `elcf4r_build_benchmark_index()` when `benchmark_index` is not supplied.
-#' @param seed Integer seed forwarded to seeded methods such as clustered KWF
-#'   and LSTM unless overridden in `method_args`.
+#' @param seed Optional integer seed forwarded to methods that support
+#'   user-supplied seeding, such as LSTM, unless overridden in `method_args`.
 #' @param tz Time zone used to derive dates and within-day positions.
 #'
 #' @return An object of class `elcf4r_benchmark` with elements `results`,
@@ -215,14 +215,19 @@ elcf4r_benchmark <- function(
     include_predictions = TRUE,
     thermosensitivity_panel = NULL,
     benchmark_index_carry_cols = NULL,
-    seed = 1L,
+    seed = NULL,
     tz = "UTC"
 ) {
   stopifnot(is.data.frame(panel))
 
   train_days <- as.integer(train_days)
   test_days <- as.integer(test_days)
-  seed <- as.integer(seed)[1L]
+  if (!is.null(seed)) {
+    seed <- as.integer(seed)[1L]
+    if (!is.finite(seed)) {
+      stop("`seed` must be NULL or a finite integer.")
+    }
+  }
 
   if (train_days < 1L) {
     stop("`train_days` must be at least 1.")
@@ -623,36 +628,36 @@ elcf4r_benchmark <- function(
   }
 
   if (identical(method, "kwf_clustered")) {
-    args <- utils::modifyList(
-      list(
-        segments = train_segments,
-        covariates = train_covariates,
-        target_covariates = test_covariates,
-        use_mean_correction = TRUE,
-        max_clusters = 10L,
-        nstart = 30L,
-        cluster_seed = seed
-      ),
-      overrides
+    args <- list(
+      segments = train_segments,
+      covariates = train_covariates,
+      target_covariates = test_covariates,
+      use_mean_correction = TRUE,
+      max_clusters = 10L,
+      nstart = 30L
     )
+    if (!is.null(seed)) {
+      args$cluster_seed <- seed
+    }
+    args <- utils::modifyList(args, overrides)
     return(do.call(elcf4r_fit_kwf_clustered, args))
   }
 
   if (identical(method, "lstm")) {
-    args <- utils::modifyList(
-      list(
-        segments = train_segments,
-        covariates = train_covariates,
-        use_temperature = use_temperature,
-        lookback_days = 1L,
-        units = 8L,
-        epochs = 4L,
-        batch_size = 4L,
-        verbose = 0L,
-        seed = seed
-      ),
-      overrides
+    args <- list(
+      segments = train_segments,
+      covariates = train_covariates,
+      use_temperature = use_temperature,
+      lookback_days = 1L,
+      units = 8L,
+      epochs = 4L,
+      batch_size = 4L,
+      verbose = 0L
     )
+    if (!is.null(seed)) {
+      args$seed <- seed
+    }
+    args <- utils::modifyList(args, overrides)
     return(do.call(elcf4r_fit_lstm, args))
   }
 

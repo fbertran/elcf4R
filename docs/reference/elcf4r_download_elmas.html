@@ -9,7 +9,7 @@ figshare URL and unpacks it to a local directory."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">elcf4R</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,7 +20,7 @@ figshare URL and unpacks it to a local directory."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Public datasets for individual electricity load forecasting</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/elcf4R-datasets-vignette.html">Datasets and shipped artifacts</a></li>
     <li><a class="dropdown-item" href="../articles/elcf4R-iflex-workflow.html">iFlex Workflow with Shipped Example Data</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -47,7 +47,7 @@ figshare URL and unpacks it to a local directory.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">elcf4r_download_elmas</span><span class="op">(</span>dest_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">elcf4r_download_elmas</span><span class="op">(</span><span class="va">dest_dir</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,8 +55,7 @@ figshare URL and unpacks it to a local directory.</p>
 
 
 <dl><dt id="arg-dest-dir">dest_dir<a class="anchor" aria-label="anchor" href="#arg-dest-dir"></a></dt>
-<dd><p>Directory where the files should be unpacked.
-Defaults to a temporary directory.</p></dd>
+<dd><p>Directory where the files should be unpacked.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="elcf4R package" />
+
+
+<title>Datasets and shipped artifacts</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Datasets and shipped artifacts</h1>
+<h4 class="author">elcf4R package</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#supported-dataset-matrix" id="toc-supported-dataset-matrix">Supported dataset matrix</a></li>
+<li><a href="#scaffolded-unshipped-datasets" id="toc-scaffolded-unshipped-datasets">Scaffolded, unshipped
+datasets</a></li>
+<li><a href="#shipped-example-panels" id="toc-shipped-example-panels">Shipped example panels</a></li>
+<li><a href="#shipped-benchmark-result-datasets" id="toc-shipped-benchmark-result-datasets">Shipped benchmark result
+datasets</a></li>
+<li><a href="#rebuilding-the-shipped-artifacts" id="toc-rebuilding-the-shipped-artifacts">Rebuilding the shipped
+artifacts</a></li>
+<li><a href="#example-daily-segments-from-a-shipped-panel" id="toc-example-daily-segments-from-a-shipped-panel">Example: daily
+segments from a shipped panel</a></li>
+<li><a href="#example-rerun-a-tiny-benchmark-locally" id="toc-example-rerun-a-tiny-benchmark-locally">Example: rerun a tiny
+benchmark locally</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p><code>elcf4R</code> now supports four household-oriented public data
+sources through a common normalized panel schema:</p>
+<ul>
+<li><code>elcf4r_read_iflex()</code></li>
+<li><code>elcf4r_read_storenet()</code></li>
+<li><code>elcf4r_read_lcl()</code></li>
+<li><code>elcf4r_read_refit()</code></li>
+</ul>
+<p>The package also ships compact example panels and saved benchmark
+results so the main vignettes run without external downloads. Raw source
+files stay in <code>data-raw/</code> and are not redistributed through
+the package unless a compact derived artifact has been explicitly built
+and saved.</p>
+<p>Two additional unshipped scaffolds are also available:</p>
+<ul>
+<li><code>elcf4r_download_ideal()</code> /
+<code>elcf4r_read_ideal()</code> for aggregate-electricity hourly
+summaries from IDEAL.</li>
+<li><code>elcf4r_download_gx()</code> / <code>elcf4r_read_gx()</code>
+for the GX transformer/community-level dataset.</li>
+</ul>
+</div>
+<div id="supported-dataset-matrix" class="section level1">
+<h1>Supported dataset matrix</h1>
+<p>The current dataset surface is:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Dataset</th>
+<th align="left">Reader</th>
+<th align="left">Resolution</th>
+<th align="left">Temperature in normalized panel</th>
+<th align="left">Shipped example</th>
+<th align="left">Shipped benchmark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">iFlex</td>
+<td align="left"><code>elcf4r_read_iflex()</code></td>
+<td align="left">hourly</td>
+<td align="left">yes</td>
+<td align="left"><code>elcf4r_iflex_example</code></td>
+<td align="left"><code>elcf4r_iflex_benchmark_results</code></td>
+</tr>
+<tr class="even">
+<td align="left">StoreNet (<code>H6_W</code>)</td>
+<td align="left"><code>elcf4r_read_storenet()</code></td>
+<td align="left">1 minute</td>
+<td align="left">optional, source-dependent</td>
+<td align="left"><code>elcf4r_storenet_example</code></td>
+<td align="left"><code>elcf4r_storenet_benchmark_results</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Low Carbon London</td>
+<td align="left"><code>elcf4r_read_lcl()</code></td>
+<td align="left">30 minutes</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_lcl_example</code></td>
+<td align="left"><code>elcf4r_lcl_benchmark_results</code></td>
+</tr>
+<tr class="even">
+<td align="left">REFIT</td>
+<td align="left"><code>elcf4r_read_refit()</code></td>
+<td align="left">user-selected resample</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_refit_example</code></td>
+<td align="left"><code>elcf4r_refit_benchmark_results</code></td>
+</tr>
+<tr class="odd">
+<td align="left">ELMAS</td>
+<td align="left">not part of the common household reader set</td>
+<td align="left">hourly</td>
+<td align="left">no</td>
+<td align="left"><code>elcf4r_elmas_toy</code></td>
+<td align="left">none</td>
+</tr>
+</tbody>
+</table>
+<p>All four household readers return the same core columns:</p>
+<ul>
+<li><code>dataset</code></li>
+<li><code>entity_id</code></li>
+<li><code>timestamp</code></li>
+<li><code>date</code></li>
+<li><code>time_index</code></li>
+<li><code>y</code></li>
+<li><code>temp</code></li>
+<li><code>dow</code></li>
+<li><code>month</code></li>
+<li><code>resolution_minutes</code></li>
+</ul>
+<p>Dataset-specific metadata columns are preserved when available.</p>
+</div>
+<div id="scaffolded-unshipped-datasets" class="section level1">
+<h1>Scaffolded, unshipped datasets</h1>
+<p><code>IDEAL</code> and <code>GX</code> are intentionally documented
+separately from the core shipped household matrix.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Dataset</th>
+<th align="left">Helper surface</th>
+<th align="left">Level</th>
+<th align="left">Current scaffold scope</th>
+<th align="left">Shipped example</th>
+<th align="left">Shipped benchmark</th>
+<th align="left">Licence note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">IDEAL</td>
+<td align="left"><code>elcf4r_download_ideal()</code>,
+<code>elcf4r_read_ideal()</code></td>
+<td align="left">household</td>
+<td align="left">aggregate-electricity hourly summaries from
+<code>auxiliarydata.zip</code></td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">the current Edinburgh DataShare record states
+<code>CC BY 4.0</code></td>
+</tr>
+<tr class="even">
+<td align="left">GX</td>
+<td align="left"><code>elcf4r_download_gx()</code>,
+<code>elcf4r_read_gx()</code></td>
+<td align="left">transformer/community</td>
+<td align="left">SQLite or flat-export normalization to the common panel
+schema</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">treat licence terms as dataset-record specific and
+recheck before redistribution</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ul>
+<li>IDEAL support in this release is limited to aggregate electricity
+and does not attempt to parse the raw 1 Hz stream.</li>
+<li>GX is not an individual-household dataset. It is useful as a
+secondary benchmark source for weather and community-level demand
+behavior, but it is not folded into the package’s core household
+benchmark claims.</li>
+</ul>
+</div>
+<div id="shipped-example-panels" class="section level1">
+<h1>Shipped example panels</h1>
+<p>The shipped examples are small normalized panels intended for package
+examples and vignette code.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>example_sizes <span class="ot">&lt;-</span> <span class="fu">Filter</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">Negate</span>(is.null),</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="fu">.elcf4r_example_size_row</span>(<span class="st">&quot;elcf4r_iflex_example&quot;</span>, <span class="st">&quot;iflex&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="fu">.elcf4r_example_size_row</span>(<span class="st">&quot;elcf4r_storenet_example&quot;</span>, <span class="st">&quot;storenet&quot;</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="fu">.elcf4r_example_size_row</span>(<span class="st">&quot;elcf4r_lcl_example&quot;</span>, <span class="st">&quot;lcl&quot;</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="fu">.elcf4r_example_size_row</span>(<span class="st">&quot;elcf4r_refit_example&quot;</span>, <span class="st">&quot;refit&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  )</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(example_sizes) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, example_sizes)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+<p>These objects can be passed directly to:</p>
+<ul>
+<li><code>elcf4r_build_daily_segments()</code></li>
+<li><code>elcf4r_build_benchmark_index()</code></li>
+<li><code>elcf4r_benchmark()</code></li>
+</ul>
+</div>
+<div id="shipped-benchmark-result-datasets" class="section level1">
+<h1>Shipped benchmark result datasets</h1>
+<p>Each supported household dataset now has a saved benchmark-result
+object built from a fixed local cohort and a deterministic
+rolling-origin design.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>benchmark_summary <span class="ot">&lt;-</span> <span class="fu">Filter</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">Negate</span>(is.null),</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">.elcf4r_benchmark_summary</span>(<span class="st">&quot;elcf4r_iflex_benchmark_results&quot;</span>, <span class="st">&quot;iflex&quot;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="fu">.elcf4r_benchmark_summary</span>(<span class="st">&quot;elcf4r_storenet_benchmark_results&quot;</span>, <span class="st">&quot;storenet&quot;</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="fu">.elcf4r_benchmark_summary</span>(<span class="st">&quot;elcf4r_lcl_benchmark_results&quot;</span>, <span class="st">&quot;lcl&quot;</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="fu">.elcf4r_benchmark_summary</span>(<span class="st">&quot;elcf4r_refit_benchmark_results&quot;</span>, <span class="st">&quot;refit&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  )</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(benchmark_summary) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  benchmark_summary <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, benchmark_summary)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  benchmark_summary[, <span class="fu">c</span>(<span class="st">&quot;dataset&quot;</span>, <span class="st">&quot;method&quot;</span>, <span class="st">&quot;nmae&quot;</span>, <span class="st">&quot;nrmse&quot;</span>, <span class="st">&quot;smape&quot;</span>, <span class="st">&quot;mase&quot;</span>)]</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>}</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+<p>These shipped benchmark tables are poster-style artifacts. They are
+not intended to replace full local benchmarking on the raw datasets.</p>
+</div>
+<div id="rebuilding-the-shipped-artifacts" class="section level1">
+<h1>Rebuilding the shipped artifacts</h1>
+<p>Each shipped dataset is reproducible from a <code>data-raw/</code>
+script:</p>
+<ul>
+<li><code>data-raw/elcf4r_iflex_subsets.R</code></li>
+<li><code>data-raw/elcf4r_iflex_benchmark_results.R</code></li>
+<li><code>data-raw/elcf4r_storenet_artifacts.R</code></li>
+<li><code>data-raw/elcf4r_lcl_artifacts.R</code></li>
+<li><code>data-raw/elcf4r_refit_artifacts.R</code></li>
+</ul>
+<p>The general pattern is:</p>
+<ol style="list-style-type: decimal">
+<li>Place the original raw files in <code>data-raw/</code>.</li>
+<li>Read them through <code>elcf4r_read_*()</code>.</li>
+<li>Build a normalized day index with
+<code>elcf4r_build_benchmark_index()</code>.</li>
+<li>Save a compact example panel.</li>
+<li>Run <code>elcf4r_benchmark()</code> on a fixed cohort and save the
+result table.</li>
+</ol>
+<p>This keeps the package lightweight while making the shipped examples
+and benchmark summaries reproducible.</p>
+</div>
+<div id="example-daily-segments-from-a-shipped-panel" class="section level1">
+<h1>Example: daily segments from a shipped panel</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">&quot;elcf4r_iflex_example&quot;</span>, <span class="at">inherits =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  iflex_segments <span class="ot">&lt;-</span> <span class="fu">elcf4r_build_daily_segments</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    elcf4r_iflex_example,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">carry_cols =</span> <span class="fu">c</span>(<span class="st">&quot;dataset&quot;</span>, <span class="st">&quot;participation_phase&quot;</span>, <span class="st">&quot;price_signal&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  )</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">dim</span>(iflex_segments<span class="sc">$</span>segments)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">head</span>(iflex_segments<span class="sc">$</span>covariates[, <span class="fu">c</span>(<span class="st">&quot;entity_id&quot;</span>, <span class="st">&quot;date&quot;</span>, <span class="st">&quot;temp_mean&quot;</span>, <span class="st">&quot;price_signal&quot;</span>)])</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+</div>
+<div id="example-rerun-a-tiny-benchmark-locally" class="section level1">
+<h1>Example: rerun a tiny benchmark locally</h1>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">&quot;elcf4r_lcl_example&quot;</span>, <span class="at">inherits =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  tiny_index <span class="ot">&lt;-</span> <span class="fu">elcf4r_build_benchmark_index</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    elcf4r_lcl_example,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">carry_cols =</span> <span class="st">&quot;dataset&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  )</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  tiny_benchmark <span class="ot">&lt;-</span> <span class="fu">elcf4r_benchmark</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="at">panel =</span> elcf4r_lcl_example,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="at">benchmark_index =</span> tiny_index,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="at">methods =</span> <span class="fu">c</span>(<span class="st">&quot;gam&quot;</span>, <span class="st">&quot;kwf&quot;</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="at">cohort_size =</span> <span class="dv">1</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="at">train_days =</span> <span class="dv">10</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="at">test_days =</span> <span class="dv">2</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="at">include_predictions =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  )</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  tiny_benchmark<span class="sc">$</span>results[, <span class="fu">c</span>(<span class="st">&quot;entity_id&quot;</span>, <span class="st">&quot;method&quot;</span>, <span class="st">&quot;test_date&quot;</span>, <span class="st">&quot;nmae&quot;</span>, <span class="st">&quot;mase&quot;</span>)]</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="fu">data.frame</span>()</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>}</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; data frame with 0 columns and 0 rows</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

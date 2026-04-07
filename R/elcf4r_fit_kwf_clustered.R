@@ -17,8 +17,8 @@
 #' @param max_clusters Maximum number of candidate clusters considered by the
 #'   Sugar jump heuristic.
 #' @param nstart Number of random starts for `kmeans`.
-#' @param cluster_seed Optional integer seed used to make clustering
-#'   deterministic for benchmark use.
+#' @param cluster_seed Deprecated and ignored. Clustered KWF now uses
+#'   deterministic non-random starts.
 #' @param weights Optional prior weights passed through to the base KWF fit.
 #' @param recency_decay Optional recency prior passed through to the base KWF
 #'   fit.
@@ -36,7 +36,7 @@ elcf4r_fit_kwf_clustered <- function(
     use_mean_correction = TRUE,
     max_clusters = 10L,
     nstart = 30L,
-    cluster_seed = 1L,
+    cluster_seed = NULL,
     weights = NULL,
     recency_decay = NULL,
     clustering = NULL
@@ -138,7 +138,7 @@ elcf4r_fit_kwf_clustered <- function(
   features
 }
 
-.elcf4r_kwf_select_features <- function(features, cluster_seed = 1L) {
+.elcf4r_kwf_select_features <- function(features, cluster_seed = NULL) {
   features <- as.matrix(features)
   storage.mode(features) <- "double"
 
@@ -167,9 +167,10 @@ elcf4r_fit_kwf_clustered <- function(
       if (length(unique(round(x, 10))) < 2L) {
         return(0)
       }
-      km <- .elcf4r_with_seed(
-        cluster_seed + j,
-        stats::kmeans(matrix(x, ncol = 1L), centers = 2L, nstart = 10L)
+      km <- .elcf4r_kmeans_fit(
+        x = matrix(x, ncol = 1L),
+        centers = 2L,
+        nstart = 10L
       )
       if (!is.finite(km$totss) || km$totss <= 0) {
         return(0)
@@ -232,7 +233,7 @@ elcf4r_fit_kwf_clustered <- function(
     features,
     max_clusters = 10L,
     nstart = 30L,
-    cluster_seed = 1L
+    cluster_seed = NULL
 ) {
   features <- as.matrix(features)
   n <- nrow(features)
@@ -251,9 +252,10 @@ elcf4r_fit_kwf_clustered <- function(
   distortions <- vapply(
     seq_len(max_k),
     function(k) {
-      km <- .elcf4r_with_seed(
-        cluster_seed + 1000L + k,
-        stats::kmeans(features, centers = k, nstart = as.integer(nstart))
+      km <- .elcf4r_kmeans_fit(
+        x = features,
+        centers = k,
+        nstart = nstart
       )
       sum(km$withinss) / (n * max(p, 1L))
     },

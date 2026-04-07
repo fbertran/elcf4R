@@ -13,7 +13,7 @@ elcf4r_fit_lstm(
   epochs = 10L,
   batch_size = 8L,
   validation_split = 0,
-  seed = 123L,
+  seed = NULL,
   verbose = 0L
 )
 }
@@ -36,7 +36,8 @@ elcf4r_fit_lstm(
 
 \item{validation_split}{Validation split passed to \code{keras3::fit()}.}
 
-\item{seed}{Random seed passed to TensorFlow.}
+\item{seed}{Optional integer seed passed to TensorFlow. When \code{NULL}, the
+current backend RNG state is used.}
 
 \item{verbose}{Verbosity level passed to \code{keras3::fit()} and \code{predict()}.}
 }

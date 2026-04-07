@@ -4,11 +4,10 @@
 \alias{elcf4r_download_elmas}
 \title{Download the ELMAS dataset from figshare}
 \usage{
-elcf4r_download_elmas(dest_dir = tempdir())
+elcf4r_download_elmas(dest_dir)
 }
 \arguments{
-\item{dest_dir}{Directory where the files should be unpacked.
-Defaults to a temporary directory.}
+\item{dest_dir}{Directory where the files should be unpacked.}
 }
 \value{
 A character vector with the paths of the extracted files.

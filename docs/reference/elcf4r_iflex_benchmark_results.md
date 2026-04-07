@@ -1,14 +1,14 @@
 # iFlex benchmark results for shipped forecasting methods
 
 Saved benchmark results for a deterministic rolling-origin evaluation on
-a subset of the iFlex data. The shipped results use 10 participant IDs,
-a 28-day training window and 5 one-day test forecasts per participant.
-The current shipped benchmark includes the operational `gam`, `mars`,
-`kwf`, `kwf_clustered` and `lstm` wrappers.
+a subset of the iFlex data. The shipped results use a fixed participant
+cohort, a 28-day training window and multiple one-day rolling test
+forecasts per participant. The current shipped benchmark includes the
+operational `gam`, `mars`, `kwf`, `kwf_clustered` and `lstm` wrappers.
 
 ## Format
 
-A data frame with 250 rows and 20 variables:
+A data frame with 20 variables:
 
 - benchmark_name:
 

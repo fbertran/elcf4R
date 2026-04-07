@@ -13,7 +13,7 @@ elcf4r_fit_kwf_clustered(
   use_mean_correction = TRUE,
   max_clusters = 10L,
   nstart = 30L,
-  cluster_seed = 1L,
+  cluster_seed = NULL,
   weights = NULL,
   recency_decay = NULL,
   clustering = NULL
@@ -41,8 +41,8 @@ Sugar jump heuristic.}
 
 \item{nstart}{Number of random starts for \code{kmeans}.}
 
-\item{cluster_seed}{Optional integer seed used to make clustering
-deterministic for benchmark use.}
+\item{cluster_seed}{Deprecated and ignored. Clustered KWF now uses
+deterministic non-random starts.}
 
 \item{weights}{Optional prior weights passed through to the base KWF fit.}
 
