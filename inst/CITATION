@@ -12,7 +12,7 @@ bibentry(bibtype="Manual",
 	person(given = "Myriam", family= "Maumy-Bertrand")),
          year         = year,
          note         = vers,
-         url          = "https://fbertran.github.io/eclf4R/",
+         url          = "https://fbertran.github.io/elcf4R/",
          textVersion = 
          paste("Frederic Bertrand, Fatima Fahs and Myriam Maumy-Bertrand (",year ,"). ", 
                titl, ", ", vers, 

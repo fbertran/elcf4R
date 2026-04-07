@@ -16,9 +16,9 @@ daily segments, and rolling-origin benchmarking utilities.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://fbertran.github.io/eclf4R/}
-  \item \url{https://github.com/fbertran/eclf4R}
-  \item Report bugs at \url{https://github.com/fbertran/eclf4R/issues}
+  \item \url{https://fbertran.github.io/elcf4R/}
+  \item \url{https://github.com/fbertran/elcf4R}
+  \item Report bugs at \url{https://github.com/fbertran/elcf4R/issues}
 }
 
 }

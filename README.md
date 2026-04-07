@@ -1,13 +1,13 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
-# eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/elcf4R_hex.svg" align="right" width="200"/>
+# elcf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/elcf4R_hex.svg" align="right" width="200"/>
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml)
-[![R-hub](https://github.com/fbertran/eclf4R/actions/workflows/rhub.yaml/badge.svg)](https://github.com/fbertran/eclf4R/actions/workflows/rhub.yaml)
+[![R-CMD-check](https://github.com/fbertran/elcf4R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fbertran/elcf4R/actions/workflows/R-CMD-check.yaml)
+[![R-hub](https://github.com/fbertran/elcf4R/actions/workflows/rhub.yaml/badge.svg)](https://github.com/fbertran/elcf4R/actions/workflows/rhub.yaml)
 <!-- badges: end -->
 
 Implements Kernel Wavelet Functional (KWF),
@@ -24,11 +24,11 @@ This site was created by F. Bertrand and the examples reproduced on it were crea
 
 ## Installation
 
-You can install the latest version of the eclf4R package from [github](https://github.com) with:
+You can install the latest version of the elcf4R package from [github](https://github.com) with:
 
 
 ``` r
-devtools::install_github("fbertran/eclf4R")
+devtools::install_github("fbertran/elcf4R")
 ```
 
 ## Current Scope
@@ -93,8 +93,8 @@ There are more insights and examples in the vignettes.
 
 
 ``` r
-vignette("elcf4R-iflex-workflow", package = "eclf4R")
-vignette("elcf4R-datasets-vignette", package = "eclf4R")
+vignette("elcf4R-iflex-workflow", package = "elcf4R")
+vignette("elcf4R-datasets-vignette", package = "elcf4R")
 ```
 
 ## Quick Benchmark Summary

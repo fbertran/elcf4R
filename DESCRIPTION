@@ -42,8 +42,8 @@ LazyData: yes
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
-URL: https://fbertran.github.io/eclf4R/, https://github.com/fbertran/eclf4R
-BugReports: https://github.com/fbertran/eclf4R/issues
+URL: https://fbertran.github.io/elcf4R/, https://github.com/fbertran/elcf4R
+BugReports: https://github.com/fbertran/elcf4R/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 NeedsCompilation: yes
