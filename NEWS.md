@@ -1,3 +1,20 @@
+# eclf4R 0.4.0
+
+* Added scaffolded download/read support for IDEAL through
+  `elcf4r_download_ideal()` and `elcf4r_read_ideal()`, focused on extracted
+  hourly aggregate-electricity summaries from `auxiliarydata.zip`.
+* Added scaffolded download/read support for GX through
+  `elcf4r_download_gx()` and `elcf4r_read_gx()`, with support for either the
+  official SQLite database or flat exports normalized into the common panel
+  schema.
+* Added offline tests for IDEAL and GX download-resolution helpers and
+  normalization readers, including GX SQLite-table detection.
+* Updated package docs and the dataset vignette to describe IDEAL as an
+  unshipped household-level scaffold under the current `CC BY 4.0` source
+  record, and GX as an unshipped secondary transformer/community-level
+  scaffold with explicit licence re-verification guidance before
+  redistribution.
+
 # eclf4R 0.3.0
 
 * Replaced the previous KWF baseline with a wavelet-based implementation using

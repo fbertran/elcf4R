@@ -215,3 +215,281 @@ elcf4r_download_storenet <- function(
     download_url = as.character(row[["download_url"]][[1L]])
   )
 }
+
+#' Download selected IDEAL dataset components
+#'
+#' Download selected assets from the IDEAL Household Energy Dataset record on
+#' Edinburgh DataShare. The helper is docs-first: it always retrieves the
+#' licence/readme files and `documentation.zip`, while heavy raw-data archives
+#' must be requested explicitly through `components`.
+#'
+#' @param dest_dir Directory where the downloaded files should be stored.
+#' @param components Character vector of IDEAL components to fetch. Supported
+#'   values are `"documentation"`, `"metadata_and_surveys"`, `"coding"`,
+#'   `"auxiliary"`, `"household_sensors"` and
+#'   `"room_and_appliance_sensors"`.
+#' @param overwrite Logical; if `TRUE`, existing local files are replaced.
+#'
+#' @return A character vector with the downloaded local file paths.
+#' @export
+elcf4r_download_ideal <- function(
+    dest_dir = tempdir(),
+    components = "documentation",
+    overwrite = FALSE
+) {
+  if (!requireNamespace("xml2", quietly = TRUE)) {
+    stop("Package `xml2` is required for `elcf4r_download_ideal()`.")
+  }
+
+  components <- .elcf4r_validate_components(
+    components = components,
+    supported = names(.elcf4r_ideal_component_map()),
+    arg = "components"
+  )
+  asset_map <- .elcf4r_ideal_asset_map()
+  .elcf4r_download_ideal_files(
+    dest_dir = dest_dir,
+    components = components,
+    asset_map = asset_map,
+    overwrite = overwrite
+  )
+}
+
+#' Download selected GX dataset components
+#'
+#' Download selected assets from the official GX figshare dataset record. The
+#' helper only uses the dataset record itself and does not rely on the authors'
+#' code repository.
+#'
+#' @param dest_dir Directory where the downloaded files should be stored.
+#' @param components Character vector of GX components to fetch. Supported
+#'   values are `"shapefile"` and `"database"`.
+#' @param overwrite Logical; if `TRUE`, existing local files are replaced.
+#'
+#' @return A character vector with the downloaded local file paths. Zip assets
+#'   are extracted into `dest_dir` and the extracted paths are returned.
+#' @export
+elcf4r_download_gx <- function(
+    dest_dir = tempdir(),
+    components = "shapefile",
+    overwrite = FALSE
+) {
+  components <- .elcf4r_validate_components(
+    components = components,
+    supported = c("shapefile", "database"),
+    arg = "components"
+  )
+  files_meta <- .elcf4r_fetch_figshare_files(.elcf4r_gx_article_id())
+  file_specs <- lapply(
+    components,
+    function(component) {
+      .elcf4r_gx_pick_file(files_meta = files_meta, component = component)
+    }
+  )
+
+  .elcf4r_download_gx_files(
+    dest_dir = dest_dir,
+    file_specs = file_specs,
+    overwrite = overwrite
+  )
+}
+
+.elcf4r_validate_components <- function(components, supported, arg = "components") {
+  components <- unique(as.character(components))
+  if (length(components) < 1L || anyNA(components) || any(trimws(components) == "")) {
+    stop("`", arg, "` must contain at least one non-empty component name.")
+  }
+
+  invalid <- setdiff(components, supported)
+  if (length(invalid) > 0L) {
+    stop(
+      "Unsupported `", arg, "` values: ",
+      paste(invalid, collapse = ", "),
+      ". Supported values are: ",
+      paste(supported, collapse = ", "),
+      "."
+    )
+  }
+
+  components
+}
+
+.elcf4r_ideal_component_map <- function() {
+  c(
+    documentation = "documentation.zip",
+    metadata_and_surveys = "metadata_and_surveys.zip",
+    coding = "coding.zip",
+    auxiliary = "auxiliarydata.zip",
+    household_sensors = "household_sensors.zip",
+    room_and_appliance_sensors = "room_and_appliance_sensors.zip"
+  )
+}
+
+.elcf4r_ideal_base_assets <- function() {
+  c("00LICENSE.txt", "00README.txt", "license_text", "documentation.zip")
+}
+
+.elcf4r_ideal_record_url <- function() {
+  "https://datashare.ed.ac.uk/handle/10283/3647?show=full"
+}
+
+.elcf4r_ideal_asset_map <- function(record_url = .elcf4r_ideal_record_url()) {
+  known_assets <- unique(c(.elcf4r_ideal_base_assets(), unname(.elcf4r_ideal_component_map())))
+  doc <- xml2::read_html(record_url)
+  nodes <- xml2::xml_find_all(doc, ".//*")
+  asset_map <- stats::setNames(rep(NA_character_, length(known_assets)), known_assets)
+  current_name <- NULL
+
+  for (node in nodes) {
+    node_text <- trimws(xml2::xml_text(node))
+    if (node_text %in% known_assets) {
+      current_name <- node_text
+      next
+    }
+
+    if (
+      identical(xml2::xml_name(node), "a") &&
+      identical(node_text, "Download") &&
+      !is.null(current_name)
+    ) {
+      href <- xml2::xml_attr(node, "href")
+      if (!is.na(href) && nzchar(href) && is.na(asset_map[[current_name]])) {
+        asset_map[[current_name]] <- xml2::url_absolute(href, record_url)
+      }
+      current_name <- NULL
+    }
+  }
+
+  asset_map
+}
+
+.elcf4r_download_ideal_files <- function(dest_dir, components, asset_map, overwrite) {
+  dir.create(dest_dir, recursive = TRUE, showWarnings = FALSE)
+
+  required_assets <- unique(c(
+    .elcf4r_ideal_base_assets(),
+    unname(.elcf4r_ideal_component_map()[components])
+  ))
+  missing_assets <- required_assets[
+    is.na(asset_map[required_assets]) | !nzchar(asset_map[required_assets])
+  ]
+  if (length(missing_assets) > 0L) {
+    stop(
+      "Could not resolve IDEAL download URLs for: ",
+      paste(missing_assets, collapse = ", "),
+      "."
+    )
+  }
+
+  out <- vapply(
+    required_assets,
+    function(asset_name) {
+      .elcf4r_download_file(
+        url = asset_map[[asset_name]],
+        dest_path = file.path(dest_dir, asset_name),
+        overwrite = overwrite
+      )
+    },
+    character(1)
+  )
+
+  unname(out)
+}
+
+.elcf4r_gx_article_id <- function() {
+  26333452L
+}
+
+.elcf4r_fetch_figshare_files <- function(article_id) {
+  api_url <- sprintf("https://api.figshare.com/v2/articles/%s/files", as.integer(article_id))
+  jsonlite::fromJSON(api_url, simplifyDataFrame = TRUE)
+}
+
+.elcf4r_gx_pick_file <- function(files_meta, component) {
+  files_df <- as.data.frame(files_meta, stringsAsFactors = FALSE)
+  if (nrow(files_df) < 1L) {
+    stop("No files were returned by the GX figshare API.")
+  }
+
+  file_name_col <- intersect(c("name", "filename"), names(files_df))
+  if (length(file_name_col) < 1L || !"download_url" %in% names(files_df)) {
+    stop("Unexpected GX figshare file metadata.")
+  }
+
+  file_name_col <- file_name_col[[1L]]
+  file_names <- tolower(trimws(files_df[[file_name_col]]))
+  score <- integer(length(file_names))
+
+  if (identical(component, "shapefile")) {
+    score <- score + 3L * grepl("shape|shapefile", file_names)
+    score <- score + 1L * grepl("\\.zip$", file_names)
+  } else if (identical(component, "database")) {
+    score <- score + 3L * grepl("database", file_names)
+    score <- score + 2L * grepl("\\.sqlite3?$|\\.db$", file_names)
+    score <- score + 1L * grepl("\\.zip$", file_names)
+  } else {
+    stop("Unsupported GX component `", component, "`.")
+  }
+
+  if (!any(score > 0L)) {
+    stop("Could not identify a GX file for component `", component, "`.")
+  }
+
+  winner <- which(score == max(score))
+  if (length(winner) != 1L) {
+    stop(
+      "GX component `", component, "` matched multiple files: ",
+      paste(files_df[[file_name_col]][winner], collapse = ", "),
+      "."
+    )
+  }
+
+  row <- files_df[winner[[1L]], , drop = FALSE]
+  list(
+    component = component,
+    file_name = as.character(row[[file_name_col]][[1L]]),
+    download_url = as.character(row[["download_url"]][[1L]])
+  )
+}
+
+.elcf4r_download_gx_files <- function(dest_dir, file_specs, overwrite) {
+  dir.create(dest_dir, recursive = TRUE, showWarnings = FALSE)
+  out <- unlist(
+    lapply(
+      file_specs,
+      function(spec) {
+        dest_path <- .elcf4r_download_file(
+          url = spec$download_url,
+          dest_path = file.path(dest_dir, spec$file_name),
+          overwrite = overwrite
+        )
+        .elcf4r_extract_if_zip(dest_path = dest_path, exdir = dest_dir)
+      }
+    ),
+    use.names = FALSE
+  )
+
+  unname(unique(out))
+}
+
+.elcf4r_download_file <- function(url, dest_path, overwrite) {
+  if (file.exists(dest_path) && !isTRUE(overwrite)) {
+    return(dest_path)
+  }
+
+  dir.create(dirname(dest_path), recursive = TRUE, showWarnings = FALSE)
+  utils::download.file(url, destfile = dest_path, mode = "wb")
+  dest_path
+}
+
+.elcf4r_extract_if_zip <- function(dest_path, exdir) {
+  if (!grepl("\\.zip$", dest_path, ignore.case = TRUE)) {
+    return(dest_path)
+  }
+
+  extracted <- utils::unzip(dest_path, exdir = exdir)
+  if (length(extracted) < 1L) {
+    return(dest_path)
+  }
+  extracted
+}

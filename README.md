@@ -16,8 +16,9 @@ Implements Kernel Wavelet Functional (KWF),
     forecast individual electricity load curves, following the
     methodology described in Fahs (2023) and related articles and
     posters. Includes normalized dataset adapters for iFlex,
-    StoreNet, Low Carbon London and REFIT, compact shipped example
-    panels, and saved benchmark artifacts.
+    StoreNet, Low Carbon London and REFIT, scaffolded download/read
+    support for IDEAL and GX, compact shipped example panels, and
+    saved benchmark artifacts.
     
 This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.
 
@@ -51,16 +52,26 @@ The current download helpers are:
 
 - `elcf4r_download_elmas()`
 - `elcf4r_download_storenet()`
+- `elcf4r_download_ideal()`
+- `elcf4r_download_gx()`
 
-Additional datasets under review:
+Scaffolded, unshipped dataset adapters:
 
-- `IDEAL`: candidate future adapter/helper. The current source record
-  indicates `CC BY 4.0`, so the previous non-commercial wording should
-  not be reused.
-- `GX`: candidate secondary benchmark dataset. It is transformer-level
-  rather than individual-household data, and its licence should be
-  re-verified at the dataset-record level before any shipped subset is
-  considered.
+- `IDEAL`: `elcf4r_download_ideal()` and `elcf4r_read_ideal()` provide a
+  first-pass aggregate-electricity scaffold built around the hourly summaries in
+  `auxiliarydata.zip`. The current Edinburgh DataShare record states `CC BY
+  4.0`. No IDEAL-derived package dataset is shipped in this release.
+- `GX`: `elcf4r_download_gx()` and `elcf4r_read_gx()` provide a secondary
+  transformer/community-level scaffold from the official figshare dataset
+  record. GX is not treated as part of the package's core individual-household
+  benchmark set, and no GX-derived package dataset is shipped in this release.
+  Licence terms should be rechecked against the official dataset record before
+  any redistribution.
+
+The current unshipped scaffold readers are:
+
+- `elcf4r_read_ideal()`
+- `elcf4r_read_gx()`
 
 ## Shipped example and benchmark datasets
 
@@ -73,8 +84,7 @@ The current shipped benchmark artifacts are:
 
 - iFlex: `15` households, `28` train days, `7` test days
 - StoreNet: `1` household (`H6_W`), `5` train days, `2` test days
-- Low Carbon London: `1` thermosensitive household, `56` train days,
-  `7` test days
+- Low Carbon London: `1` thermosensitive household, `56` train days, `7` test days
 - REFIT: `2` thermosensitive households, `56` train days, `7` test days
 
 ### Vignettes
@@ -132,24 +142,6 @@ do.call(
     )
   )
 )
-#>           method   nmae  nrmse  smape   mase  dataset
-#> 1            gam 0.2435 0.3121 0.3222 0.8782    iflex
-#> 2            kwf 0.2740 0.3479 0.3477 0.9756    iflex
-#> 3  kwf_clustered 0.2688 0.3501 0.3292 0.9247    iflex
-#> 4           lstm 0.2270 0.2891 0.3181 0.8534    iflex
-#> 5           mars 0.2319 0.2946 0.3092 0.8310    iflex
-#> 6            gam 0.0942 0.1406 0.8018 0.8088 storenet
-#> 7            kwf 0.1927 0.2440 1.4786 1.6952 storenet
-#> 8           lstm 0.0960 0.1562 0.8105 0.7845 storenet
-#> 9           mars 0.0928 0.1381 0.7989 0.7897 storenet
-#> 10           gam 0.1732 0.2471 0.9649 1.7856      lcl
-#> 11           kwf 0.1758 0.2386 1.1692 1.8105      lcl
-#> 12 kwf_clustered 0.1410 0.2034 0.8509 1.1719      lcl
-#> 13          lstm 0.2079 0.2711 1.0954 2.2924      lcl
-#> 14          mars 0.1689 0.2343 1.0337 1.6638      lcl
-#> 15           gam 0.1766 0.2609 0.6033 1.2210    refit
-#> 16           kwf 0.1946 0.2366 0.5965 1.3543    refit
-#> 17 kwf_clustered 0.1959 0.2462 0.5878 1.3097    refit
-#> 18          lstm 0.1633 0.2385 0.5621 1.1697    refit
-#> 19          mars 0.1652 0.2313 0.5394 1.1501    refit
+#> Error in `aggregate.data.frame()`:
+#> ! no rows to aggregate
 ```

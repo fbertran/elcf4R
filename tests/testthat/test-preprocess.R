@@ -82,6 +82,40 @@ make_refit_fixture <- function() {
   )
 }
 
+make_ideal_fixture <- function() {
+  timestamps <- seq(
+    as.POSIXct("2017-01-01 00:00:00", tz = "Europe/London"),
+    by = "hour",
+    length.out = 48L
+  )
+
+  data.frame(
+    home_id = rep(c("Home_1", "Home_2"), each = length(timestamps)),
+    timestamp = format(rep(timestamps, 2L), "%Y-%m-%d %H:%M:%S", tz = "Europe/London"),
+    aggregate_electricity = c(seq_len(48L), seq_len(48L) + 100) / 10,
+    stringsAsFactors = FALSE
+  )
+}
+
+make_gx_fixture <- function() {
+  timestamps <- seq(
+    as.POSIXct("2020-07-01 00:00:00", tz = "Asia/Shanghai"),
+    by = "hour",
+    length.out = 48L
+  )
+
+  data.frame(
+    community_id = rep(c("GX_A", "GX_B"), each = length(timestamps)),
+    timestamp = format(rep(timestamps, 2L), "%Y-%m-%d %H:%M:%S", tz = "Asia/Shanghai"),
+    load = c(seq_len(48L), seq_len(48L) + 200) / 10,
+    temperature = rep(seq(25, 72), 2L),
+    humidity = rep(seq(60, 107), 2L),
+    holiday = rep(c(0, 1), each = 48L),
+    extreme_weather = rep(c(0, 1), times = 48L),
+    stringsAsFactors = FALSE
+  )
+}
+
 test_that("elcf4r_read_iflex returns normalized hourly data", {
   tmp_csv <- tempfile(fileext = ".csv")
   utils::write.csv(make_iflex_fixture(), tmp_csv, row.names = FALSE, na = "")
@@ -222,4 +256,109 @@ test_that("elcf4r_read_refit resamples channels onto the common schema", {
   expect_equal(dim(seg$segments), c(1L, 1440L))
   expect_equal(seg$segments[1, 1], 2)
   expect_true(all(c("CLEAN_House1::Aggregate", "CLEAN_House1::Appliance1") %in% unique(dat_multi$entity_id)))
+})
+
+test_that("elcf4r_read_ideal resolves and normalizes an hourly aggregate scaffold", {
+  tmp_dir <- tempfile("ideal")
+  dir.create(tmp_dir)
+  tmp_csv <- file.path(tmp_dir, "ideal_auxiliary_hourly.csv")
+  utils::write.csv(make_ideal_fixture(), tmp_csv, row.names = FALSE, na = "")
+
+  dat <- elcf4r_read_ideal(
+    path = tmp_dir,
+    ids = "Home_1",
+    start = "2017-01-01 00:00:00",
+    end = "2017-01-01 23:00:00"
+  )
+  seg <- elcf4r_build_daily_segments(
+    data = dat,
+    carry_cols = c("dataset", "home_id", "source_file")
+  )
+
+  expect_true(all(c(
+    "dataset", "entity_id", "timestamp", "date", "time_index", "y",
+    "temp", "resolution_minutes", "home_id", "source_file"
+  ) %in% names(dat)))
+  expect_identical(unique(dat$dataset), "ideal")
+  expect_identical(unique(dat$entity_id), "Home_1")
+  expect_equal(nrow(dat), 24L)
+  expect_true(all(is.na(dat$temp)))
+  expect_equal(unique(dat$resolution_minutes), 60L)
+  expect_equal(dim(seg$segments), c(1L, 24L))
+  expect_identical(seg$covariates$home_id[[1L]], "Home_1")
+  expect_identical(seg$covariates$source_file[[1L]], "ideal_auxiliary_hourly.csv")
+})
+
+test_that("elcf4r_read_ideal errors when multiple directory candidates remain", {
+  tmp_dir <- tempfile("ideal-ambiguous")
+  dir.create(tmp_dir)
+  utils::write.csv(
+    make_ideal_fixture(),
+    file.path(tmp_dir, "ideal_hourly_one.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+  utils::write.csv(
+    make_ideal_fixture(),
+    file.path(tmp_dir, "ideal_hourly_two.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+
+  expect_error(
+    elcf4r_read_ideal(path = tmp_dir),
+    "multiple IDEAL hourly candidates",
+    ignore.case = TRUE
+  )
+})
+
+test_that("elcf4r_read_gx normalizes a flat transformer-level export", {
+  tmp_csv <- tempfile(fileext = ".csv")
+  utils::write.csv(make_gx_fixture(), tmp_csv, row.names = FALSE, na = "")
+
+  dat <- elcf4r_read_gx(
+    path = tmp_csv,
+    ids = "GX_A",
+    start = "2020-07-01 00:00:00",
+    end = "2020-07-01 23:00:00"
+  )
+  seg <- elcf4r_build_daily_segments(
+    data = dat,
+    carry_cols = c("dataset", "community_id", "source_file", "holiday", "extreme_weather")
+  )
+
+  expect_true(all(c(
+    "dataset", "entity_id", "timestamp", "date", "time_index", "y", "temp",
+    "resolution_minutes", "community_id", "source_file", "humidity",
+    "holiday", "extreme_weather"
+  ) %in% names(dat)))
+  expect_identical(unique(dat$dataset), "gx")
+  expect_identical(unique(dat$entity_id), "GX_A")
+  expect_equal(nrow(dat), 24L)
+  expect_equal(unique(dat$resolution_minutes), 60L)
+  expect_equal(dim(seg$segments), c(1L, 24L))
+  expect_false(all(is.na(dat$temp)))
+  expect_identical(seg$covariates$community_id[[1L]], "GX_A")
+})
+
+test_that("elcf4r_read_gx reads the matching SQLite table and keeps metadata", {
+  tmp_db <- tempfile(fileext = ".sqlite")
+  con <- DBI::dbConnect(RSQLite::SQLite(), tmp_db)
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  DBI::dbWriteTable(
+    con,
+    "notes",
+    data.frame(id = 1, message = "ignore", stringsAsFactors = FALSE)
+  )
+  DBI::dbWriteTable(con, "gx_profiles", make_gx_fixture())
+
+  dat <- elcf4r_read_gx(path = tmp_db, ids = "GX_B")
+
+  expect_identical(unique(dat$entity_id), "GX_B")
+  expect_true("source_table" %in% names(dat))
+  expect_identical(unique(dat$source_table), "gx_profiles")
+  expect_true("humidity" %in% names(dat))
+  expect_true("holiday" %in% names(dat))
+  expect_true("extreme_weather" %in% names(dat))
 })

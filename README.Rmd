@@ -9,6 +9,11 @@ knitr::opts_chunk$set(
   dpi=300,fig.width=7,
   fig.keep="all"
 )
+library(elcf4R)
+data("elcf4r_iflex_benchmark_results", package = "elcf4R")
+data("elcf4r_storenet_benchmark_results", package = "elcf4R")
+data("elcf4r_lcl_benchmark_results", package = "elcf4R")
+data("elcf4r_refit_benchmark_results", package = "elcf4R")
 ```
 # eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
 
@@ -25,8 +30,9 @@ Implements Kernel Wavelet Functional (KWF),
     forecast individual electricity load curves, following the
     methodology described in Fahs (2023) and related articles and
     posters. Includes normalized dataset adapters for iFlex,
-    StoreNet, Low Carbon London and REFIT, compact shipped example
-    panels, and saved benchmark artifacts.
+    StoreNet, Low Carbon London and REFIT, scaffolded download/read
+    support for IDEAL and GX, compact shipped example panels, and
+    saved benchmark artifacts.
     
 This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.
 
@@ -59,14 +65,26 @@ The current download helpers are:
 
 - `elcf4r_download_elmas()`
 - `elcf4r_download_storenet()`
+- `elcf4r_download_ideal()`
+- `elcf4r_download_gx()`
 
-Additional datasets under review:
+Scaffolded, unshipped dataset adapters:
 
-- `IDEAL`: candidate future adapter/helper. The current source record indicates
-  `CC BY 4.0`, so the previous non-commercial wording should not be reused.
-- `GX`: candidate secondary benchmark dataset. It is transformer-level rather
-  than individual-household data, and its licence should be re-verified at the
-  dataset-record level before any shipped subset is considered.
+- `IDEAL`: `elcf4r_download_ideal()` and `elcf4r_read_ideal()` provide a
+  first-pass aggregate-electricity scaffold built around the hourly summaries in
+  `auxiliarydata.zip`. The current Edinburgh DataShare record states `CC BY
+  4.0`. No IDEAL-derived package dataset is shipped in this release.
+- `GX`: `elcf4r_download_gx()` and `elcf4r_read_gx()` provide a secondary
+  transformer/community-level scaffold from the official figshare dataset
+  record. GX is not treated as part of the package's core individual-household
+  benchmark set, and no GX-derived package dataset is shipped in this release.
+  Licence terms should be rechecked against the official dataset record before
+  any redistribution.
+
+The current unshipped scaffold readers are:
+
+- `elcf4r_read_ideal()`
+- `elcf4r_read_gx()`
 
 ## Shipped example and benchmark datasets
 

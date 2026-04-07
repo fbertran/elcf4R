@@ -42,6 +42,13 @@ the main vignettes run without external downloads. Raw source files stay in
 `data-raw/` and are not redistributed through the package unless a compact
 derived artifact has been explicitly built and saved.
 
+Two additional unshipped scaffolds are also available:
+
+- `elcf4r_download_ideal()` / `elcf4r_read_ideal()` for aggregate-electricity
+  hourly summaries from IDEAL.
+- `elcf4r_download_gx()` / `elcf4r_read_gx()` for the GX
+  transformer/community-level dataset.
+
 # Supported dataset matrix
 
 The current dataset surface is:
@@ -68,6 +75,24 @@ All four household readers return the same core columns:
 - `resolution_minutes`
 
 Dataset-specific metadata columns are preserved when available.
+
+# Scaffolded, unshipped datasets
+
+`IDEAL` and `GX` are intentionally documented separately from the core shipped
+household matrix.
+
+| Dataset | Helper surface | Level | Current scaffold scope | Shipped example | Shipped benchmark | Licence note |
+|:--|:--|:--|:--|:--|:--|:--|
+| IDEAL | `elcf4r_download_ideal()`, `elcf4r_read_ideal()` | household | aggregate-electricity hourly summaries from `auxiliarydata.zip` | no | no | the current Edinburgh DataShare record states `CC BY 4.0` |
+| GX | `elcf4r_download_gx()`, `elcf4r_read_gx()` | transformer/community | SQLite or flat-export normalization to the common panel schema | no | no | treat licence terms as dataset-record specific and recheck before redistribution |
+
+Notes:
+
+- IDEAL support in this release is limited to aggregate electricity and does
+  not attempt to parse the raw 1 Hz stream.
+- GX is not an individual-household dataset. It is useful as a secondary
+  benchmark source for weather and community-level demand behavior, but it is
+  not folded into the package's core household benchmark claims.
 
 # Shipped example panels
 

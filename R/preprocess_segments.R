@@ -603,6 +603,224 @@ elcf4r_read_refit <- function(
   normalized
 }
 
+#' Read and normalize the IDEAL hourly aggregate-electricity scaffold
+#'
+#' Read a direct IDEAL hourly aggregate-electricity file or search an extracted
+#' `auxiliarydata.zip` directory for a matching hourly summary file, then return
+#' a normalized long-format panel.
+#'
+#' @param path Path to an IDEAL hourly summary file or to an extracted IDEAL
+#'   auxiliary-data directory.
+#' @param ids Optional vector of IDEAL household identifiers to keep.
+#' @param start Optional inclusive lower time bound.
+#' @param end Optional inclusive upper time bound.
+#' @param tz Time zone used to parse timestamps. Defaults to
+#'   `"Europe/London"`.
+#' @param n_max Optional maximum number of rows to read.
+#' @param source IDEAL source flavor. Currently only `"auxiliary_hourly"` is
+#'   supported.
+#' @param drop_na_load Logical; if `TRUE`, rows with missing load values are
+#'   dropped.
+#'
+#' @return A normalized data frame with IDEAL household data.
+#' @export
+elcf4r_read_ideal <- function(
+    path = "data-raw",
+    ids = NULL,
+    start = NULL,
+    end = NULL,
+    tz = "Europe/London",
+    n_max = NULL,
+    source = "auxiliary_hourly",
+    drop_na_load = TRUE
+) {
+  source <- match.arg(source, choices = c("auxiliary_hourly"))
+  csv_path <- .elcf4r_resolve_ideal_path(path = path, source = source)
+  fread_nrows <- if (is.null(n_max)) -1L else as.integer(n_max)
+  if (!is.null(n_max) && (!is.finite(n_max) || n_max < 1L)) {
+    stop("`n_max` must be NULL or a positive integer.")
+  }
+
+  dt <- data.table::fread(
+    input = csv_path,
+    nrows = fread_nrows,
+    showProgress = FALSE
+  )
+  names(dt) <- trimws(names(dt))
+  detected <- .elcf4r_detect_ideal_columns(names(dt))
+
+  dt[["home_id"]] <- as.character(dt[[detected$id]])
+  if (!is.null(ids)) {
+    ids <- as.character(ids)
+    dt <- dt[dt[["home_id"]] %in% ids, ]
+  }
+
+  timestamp_input <- dt[[detected$timestamp]]
+  if (inherits(timestamp_input, "POSIXt")) {
+    timestamp_input <- format(timestamp_input, "%Y-%m-%d %H:%M:%OS", tz = "UTC")
+  }
+  timestamp <- .elcf4r_parse_timestamp(timestamp_input, tz = tz)
+  start_bound <- .elcf4r_parse_time_bound(start, tz = tz)
+  end_bound <- .elcf4r_parse_time_bound(end, tz = tz)
+
+  keep_rows <- rep(TRUE, length(timestamp))
+  if (!is.null(start_bound)) {
+    keep_rows <- keep_rows & timestamp >= start_bound
+  }
+  if (!is.null(end_bound)) {
+    keep_rows <- keep_rows & timestamp <= end_bound
+  }
+  if (isTRUE(drop_na_load)) {
+    keep_rows <- keep_rows & !is.na(suppressWarnings(as.numeric(dt[[detected$load]])))
+  }
+
+  dt <- dt[keep_rows, ]
+  dt[["entity_id_source"]] <- dt[["home_id"]]
+  dt[[".ideal_timestamp"]] <- timestamp[keep_rows]
+  dt[["source_file"]] <- basename(csv_path)
+
+  normalized <- elcf4r_normalize_panel(
+    data = dt,
+    id_col = "entity_id_source",
+    timestamp_col = ".ideal_timestamp",
+    load_col = detected$load,
+    dataset = "ideal",
+    resolution_minutes = 60L,
+    tz = tz,
+    keep_cols = c("home_id", "source_file")
+  )
+
+  ord <- order(normalized[["entity_id"]], normalized[["timestamp"]])
+  normalized <- normalized[ord, , drop = FALSE]
+  rownames(normalized) <- NULL
+  normalized
+}
+
+#' Read and normalize the GX residential transformer-level scaffold
+#'
+#' Read the GX dataset from either the official SQLite database or a flat export
+#' and return a normalized long-format panel. GX is treated as a
+#' transformer/community-level dataset rather than an individual-household
+#' dataset.
+#'
+#' @param path Path to a GX SQLite database, a flat export file, or a directory
+#'   containing one of them.
+#' @param ids Optional vector of GX community/profile identifiers to keep.
+#' @param start Optional inclusive lower time bound.
+#' @param end Optional inclusive upper time bound.
+#' @param tz Time zone used to parse timestamps. Defaults to `"Asia/Shanghai"`.
+#' @param n_max Optional maximum number of rows to read.
+#' @param drop_na_load Logical; if `TRUE`, rows with missing load values are
+#'   dropped.
+#'
+#' @return A normalized data frame with GX transformer-level data.
+#' @export
+elcf4r_read_gx <- function(
+    path = "data-raw",
+    ids = NULL,
+    start = NULL,
+    end = NULL,
+    tz = "Asia/Shanghai",
+    n_max = NULL,
+    drop_na_load = TRUE
+) {
+  resolved <- .elcf4r_resolve_gx_path(path)
+  fread_nrows <- if (is.null(n_max)) -1L else as.integer(n_max)
+  if (!is.null(n_max) && (!is.finite(n_max) || n_max < 1L)) {
+    stop("`n_max` must be NULL or a positive integer.")
+  }
+
+  source_table <- NA_character_
+  if (identical(resolved$type, "sqlite")) {
+    con <- DBI::dbConnect(RSQLite::SQLite(), resolved$path)
+    on.exit(DBI::dbDisconnect(con), add = TRUE)
+    source_table <- .elcf4r_detect_gx_table(con)
+    dt <- .elcf4r_read_sqlite_table(con, source_table, n_max = n_max)
+  } else {
+    dt <- data.table::fread(
+      input = resolved$path,
+      nrows = fread_nrows,
+      showProgress = FALSE
+    )
+  }
+
+  dt <- as.data.frame(dt, stringsAsFactors = FALSE)
+  names(dt) <- trimws(names(dt))
+  detected <- .elcf4r_detect_gx_columns(names(dt))
+
+  dt[["community_id"]] <- as.character(dt[[detected$id]])
+  if (!is.null(ids)) {
+    ids <- as.character(ids)
+    dt <- dt[dt[["community_id"]] %in% ids, , drop = FALSE]
+  }
+
+  timestamp_input <- dt[[detected$timestamp]]
+  if (inherits(timestamp_input, "POSIXt")) {
+    timestamp_input <- format(timestamp_input, "%Y-%m-%d %H:%M:%OS", tz = "UTC")
+  }
+  timestamp <- .elcf4r_parse_timestamp(timestamp_input, tz = tz)
+  start_bound <- .elcf4r_parse_time_bound(start, tz = tz)
+  end_bound <- .elcf4r_parse_time_bound(end, tz = tz)
+
+  keep_rows <- rep(TRUE, length(timestamp))
+  if (!is.null(start_bound)) {
+    keep_rows <- keep_rows & timestamp >= start_bound
+  }
+  if (!is.null(end_bound)) {
+    keep_rows <- keep_rows & timestamp <= end_bound
+  }
+  if (isTRUE(drop_na_load)) {
+    keep_rows <- keep_rows & !is.na(suppressWarnings(as.numeric(dt[[detected$load]])))
+  }
+
+  dt <- dt[keep_rows, , drop = FALSE]
+  dt[["entity_id_source"]] <- dt[["community_id"]]
+  dt[[".gx_timestamp"]] <- timestamp[keep_rows]
+  dt[["source_file"]] <- basename(resolved$path)
+  if (!is.na(source_table)) {
+    dt[["source_table"]] <- source_table
+  }
+  if (!is.null(detected$temp)) {
+    dt[["gx_temp"]] <- as.numeric(dt[[detected$temp]])
+  }
+  if (!is.null(detected$humidity)) {
+    dt[["humidity"]] <- dt[[detected$humidity]]
+  }
+  if (!is.null(detected$holiday)) {
+    dt[["holiday"]] <- dt[[detected$holiday]]
+  }
+  if (!is.null(detected$extreme_weather)) {
+    dt[["extreme_weather"]] <- dt[[detected$extreme_weather]]
+  }
+
+  keep_cols <- c("community_id", "source_file")
+  if ("source_table" %in% names(dt)) {
+    keep_cols <- c(keep_cols, "source_table")
+  }
+  for (optional_col in c("humidity", "holiday", "extreme_weather")) {
+    if (optional_col %in% names(dt)) {
+      keep_cols <- c(keep_cols, optional_col)
+    }
+  }
+
+  normalized <- elcf4r_normalize_panel(
+    data = dt,
+    id_col = "entity_id_source",
+    timestamp_col = ".gx_timestamp",
+    load_col = detected$load,
+    temp_col = if (!is.null(detected$temp)) "gx_temp" else NULL,
+    dataset = "gx",
+    resolution_minutes = 60L,
+    tz = tz,
+    keep_cols = keep_cols
+  )
+
+  ord <- order(normalized[["entity_id"]], normalized[["timestamp"]])
+  normalized <- normalized[ord, , drop = FALSE]
+  rownames(normalized) <- NULL
+  normalized
+}
+
 #' Build daily load-curve segments from a normalized panel
 #'
 #' Convert a long-format load table into one row per entity-day and one column
@@ -837,6 +1055,398 @@ elcf4r_build_daily_segments <- function(
     stop("Expected one ", dataset_label, " file but found ", length(files), ".")
   }
   files[[1L]]
+}
+
+.elcf4r_resolve_ideal_path <- function(path, source = "auxiliary_hourly") {
+  source <- match.arg(source, choices = c("auxiliary_hourly"))
+
+  if (file.exists(path) && !dir.exists(path)) {
+    if (grepl("\\.zip$", path, ignore.case = TRUE)) {
+      stop(
+        "IDEAL input appears to be a zip archive. Extract `auxiliarydata.zip` ",
+        "and point `path` to the extracted directory or hourly file."
+      )
+    }
+    return(path)
+  }
+
+  if (!dir.exists(path)) {
+    stop("Cannot find IDEAL data at ", path)
+  }
+
+  files <- list.files(
+    path = path,
+    pattern = "\\.(csv|tsv|txt)$",
+    full.names = TRUE,
+    recursive = TRUE,
+    ignore.case = TRUE
+  )
+  if (length(files) == 0L) {
+    stop("Cannot find extracted IDEAL hourly files at ", path)
+  }
+
+  scores <- vapply(files, .elcf4r_score_ideal_file, numeric(1))
+  if (!any(scores > 0L)) {
+    stop(
+      "Could not identify an IDEAL aggregate-electricity hourly file under ",
+      path,
+      ". Checked: ",
+      paste(basename(files), collapse = ", ")
+    )
+  }
+
+  winners <- files[scores == max(scores)]
+  if (length(winners) != 1L) {
+    stop(
+      "Found multiple IDEAL hourly candidates under ",
+      path,
+      ": ",
+      paste(basename(winners), collapse = ", "),
+      ". Supply an explicit file path."
+    )
+  }
+
+  winners[[1L]]
+}
+
+.elcf4r_score_ideal_file <- function(path) {
+  dt <- tryCatch(
+    data.table::fread(input = path, nrows = 50L, showProgress = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(dt) || ncol(dt) == 0L) {
+    return(0)
+  }
+
+  detected <- .elcf4r_detect_ideal_columns(names(dt), required = FALSE)
+  required <- list(detected$id, detected$timestamp, detected$load)
+  if (any(vapply(required, is.null, logical(1)))) {
+    return(0)
+  }
+
+  file_label <- .elcf4r_normalize_name(basename(path))
+  bonus_terms <- c("hour", "hourly", "aux", "auxiliary", "electric", "energy", "load")
+  10L + sum(vapply(bonus_terms, function(term) grepl(term, file_label, fixed = TRUE), logical(1)))
+}
+
+.elcf4r_detect_ideal_columns <- function(columns, required = TRUE) {
+  list(
+    id = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("home_id", "homeid", "house_id", "houseid", "home", "house"),
+      label = "IDEAL household identifier",
+      required = required
+    ),
+    timestamp = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("timestamp", "datetime", "date_time", "date", "time", "localtime", "local_time", "hour"),
+      label = "IDEAL timestamp",
+      required = required
+    ),
+    load = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c(
+        "aggregate_electricity",
+        "aggregate_electricity_kwh",
+        "aggregate_electricity_kw",
+        "electricity",
+        "electricity_kwh",
+        "electricity_kw",
+        "load",
+        "aggregate"
+      ),
+      label = "IDEAL aggregate electricity",
+      required = required
+    )
+  )
+}
+
+.elcf4r_resolve_gx_path <- function(path) {
+  if (file.exists(path) && !dir.exists(path)) {
+    if (grepl("\\.zip$", path, ignore.case = TRUE)) {
+      stop(
+        "GX input appears to be a zip archive. Extract the figshare asset and ",
+        "point `path` to the SQLite database or flat export."
+      )
+    }
+
+    if (grepl("\\.(sqlite3?|db)$", path, ignore.case = TRUE)) {
+      return(list(path = path, type = "sqlite"))
+    }
+    if (grepl("\\.(csv|tsv|txt)$", path, ignore.case = TRUE)) {
+      return(list(path = path, type = "flat"))
+    }
+
+    stop("Unsupported GX input path: ", path)
+  }
+
+  if (!dir.exists(path)) {
+    stop("Cannot find GX data at ", path)
+  }
+
+  sqlite_files <- list.files(
+    path = path,
+    pattern = "\\.(sqlite3?|db)$",
+    full.names = TRUE,
+    recursive = TRUE,
+    ignore.case = TRUE
+  )
+  if (length(sqlite_files) > 1L) {
+    stop(
+      "Found multiple GX database files under ",
+      path,
+      ": ",
+      paste(basename(sqlite_files), collapse = ", "),
+      ". Supply an explicit file path."
+    )
+  }
+  if (length(sqlite_files) == 1L) {
+    return(list(path = sqlite_files[[1L]], type = "sqlite"))
+  }
+
+  flat_files <- list.files(
+    path = path,
+    pattern = "\\.(csv|tsv|txt)$",
+    full.names = TRUE,
+    recursive = TRUE,
+    ignore.case = TRUE
+  )
+  if (length(flat_files) == 0L) {
+    stop("Cannot find GX database or flat export under ", path)
+  }
+
+  scores <- vapply(flat_files, .elcf4r_score_gx_file, numeric(1))
+  if (!any(scores > 0L)) {
+    stop(
+      "Could not identify a GX flat export under ",
+      path,
+      ". Checked: ",
+      paste(basename(flat_files), collapse = ", ")
+    )
+  }
+
+  winners <- flat_files[scores == max(scores)]
+  if (length(winners) != 1L) {
+    stop(
+      "Found multiple GX flat-file candidates under ",
+      path,
+      ": ",
+      paste(basename(winners), collapse = ", "),
+      ". Supply an explicit file path."
+    )
+  }
+
+  list(path = winners[[1L]], type = "flat")
+}
+
+.elcf4r_score_gx_file <- function(path) {
+  dt <- tryCatch(
+    data.table::fread(input = path, nrows = 50L, showProgress = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(dt) || ncol(dt) == 0L) {
+    return(0)
+  }
+
+  detected <- .elcf4r_detect_gx_columns(names(dt), required = FALSE)
+  required <- list(detected$id, detected$timestamp, detected$load)
+  if (any(vapply(required, is.null, logical(1)))) {
+    return(0)
+  }
+
+  file_label <- .elcf4r_normalize_name(basename(path))
+  bonus_terms <- c("gx", "load", "community", "residential", "database")
+  optional_count <- sum(vapply(
+    list(detected$temp, detected$humidity, detected$holiday, detected$extreme_weather),
+    Negate(is.null),
+    logical(1)
+  ))
+
+  10L + optional_count + sum(vapply(
+    bonus_terms,
+    function(term) grepl(term, file_label, fixed = TRUE),
+    logical(1)
+  ))
+}
+
+.elcf4r_detect_gx_table <- function(con) {
+  tables <- DBI::dbListTables(con)
+  if (length(tables) == 0L) {
+    stop("No tables were found in the GX database.")
+  }
+
+  scores <- vapply(
+    tables,
+    function(table_name) {
+      dt <- tryCatch(
+        .elcf4r_read_sqlite_table(con, table_name, n_max = 50L),
+        error = function(e) NULL
+      )
+      if (is.null(dt) || ncol(dt) == 0L) {
+        return(0)
+      }
+
+      detected <- .elcf4r_detect_gx_columns(names(dt), required = FALSE)
+      required <- list(detected$id, detected$timestamp, detected$load)
+      if (any(vapply(required, is.null, logical(1)))) {
+        return(0)
+      }
+
+      10L + sum(vapply(
+        list(detected$temp, detected$humidity, detected$holiday, detected$extreme_weather),
+        Negate(is.null),
+        logical(1)
+      ))
+    },
+    numeric(1)
+  )
+
+  if (!any(scores > 0L)) {
+    stop(
+      "Could not identify a GX data table. Checked: ",
+      paste(tables, collapse = ", ")
+    )
+  }
+
+  winners <- tables[scores == max(scores)]
+  if (length(winners) != 1L) {
+    stop(
+      "Multiple GX tables match the required schema: ",
+      paste(winners, collapse = ", "),
+      "."
+    )
+  }
+
+  winners[[1L]]
+}
+
+.elcf4r_read_sqlite_table <- function(con, table_name, n_max = NULL) {
+  sql <- paste0(
+    "SELECT * FROM ",
+    as.character(DBI::dbQuoteIdentifier(con, table_name))
+  )
+  if (!is.null(n_max)) {
+    sql <- paste(sql, "LIMIT", as.integer(n_max))
+  }
+  DBI::dbGetQuery(con, sql)
+}
+
+.elcf4r_detect_gx_columns <- function(columns, required = TRUE) {
+  list(
+    id = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c(
+        "community_id",
+        "communityid",
+        "community",
+        "profile_id",
+        "profileid",
+        "profile",
+        "district_id",
+        "districtid",
+        "district",
+        "transformer_id",
+        "transformerid",
+        "transformer",
+        "area_id",
+        "areaid",
+        "area"
+      ),
+      label = "GX community identifier",
+      required = required
+    ),
+    timestamp = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("timestamp", "datetime", "date_time", "date", "time", "record_time", "recordtime", "hour"),
+      label = "GX timestamp",
+      required = required
+    ),
+    load = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c(
+        "load",
+        "electricity",
+        "demand",
+        "residential_load",
+        "residentialload",
+        "total_load",
+        "totalload",
+        "consumption",
+        "consumption_kwh",
+        "electricity_kwh",
+        "load_kwh"
+      ),
+      label = "GX load",
+      required = required
+    ),
+    temp = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("temperature", "temp", "t2m"),
+      label = "GX temperature",
+      required = FALSE
+    ),
+    humidity = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("humidity", "relative_humidity", "relativehumidity", "rh"),
+      label = "GX humidity",
+      required = FALSE
+    ),
+    holiday = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c("holiday", "is_holiday", "isholiday"),
+      label = "GX holiday",
+      required = FALSE
+    ),
+    extreme_weather = .elcf4r_match_column_alias(
+      columns = columns,
+      aliases = c(
+        "extreme_weather",
+        "extremeweather",
+        "is_extreme_weather",
+        "isextremeweather",
+        "extreme_event",
+        "extremeevent"
+      ),
+      label = "GX extreme-weather flag",
+      required = FALSE
+    )
+  )
+}
+
+.elcf4r_normalize_name <- function(x) {
+  gsub("[^a-z0-9]+", "", tolower(trimws(as.character(x))))
+}
+
+.elcf4r_match_column_alias <- function(columns, aliases, label, required = TRUE) {
+  normalized_columns <- .elcf4r_normalize_name(columns)
+
+  for (alias in aliases) {
+    hits <- which(normalized_columns == .elcf4r_normalize_name(alias))
+    if (length(hits) == 1L) {
+      return(columns[[hits[[1L]]]])
+    }
+    if (length(hits) > 1L) {
+      stop(
+        "Multiple columns matched the ",
+        label,
+        ": ",
+        paste(columns[hits], collapse = ", "),
+        "."
+      )
+    }
+  }
+
+  if (!isTRUE(required)) {
+    return(NULL)
+  }
+
+  stop(
+    "Could not identify the ",
+    label,
+    " column. Available columns are: ",
+    paste(columns, collapse = ", "),
+    "."
+  )
 }
 
 .elcf4r_rename_columns <- function(data, rename_map) {

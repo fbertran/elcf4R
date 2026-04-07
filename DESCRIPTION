@@ -1,6 +1,6 @@
 Package: elcf4R
 Title: Electricity Load Curves Forecasting at Individual Level
-Version: 0.3.0
+Version: 0.4.0
 Date: 2026-04-07
 Depends: R (>= 3.5.0)
 Imports:
@@ -13,7 +13,10 @@ Imports:
     tensorflow,
     data.table,
     wavelets,
-    jsonlite
+    jsonlite,
+    xml2,
+    DBI,
+    RSQLite
 LinkingTo: Rcpp
 Suggests:
     knitr,
@@ -32,9 +35,10 @@ Description: Implements Kernel Wavelet Functional (KWF),
     forecast individual electricity load curves, following the
     methodology described in Fahs (2023) and related articles and
     posters. Includes normalized dataset adapters for iFlex,
-    StoreNet, Low Carbon London and REFIT, daily segmentation and
-    rolling-origin benchmark helpers, compact shipped example
-    panels, and saved benchmark-result datasets.
+    StoreNet, Low Carbon London and REFIT, scaffolded download/read
+    support for IDEAL and GX, daily segmentation and rolling-origin
+    benchmark helpers, compact shipped example panels, and saved
+    benchmark-result datasets.
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr
