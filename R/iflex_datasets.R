@@ -64,27 +64,34 @@ NULL
 #' iFlex benchmark results for shipped forecasting methods
 #'
 #' Saved benchmark results for a deterministic rolling-origin evaluation on a
-#' subset of the iFlex data. The shipped results use 10 participant IDs, a
-#' 28-day training window and 5 one-day test forecasts per participant. The
-#' current shipped benchmark includes the operational `gam`, `mars`, `kwf` and
-#' `lstm` wrappers.
+#' subset of the iFlex data. The shipped results use a fixed participant cohort,
+#' a 28-day training window and multiple one-day rolling test forecasts per
+#' participant. The current shipped benchmark includes the operational `gam`,
+#' `mars`, `kwf`, `kwf_clustered` and `lstm` wrappers.
 #'
 #' @name elcf4r_iflex_benchmark_results
 #' @docType data
 #' @keywords datasets
 #'
-#' @format A data frame with 200 rows and 17 variables:
+#' @format A data frame with 20 variables:
 #' \describe{
 #'   \item{benchmark_name}{Identifier of the benchmark design.}
 #'   \item{dataset}{Dataset label, always `"iflex"`.}
 #'   \item{entity_id}{Participant identifier.}
-#'   \item{method}{Forecasting method: `gam`, `mars`, `kwf` or `lstm`.}
+#'   \item{method}{Forecasting method: `gam`, `mars`, `kwf`,
+#'     `kwf_clustered` or `lstm`.}
 #'   \item{test_date}{Date of the forecast target day.}
 #'   \item{train_start}{First day in the training window.}
 #'   \item{train_end}{Last day in the training window.}
 #'   \item{train_days}{Number of training days.}
 #'   \item{test_points}{Number of hourly points in the target day.}
 #'   \item{use_temperature}{Logical flag for temperature-aware fitting.}
+#'   \item{thermosensitive}{Thermosensitivity flag when seasonal coverage is
+#'     sufficient, otherwise `NA`.}
+#'   \item{thermosensitivity_status}{Status of the winter/summer ratio
+#'     classification step.}
+#'   \item{thermosensitivity_ratio}{Estimated winter/summer mean-load ratio
+#'     when available.}
 #'   \item{fit_seconds}{Elapsed fit-and-predict time in seconds.}
 #'   \item{status}{Benchmark execution status.}
 #'   \item{error_message}{Error message when a fit failed.}

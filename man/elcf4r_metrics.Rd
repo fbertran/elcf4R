@@ -4,7 +4,7 @@
 \alias{elcf4r_metrics}
 \title{Forecast accuracy metrics for load curves}
 \usage{
-elcf4r_metrics(truth, pred, seasonal_period = NULL)
+elcf4r_metrics(truth, pred, seasonal_period = NULL, naive_pred = NULL)
 }
 \arguments{
 \item{truth}{Numeric vector or matrix of observed values.}
@@ -14,6 +14,11 @@ elcf4r_metrics(truth, pred, seasonal_period = NULL)
 \item{seasonal_period}{Seasonal period for the naive benchmark in
 the MASE denominator (for daily curves with half hourly sampling,
 a value of 48 is appropriate).}
+
+\item{naive_pred}{Optional numeric vector or matrix of naive benchmark
+predictions with the same shape as \code{truth}. When supplied, MASE is computed
+against this explicit naive forecast instead of inferring the denominator
+from \code{seasonal_period} within \code{truth}.}
 }
 \value{
 A named list with elements \code{nmae}, \code{nrmse}, \code{smape}, \code{mase}.

@@ -17,7 +17,7 @@ predict.elcf4r_model <- function(object, newdata = NULL, ...) {
 
   method <- object$method
 
-  if (identical(method, "kwf")) {
+  if (identical(method, "kwf") || identical(method, "kwf_clustered")) {
     return(as.numeric(object$fitted_curve))
   }
 
@@ -25,6 +25,7 @@ predict.elcf4r_model <- function(object, newdata = NULL, ...) {
     if (is.null(newdata)) {
       stop("`newdata` is required to predict with method `", method, "`.")
     }
+    newdata <- .elcf4r_prepare_calendar_predictors(newdata)
     return(as.numeric(stats::predict(object$model, newdata = newdata, ...)))
   }
 

@@ -37,7 +37,8 @@ covariate table. Their first non-missing value within each day is kept.}
 it is derived from \code{resolution_minutes}.}
 
 \item{resolution_minutes}{Sampling resolution in minutes. If \code{NULL}, it is
-inferred from timestamps or from a \code{resolution_minutes} column.}
+inferred from timestamps or from a \code{resolution_minutes} column. Fractional
+minute values are allowed.}
 
 \item{complete_days_only}{If \code{TRUE}, incomplete or duplicated days are
 dropped from the output.}

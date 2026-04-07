@@ -5,3 +5,19 @@ kwf_weighted_average_cpp <- function(curves, weights) {
     .Call(`_elcf4R_kwf_weighted_average_cpp`, curves, weights)
 }
 
+kwf_row_distances_cpp <- function(features, target) {
+    .Call(`_elcf4R_kwf_row_distances_cpp`, features, target)
+}
+
+kwf_gaussian_kernel_weights_cpp <- function(distances, bandwidth = NULL) {
+    .Call(`_elcf4R_kwf_gaussian_kernel_weights_cpp`, distances, bandwidth)
+}
+
+kwf_apply_group_restriction_cpp <- function(weights, context_groups, target_group) {
+    .Call(`_elcf4R_kwf_apply_group_restriction_cpp`, weights, context_groups, target_group)
+}
+
+kwf_mean_corrected_forecast_cpp <- function(detail_future, approx_transitions, current_approx, weights) {
+    .Call(`_elcf4R_kwf_mean_corrected_forecast_cpp`, detail_future, approx_transitions, current_approx, weights)
+}
+

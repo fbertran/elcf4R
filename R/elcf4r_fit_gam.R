@@ -23,6 +23,7 @@ elcf4r_fit_gam <- function(data, use_temperature = FALSE) {
   if (use_temperature && !"temp" %in% names(data)) {
     stop("Temperature is not available in `data`.")
   }
+  data <- .elcf4r_prepare_calendar_predictors(data)
   
   if (use_temperature) {
     form <- y ~
@@ -36,9 +37,27 @@ elcf4r_fit_gam <- function(data, use_temperature = FALSE) {
       s(dow, bs = "re")
   }
   
-  fit <- mgcv::gam(form, data = data)
+  fit <- mgcv::gam(form, data = data, drop.unused.levels = FALSE)
   structure(
     list(model = fit, method = "gam", use_temperature = use_temperature),
     class = "elcf4r_model"
   )
+}
+
+.elcf4r_prepare_calendar_predictors <- function(data) {
+  data <- as.data.frame(data, stringsAsFactors = FALSE)
+
+  if ("dow" %in% names(data)) {
+    dow_levels <- c(
+      "Sunday", "Monday", "Tuesday", "Wednesday",
+      "Thursday", "Friday", "Saturday"
+    )
+    data[["dow"]] <- factor(as.character(data[["dow"]]), levels = dow_levels)
+  }
+  if ("month" %in% names(data)) {
+    month_levels <- sprintf("%02d", seq_len(12L))
+    data[["month"]] <- factor(as.character(data[["month"]]), levels = month_levels)
+  }
+
+  data
 }

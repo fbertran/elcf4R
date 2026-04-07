@@ -2,52 +2,79 @@
 % Please edit documentation in R/elcf4r_fit_kwf.R
 \name{elcf4r_fit_kwf}
 \alias{elcf4r_fit_kwf}
-\title{Fit a simple KWF-style model for daily load curves}
+\title{Fit a Kernel Wavelet Functional model for daily load curves}
 \usage{
 elcf4r_fit_kwf(
   segments,
   covariates = NULL,
   target_covariates = NULL,
   use_temperature = FALSE,
-  wavelet = "la8",
+  wavelet = "la12",
+  bandwidth = NULL,
+  use_mean_correction = TRUE,
+  group_col = NULL,
+  holidays = NULL,
   weights = NULL,
-  recency_decay = 0.05,
+  recency_decay = NULL,
   temperature_bandwidth = NULL
 )
 }
 \arguments{
 \item{segments}{Matrix or data frame of past daily load curves
-(rows are days, columns are time points).}
+(rows are days, columns are within-day time points) in chronological order.}
 
-\item{covariates}{Optional data frame with one row per training day. If
-present, \code{dow} and \code{temp_mean} are used when available.}
+\item{covariates}{Optional data frame with one row per training segment.
+When present, the function looks for deterministic grouping information in
+\code{context_group}, \code{kwf_group}, \code{calendar_group}, or the column named by
+\code{group_col}. If no explicit group column is present, groups are derived from
+\code{date} and \code{holidays}, or from \code{dow} as a fallback.}
 
-\item{target_covariates}{Optional one-row data frame describing the target
-day to forecast.}
+\item{target_covariates}{Optional one-row data frame describing the day to
+forecast. When it contains \code{date}, the previous day is used as the context
+day for calendar grouping, which matches the residential KWF protocol for
+pre-holiday handling.}
 
-\item{use_temperature}{Logical. If \code{TRUE}, temperature similarity is used
-when \code{temp_mean} is available in both \code{covariates} and \code{target_covariates}.}
+\item{use_temperature}{Deprecated and ignored. Kept for backward
+compatibility with earlier package examples.}
 
-\item{wavelet}{Character string naming the wavelet family.}
+\item{wavelet}{Wavelet filter name passed to \code{\link[wavelets:dwt]{wavelets::dwt()}}. Defaults to
+\code{"la12"}, the least-asymmetric filter aligned with the thesis
+implementation. If the series is too short for the requested filter, the
+function falls back to \code{"haar"}.}
 
-\item{weights}{Optional numeric vector of non-negative weights of length
-equal to the number of rows in \code{segments}.}
+\item{bandwidth}{Optional positive bandwidth for the Gaussian kernel on
+wavelet distances. If \code{NULL}, it is inferred from the distances to the last
+observed segment.}
 
-\item{recency_decay}{Non-negative recency coefficient applied when
-\code{weights} is not supplied. Larger values emphasize recent days more.}
+\item{use_mean_correction}{Logical; if \code{TRUE}, apply the approximation/detail
+correction used for mean-level non-stationarity.}
 
-\item{temperature_bandwidth}{Optional positive bandwidth for temperature
-similarity weighting. If \code{NULL}, it is inferred from the training
-\code{temp_mean} values.}
+\item{group_col}{Optional column name containing precomputed KWF groups in
+\code{covariates} and \code{target_covariates}.}
+
+\item{holidays}{Optional vector of holiday dates used by
+\code{\link[=elcf4r_calendar_groups]{elcf4r_calendar_groups()}} when deterministic groups are derived from
+\code{date}.}
+
+\item{weights}{Optional numeric prior weights of length \code{nrow(segments)}.
+Only the first \code{nrow(segments) - 1} values are used in the historical
+pairing step.}
+
+\item{recency_decay}{Optional non-negative recency coefficient applied as an
+exponential prior on the historical context days.}
+
+\item{temperature_bandwidth}{Deprecated and ignored. Kept only for backward
+compatibility with older examples.}
 }
 \value{
 An object of class \code{elcf4r_model} with \code{method = "kwf"}.
 }
 \description{
-The current implementation is a pragmatic forecasting baseline: it computes a
-weighted average of past daily curves, with optional reweighting by day of
-week and temperature similarity. This keeps the package benchmarkable while a
-fuller kernel-wavelet implementation is still under development.
+Fit a day-ahead Kernel Wavelet Functional (KWF) model on ordered daily load
+curves. The implementation computes wavelet-detail distances on the
+historical context days, applies Gaussian kernel weights, restricts those
+weights to matching calendar groups when available, and can apply the
+approximation/detail correction used for mean-level non-stationarity.
 }
 \examples{
 id1 <- subset(
@@ -58,8 +85,7 @@ daily <- elcf4r_build_daily_segments(id1, carry_cols = "participation_phase")
 fit <- elcf4r_fit_kwf(
   segments = daily$segments[1:10, ],
   covariates = daily$covariates[1:10, ],
-  target_covariates = daily$covariates[11, , drop = FALSE],
-  use_temperature = TRUE
+  target_covariates = daily$covariates[11, , drop = FALSE]
 )
 length(predict(fit))
 }

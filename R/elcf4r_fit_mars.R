@@ -15,6 +15,7 @@
 #' length(pred)
 elcf4r_fit_mars <- function(data, use_temperature = FALSE) {
   stopifnot(all(c("y", "time_index") %in% names(data)))
+  data <- .elcf4r_prepare_calendar_predictors(data)
   
   x_vars <- c("time_index", "dow", "month")
   if (use_temperature) x_vars <- c(x_vars, "temp")

@@ -22,9 +22,64 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kwf_row_distances_cpp
+NumericVector kwf_row_distances_cpp(NumericMatrix features, NumericVector target);
+RcppExport SEXP _elcf4R_kwf_row_distances_cpp(SEXP featuresSEXP, SEXP targetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type features(featuresSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type target(targetSEXP);
+    rcpp_result_gen = Rcpp::wrap(kwf_row_distances_cpp(features, target));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kwf_gaussian_kernel_weights_cpp
+List kwf_gaussian_kernel_weights_cpp(NumericVector distances, Nullable<double> bandwidth);
+RcppExport SEXP _elcf4R_kwf_gaussian_kernel_weights_cpp(SEXP distancesSEXP, SEXP bandwidthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type distances(distancesSEXP);
+    Rcpp::traits::input_parameter< Nullable<double> >::type bandwidth(bandwidthSEXP);
+    rcpp_result_gen = Rcpp::wrap(kwf_gaussian_kernel_weights_cpp(distances, bandwidth));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kwf_apply_group_restriction_cpp
+NumericVector kwf_apply_group_restriction_cpp(NumericVector weights, CharacterVector context_groups, CharacterVector target_group);
+RcppExport SEXP _elcf4R_kwf_apply_group_restriction_cpp(SEXP weightsSEXP, SEXP context_groupsSEXP, SEXP target_groupSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type context_groups(context_groupsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type target_group(target_groupSEXP);
+    rcpp_result_gen = Rcpp::wrap(kwf_apply_group_restriction_cpp(weights, context_groups, target_group));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kwf_mean_corrected_forecast_cpp
+NumericVector kwf_mean_corrected_forecast_cpp(NumericMatrix detail_future, NumericMatrix approx_transitions, NumericVector current_approx, NumericVector weights);
+RcppExport SEXP _elcf4R_kwf_mean_corrected_forecast_cpp(SEXP detail_futureSEXP, SEXP approx_transitionsSEXP, SEXP current_approxSEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type detail_future(detail_futureSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type approx_transitions(approx_transitionsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type current_approx(current_approxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kwf_mean_corrected_forecast_cpp(detail_future, approx_transitions, current_approx, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_elcf4R_kwf_weighted_average_cpp", (DL_FUNC) &_elcf4R_kwf_weighted_average_cpp, 2},
+    {"_elcf4R_kwf_row_distances_cpp", (DL_FUNC) &_elcf4R_kwf_row_distances_cpp, 2},
+    {"_elcf4R_kwf_gaussian_kernel_weights_cpp", (DL_FUNC) &_elcf4R_kwf_gaussian_kernel_weights_cpp, 2},
+    {"_elcf4R_kwf_apply_group_restriction_cpp", (DL_FUNC) &_elcf4R_kwf_apply_group_restriction_cpp, 3},
+    {"_elcf4R_kwf_mean_corrected_forecast_cpp", (DL_FUNC) &_elcf4R_kwf_mean_corrected_forecast_cpp, 4},
     {NULL, NULL, 0}
 };
 

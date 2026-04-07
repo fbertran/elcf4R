@@ -10,9 +10,9 @@ knitr::opts_chunk$set(
   fig.keep="all"
 )
 ```
-# eclf4R, Sobol Indices for Models with Fixed and Stochastic Parameters <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
+# eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
 
-## Frédéric Bertrand, Fatima Fahs and Myriam Maum
+## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fbertran/eclf4R/actions/workflows/R-CMD-check.yaml)
@@ -20,12 +20,13 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 Implements Kernel Wavelet Functional (KWF),
-    Generalized Additive Models (GAM), Multivariate Adaptive
-    Regression Splines (MARS) and RNN LSTM models to forecast
-    individual electricity load curves, following the methodology
-    described in Fahs (2023) and related articles and posters.
-    Includes small demo datasets and helper functions to download
-    large public datasets such as ELMAS, StoreNet Ireland and IDEAL.
+    clustered KWF, Generalized Additive Models (GAM), Multivariate
+    Adaptive Regression Splines (MARS) and RNN LSTM models to
+    forecast individual electricity load curves, following the
+    methodology described in Fahs (2023) and related articles and
+    posters. Includes normalized dataset adapters for iFlex,
+    StoreNet, Low Carbon London and REFIT, compact shipped example
+    panels, and saved benchmark artifacts.
     
 This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.
 
@@ -37,10 +38,49 @@ You can install the latest version of the eclf4R package from [github](https://g
 devtools::install_github("fbertran/eclf4R")
 ```
 
-## Two complementary analysis paths
+## Current Scope
 
-The package now ships a compact iFlex example panel and saved benchmark
-results, so the documentation can run without external downloads.
+The exported forecasting methods currently covered by the package are:
+
+- `elcf4r_fit_gam()`
+- `elcf4r_fit_mars()`
+- `elcf4r_fit_kwf()`
+- `elcf4r_fit_kwf_clustered()`
+- `elcf4r_fit_lstm()`
+
+The current dataset adapters and shipped benchmark artifacts cover:
+
+- iFlex
+- StoreNet (`H6_W`)
+- Low Carbon London
+- REFIT
+
+The current download helpers are:
+
+- `elcf4r_download_elmas()`
+- `elcf4r_download_storenet()`
+
+Additional datasets under review:
+
+- `IDEAL`: candidate future adapter/helper. The current source record indicates
+  `CC BY 4.0`, so the previous non-commercial wording should not be reused.
+- `GX`: candidate secondary benchmark dataset. It is transformer-level rather
+  than individual-household data, and its licence should be re-verified at the
+  dataset-record level before any shipped subset is considered.
+
+## Shipped example and benchmark datasets
+
+The package now ships compact example panels and saved benchmark results for
+iFlex, StoreNet, Low Carbon London and REFIT, so the main documentation can
+run without external downloads. These artifacts are derived from local raw
+files through the reproducible scripts in `data-raw/`.
+
+The current shipped benchmark artifacts are:
+
+- iFlex: `15` households, `28` train days, `7` test days
+- StoreNet: `1` household (`H6_W`), `5` train days, `2` test days
+- Low Carbon London: `1` thermosensitive household, `56` train days, `7` test days
+- REFIT: `2` thermosensitive households, `56` train days, `7` test days
 
 ### Vignettes
 
@@ -53,13 +93,46 @@ vignette("elcf4R-datasets-vignette", package = "eclf4R")
 
 ## Quick Benchmark Summary
 
-The shipped iFlex benchmark now includes `gam`, `mars`, `kwf` and `lstm`
-results on the same fixed rolling-origin design.
+The shipped benchmark artifacts now cover iFlex, StoreNet, Low Carbon London
+and REFIT. The same workflow is available programmatically through
+`elcf4r_build_benchmark_index()` and `elcf4r_benchmark()`.
 
 ```{r}
-aggregate(
-  cbind(nmae, nrmse, smape, fit_seconds) ~ method,
-  data = elcf4r_iflex_benchmark_results,
-  FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+do.call(
+  rbind,
+  list(
+    transform(
+      aggregate(
+        cbind(nmae, nrmse, smape, mase) ~ method,
+        data = elcf4r_iflex_benchmark_results,
+        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+      ),
+      dataset = "iflex"
+    ),
+    transform(
+      aggregate(
+        cbind(nmae, nrmse, smape, mase) ~ method,
+        data = elcf4r_storenet_benchmark_results,
+        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+      ),
+      dataset = "storenet"
+    ),
+    transform(
+      aggregate(
+        cbind(nmae, nrmse, smape, mase) ~ method,
+        data = elcf4r_lcl_benchmark_results,
+        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+      ),
+      dataset = "lcl"
+    ),
+    transform(
+      aggregate(
+        cbind(nmae, nrmse, smape, mase) ~ method,
+        data = elcf4r_refit_benchmark_results,
+        FUN = function(x) round(mean(x, na.rm = TRUE), 4)
+      ),
+      dataset = "refit"
+    )
+  )
 )
 ```

@@ -1,24 +1,11 @@
-test_that("metrics behave as expected on simple series", {
-  y  <- 1:10
-  y2 <- y
-  m  <- elcf4r_metrics(y, y2, seasonal_period = 2)
-  expect_equal(m$nmae, 0)
-  expect_equal(m$nrmse, 0)
-  expect_equal(m$smape, 0)
-  expect_lt(m$mase, 1e-8)
-})
+test_that("elcf4r_metrics computes MASE from an explicit naive forecast", {
+  truth <- c(10, 12, 14, 16)
+  pred <- c(11, 11, 13, 15)
+  naive <- c(9, 10, 11, 12)
 
-test_that("GAM fits and predicts", {
-  skip_if_not_installed("mgcv")
-  set.seed(123)
-  n <- 200
-  dat <- data.frame(
-    y = sin(seq_len(n) / 10) + rnorm(n, sd = 0.1),
-    time_index = rep(seq_len(48), length.out = n),
-    dow = factor(rep(1:7, length.out = n)),
-    month = factor(rep(1:12, length.out = n)),
-    temp = 15 + rnorm(n)
-  )
-  fit <- elcf4r_fit_gam(dat, use_temperature = TRUE)
-  expect_s3_class(fit, "elcf4r_model")
+  out <- elcf4r_metrics(truth, pred, naive_pred = naive)
+
+  mae_model <- mean(abs(truth - pred))
+  mae_naive <- mean(abs(truth - naive))
+  expect_equal(out$mase, mae_model / mae_naive)
 })

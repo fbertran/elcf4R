@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{iFlex workflow with shipped example data}
+  %\VignetteIndexEntry{iFlex Workflow with Shipped Example Data}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -90,15 +90,24 @@ pred_mars <- predict(
 fit_kwf <- elcf4r_fit_kwf(
   segments = daily$segments[1:10, ],
   covariates = daily$covariates[1:10, , drop = FALSE],
-  target_covariates = daily$covariates[11, , drop = FALSE],
-  use_temperature = TRUE
+  target_covariates = daily$covariates[11, , drop = FALSE]
 )
 pred_kwf <- predict(fit_kwf)
 
+fit_kwf_clustered <- elcf4r_fit_kwf_clustered(
+  segments = daily$segments[1:10, ],
+  covariates = daily$covariates[1:10, , drop = FALSE],
+  target_covariates = daily$covariates[11, , drop = FALSE]
+)
+pred_kwf_clustered <- predict(fit_kwf_clustered)
+
+naive_day <- as.numeric(daily$segments[10, ])
+
 rbind(
-  gam = unlist(elcf4r_metrics(test_long$y, pred_gam)),
-  mars = unlist(elcf4r_metrics(test_long$y, pred_mars)),
-  kwf = unlist(elcf4r_metrics(test_long$y, pred_kwf))
+  gam = unlist(elcf4r_metrics(test_long$y, pred_gam, naive_pred = naive_day)),
+  mars = unlist(elcf4r_metrics(test_long$y, pred_mars, naive_pred = naive_day)),
+  kwf = unlist(elcf4r_metrics(test_long$y, pred_kwf, naive_pred = naive_day)),
+  kwf_clustered = unlist(elcf4r_metrics(test_long$y, pred_kwf_clustered, naive_pred = naive_day))
 )
 ```
 
@@ -117,23 +126,48 @@ fit_lstm <- elcf4r_fit_lstm(
 )
 
 pred_lstm <- predict(fit_lstm)
-unlist(elcf4r_metrics(test_long$y, pred_lstm))
+unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 ```
 
 ```{r, eval = !lstm_available}
 "LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."
 ```
 
+# Run a small rolling benchmark
+
+The package also exposes a reusable rolling-origin benchmark runner that works
+on normalized panels produced by the `elcf4r_read_*()` adapters.
+
+```{r}
+benchmark_index <- elcf4r_build_benchmark_index(
+  elcf4r_iflex_example,
+  carry_cols = c("dataset", "participation_phase", "price_signal")
+)
+
+benchmark_small <- elcf4r_benchmark(
+  panel = elcf4r_iflex_example,
+  benchmark_index = benchmark_index,
+  methods = c("gam", "kwf"),
+  cohort_size = 1,
+  train_days = 10,
+  test_days = 2,
+  include_predictions = FALSE
+)
+
+benchmark_small$results
+```
+
 # Inspect shipped benchmark results
 
 The package also ships precomputed benchmark results on a fixed iFlex cohort.
-In the current build these results cover `gam`, `mars`, `kwf` and `lstm`.
+In the current build these results cover `gam`, `mars`, `kwf`,
+`kwf_clustered` and `lstm`.
 
 ```{r}
 head(elcf4r_iflex_benchmark_results)
 
 aggregate(
-  cbind(nmae, nrmse, smape, fit_seconds) ~ method,
+  cbind(nmae, nrmse, smape, mase, fit_seconds) ~ method,
   data = elcf4r_iflex_benchmark_results,
   FUN = function(x) round(mean(x, na.rm = TRUE), 4)
 )

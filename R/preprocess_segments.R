@@ -11,7 +11,8 @@
 #' @param temp_col Optional name of the temperature column.
 #' @param dataset Short dataset label stored in the normalized output.
 #' @param resolution_minutes Sampling resolution in minutes. If `NULL`, it is
-#'   inferred from the timestamps.
+#'   inferred from the timestamps. Fractional minute values are allowed for
+#'   high-frequency data.
 #' @param tz Time zone used to parse timestamps.
 #' @param keep_cols Optional character vector of extra source columns to keep.
 #'
@@ -65,7 +66,7 @@ elcf4r_normalize_panel <- function(
     temp = if (is.null(temp_col)) rep(NA_real_, n) else as.numeric(data[[temp_col]]),
     dow = calendar$dow,
     month = calendar$month,
-    resolution_minutes = rep_len(as.integer(resolution_minutes), n),
+    resolution_minutes = rep_len(as.numeric(resolution_minutes), n),
     stringsAsFactors = FALSE
   )
 
@@ -186,6 +187,422 @@ elcf4r_read_iflex <- function(
   normalized
 }
 
+#' Read and normalize the StoreNet household dataset
+#'
+#' Read one or more StoreNet-style household CSV files such as `H6_W.csv`,
+#' derive the household identifier from the file name, and return a normalized
+#' long-format panel.
+#'
+#' @param path Path to a StoreNet CSV file or to a directory containing files
+#'   named like `H6_W.csv`.
+#' @param ids Optional vector of household identifiers to keep. Identifiers are
+#'   matched against the file stem, for example `"H6_W"`.
+#' @param start Optional inclusive lower time bound.
+#' @param end Optional inclusive upper time bound.
+#' @param tz Time zone used to parse timestamps.
+#' @param n_max Optional maximum number of rows to read per file.
+#' @param load_col Name of the load column to normalize. Defaults to
+#'   `"Consumption(W)"`.
+#' @param keep_cols Optional extra source columns to keep. Defaults to the
+#'   main battery and production fields when present.
+#'
+#' @return A normalized data frame with StoreNet household data.
+#' @export
+elcf4r_read_storenet <- function(
+    path = file.path("data-raw", "H6_W.csv"),
+    ids = NULL,
+    start = NULL,
+    end = NULL,
+    tz = "UTC",
+    n_max = NULL,
+    load_col = "Consumption(W)",
+    keep_cols = c("Discharge(W)", "Charge(W)", "Production(W)", "State of Charge(%)")
+) {
+  files <- .elcf4r_resolve_dataset_files(
+    path = path,
+    pattern = "^H.*_W\\.csv$",
+    dataset_label = "StoreNet"
+  )
+  file_ids <- tools::file_path_sans_ext(basename(files))
+
+  if (!is.null(ids)) {
+    ids <- as.character(ids)
+    keep_files <- file_ids %in% ids
+    files <- files[keep_files]
+    file_ids <- file_ids[keep_files]
+    if (length(files) == 0L) {
+      stop("No StoreNet files matched `ids`.")
+    }
+  }
+
+  fread_nrows <- if (is.null(n_max)) -1L else as.integer(n_max)
+  if (!is.null(n_max) && (!is.finite(n_max) || n_max < 1L)) {
+    stop("`n_max` must be NULL or a positive integer.")
+  }
+
+  normalized_list <- lapply(
+    seq_along(files),
+    function(i) {
+      dt <- data.table::fread(
+        input = files[[i]],
+        nrows = fread_nrows,
+        showProgress = FALSE
+      )
+      names(dt) <- trimws(names(dt))
+      if (!"date" %in% names(dt)) {
+        stop("StoreNet file is missing a `date` column: ", files[[i]])
+      }
+
+      trimmed_keep <- intersect(trimws(keep_cols), names(dt))
+      trimmed_load <- trimws(load_col)
+
+      dt[["entity_id_source"]] <- file_ids[[i]]
+      dt[["source_file"]] <- basename(files[[i]])
+
+      timestamp <- .elcf4r_parse_timestamp(dt[["date"]], tz = tz)
+      start_bound <- .elcf4r_parse_time_bound(start, tz = tz)
+      end_bound <- .elcf4r_parse_time_bound(end, tz = tz)
+
+      keep_rows <- rep(TRUE, length(timestamp))
+      if (!is.null(start_bound)) {
+        keep_rows <- keep_rows & timestamp >= start_bound
+      }
+      if (!is.null(end_bound)) {
+        keep_rows <- keep_rows & timestamp <= end_bound
+      }
+      dt <- dt[keep_rows, ]
+      dt[["date"]] <- timestamp[keep_rows]
+
+      normalized <- elcf4r_normalize_panel(
+        data = dt,
+        id_col = "entity_id_source",
+        timestamp_col = "date",
+        load_col = trimmed_load,
+        dataset = "storenet",
+        resolution_minutes = 1L,
+        tz = tz,
+        keep_cols = c(trimmed_keep, "source_file")
+      )
+
+      .elcf4r_rename_columns(
+        normalized,
+        c(
+          "Discharge(W)" = "discharge_w",
+          "Charge(W)" = "charge_w",
+          "Production(W)" = "production_w",
+          "State of Charge(%)" = "state_of_charge_pct"
+        )
+      )
+    }
+  )
+
+  normalized <- data.table::rbindlist(normalized_list, use.names = TRUE, fill = TRUE)
+  normalized <- as.data.frame(normalized, stringsAsFactors = FALSE)
+  ord <- order(normalized[["entity_id"]], normalized[["timestamp"]])
+  normalized <- normalized[ord, , drop = FALSE]
+  rownames(normalized) <- NULL
+  normalized
+}
+
+#' Read and normalize the Low Carbon London dataset
+#'
+#' Read a wide Low Carbon London (LCL) smart-meter file and reshape it into a
+#' normalized long-format panel with one row per household timestamp.
+#'
+#' @param path Path to an LCL CSV file or to a directory containing one.
+#' @param ids Optional vector of LCL household identifiers to keep, for example
+#'   `"MAC000002"`.
+#' @param start Optional inclusive lower time bound.
+#' @param end Optional inclusive upper time bound.
+#' @param tz Time zone used to parse timestamps.
+#' @param n_max Optional maximum number of timestamp rows to read.
+#' @param drop_na_load Logical; if `TRUE`, rows with missing load values are
+#'   dropped after reshaping.
+#'
+#' @return A normalized data frame with LCL household data.
+#' @export
+elcf4r_read_lcl <- function(
+    path = file.path("data-raw", "LCL_2013.csv"),
+    ids = NULL,
+    start = NULL,
+    end = NULL,
+    tz = "UTC",
+    n_max = NULL,
+    drop_na_load = TRUE
+) {
+  csv_path <- .elcf4r_resolve_single_dataset_file(
+    path = path,
+    pattern = "^LCL.*\\.csv$",
+    dataset_label = "LCL"
+  )
+  fread_nrows <- if (is.null(n_max)) -1L else as.integer(n_max)
+  if (!is.null(n_max) && (!is.finite(n_max) || n_max < 1L)) {
+    stop("`n_max` must be NULL or a positive integer.")
+  }
+
+  select_cols <- "DateTime"
+  if (!is.null(ids)) {
+    select_cols <- c(select_cols, as.character(ids))
+  }
+
+  dt <- data.table::fread(
+    input = csv_path,
+    select = select_cols,
+    nrows = fread_nrows,
+    showProgress = FALSE,
+    strip.white = TRUE
+  )
+  names(dt) <- trimws(names(dt))
+  if (!"DateTime" %in% names(dt)) {
+    stop("LCL file is missing a `DateTime` column.")
+  }
+
+  load_cols <- setdiff(names(dt), "DateTime")
+  if (length(load_cols) == 0L) {
+    stop("No household load columns were selected from the LCL file.")
+  }
+
+  dt_long <- data.table::melt(
+    data = dt,
+    id.vars = "DateTime",
+    measure.vars = load_cols,
+    variable.name = "entity_id",
+    value.name = "y",
+    variable.factor = FALSE
+  )
+
+  timestamp <- .elcf4r_parse_timestamp(dt_long[["DateTime"]], tz = tz)
+  start_bound <- .elcf4r_parse_time_bound(start, tz = tz)
+  end_bound <- .elcf4r_parse_time_bound(end, tz = tz)
+
+  keep_rows <- rep(TRUE, length(timestamp))
+  if (!is.null(start_bound)) {
+    keep_rows <- keep_rows & timestamp >= start_bound
+  }
+  if (!is.null(end_bound)) {
+    keep_rows <- keep_rows & timestamp <= end_bound
+  }
+  if (isTRUE(drop_na_load)) {
+    keep_rows <- keep_rows & !is.na(suppressWarnings(as.numeric(dt_long[["y"]])))
+  }
+
+  dt_long <- dt_long[keep_rows, ]
+  dt_long[["DateTime"]] <- timestamp[keep_rows]
+
+  normalized <- elcf4r_normalize_panel(
+    data = as.data.frame(dt_long, stringsAsFactors = FALSE),
+    id_col = "entity_id",
+    timestamp_col = "DateTime",
+    load_col = "y",
+    dataset = "lcl",
+    resolution_minutes = 30L,
+    tz = tz
+  )
+
+  ord <- order(normalized[["entity_id"]], normalized[["timestamp"]])
+  normalized <- normalized[ord, , drop = FALSE]
+  rownames(normalized) <- NULL
+  normalized
+}
+
+#' Read and normalize the REFIT cleaned household dataset
+#'
+#' Read one or more `CLEAN_House*.csv` files from the REFIT dataset, optionally
+#' select appliance channels, resample them to a regular time grid, and return a
+#' normalized long-format panel.
+#'
+#' @param path Path to a REFIT file or to a directory containing
+#'   `CLEAN_House*.csv` files.
+#' @param house_ids Optional vector of house identifiers to keep. These are
+#'   matched against file stems such as `"CLEAN_House1"`.
+#' @param channels Character vector of load channels to extract. Defaults to
+#'   `"Aggregate"`.
+#' @param start Optional inclusive lower time bound.
+#' @param end Optional inclusive upper time bound.
+#' @param tz Time zone used to parse timestamps.
+#' @param resolution_minutes Target regular resolution in minutes for the
+#'   normalized output. Defaults to `1`.
+#' @param agg_fun Aggregation used when resampling to the target grid. One of
+#'   `"mean"`, `"sum"` or `"last"`.
+#' @param n_max Optional maximum number of raw rows to read per file.
+#' @param drop_na_load Logical; if `TRUE`, rows with missing load values are
+#'   dropped after resampling.
+#'
+#' @return A normalized data frame with REFIT household data.
+#' @export
+elcf4r_read_refit <- function(
+    path = "data-raw",
+    house_ids = NULL,
+    channels = "Aggregate",
+    start = NULL,
+    end = NULL,
+    tz = "UTC",
+    resolution_minutes = 1L,
+    agg_fun = c("mean", "sum", "last"),
+    n_max = NULL,
+    drop_na_load = TRUE
+) {
+  agg_fun <- match.arg(agg_fun)
+  files <- .elcf4r_resolve_dataset_files(
+    path = path,
+    pattern = "^CLEAN_House[0-9]+\\.csv$",
+    dataset_label = "REFIT"
+  )
+  file_ids <- tools::file_path_sans_ext(basename(files))
+
+  if (!is.null(house_ids)) {
+    house_ids <- as.character(house_ids)
+    keep_files <- file_ids %in% house_ids | sub("^CLEAN_", "", file_ids) %in% house_ids
+    files <- files[keep_files]
+    file_ids <- file_ids[keep_files]
+    if (length(files) == 0L) {
+      stop("No REFIT files matched `house_ids`.")
+    }
+  }
+
+  fread_nrows <- if (is.null(n_max)) -1L else as.integer(n_max)
+  if (!is.null(n_max) && (!is.finite(n_max) || n_max < 1L)) {
+    stop("`n_max` must be NULL or a positive integer.")
+  }
+
+  long_list <- lapply(
+    seq_along(files),
+    function(i) {
+      select_cols <- unique(c("Time", "Unix", "Issues", channels))
+      dt <- data.table::fread(
+        input = files[[i]],
+        select = select_cols,
+        nrows = fread_nrows,
+        showProgress = FALSE
+      )
+      names(dt) <- trimws(names(dt))
+      missing_channels <- setdiff(channels, names(dt))
+      if (length(missing_channels) > 0L) {
+        stop(
+          "REFIT file ", basename(files[[i]]),
+          " is missing channels: ", paste(missing_channels, collapse = ", ")
+        )
+      }
+      for (channel in channels) {
+        dt[[channel]] <- as.numeric(dt[[channel]])
+      }
+
+      dt_long <- data.table::melt(
+        data = dt,
+        id.vars = intersect(c("Time", "Unix", "Issues"), names(dt)),
+        measure.vars = channels,
+        variable.name = "channel",
+        value.name = "y",
+        variable.factor = FALSE
+      )
+
+      timestamp <- .elcf4r_parse_timestamp(dt_long[["Time"]], tz = tz)
+      start_bound <- .elcf4r_parse_time_bound(start, tz = tz)
+      end_bound <- .elcf4r_parse_time_bound(end, tz = tz)
+
+      keep_rows <- rep(TRUE, length(timestamp))
+      if (!is.null(start_bound)) {
+        keep_rows <- keep_rows & timestamp >= start_bound
+      }
+      if (!is.null(end_bound)) {
+        keep_rows <- keep_rows & timestamp <= end_bound
+      }
+
+      dt_long <- dt_long[keep_rows, ]
+      timestamp <- timestamp[keep_rows]
+
+      dt_long[["house_id"]] <- file_ids[[i]]
+      if (length(channels) == 1L && identical(channels[[1L]], "Aggregate")) {
+        dt_long[["entity_id"]] <- file_ids[[i]]
+      } else {
+        dt_long[["entity_id"]] <- paste(file_ids[[i]], dt_long[["channel"]], sep = "::")
+      }
+      dt_long[["bucket_time"]] <- .elcf4r_floor_timestamp(
+        timestamp = timestamp,
+        resolution_minutes = resolution_minutes,
+        tz = tz
+      )
+
+      aggregate_value <- .elcf4r_match_agg_fun(agg_fun)
+      dt_long <- as.data.frame(dt_long, stringsAsFactors = FALSE)
+      group_index <- split(
+        seq_len(nrow(dt_long)),
+        interaction(
+          dt_long[["entity_id"]],
+          dt_long[["house_id"]],
+          dt_long[["channel"]],
+          dt_long[["bucket_time"]],
+          drop = TRUE,
+          lex.order = TRUE
+        )
+      )
+
+      resampled <- do.call(
+        rbind,
+        lapply(
+          group_index,
+          function(idx) {
+            group <- dt_long[idx, , drop = FALSE]
+            unix_value <- if ("Unix" %in% names(group)) {
+              suppressWarnings(min(as.numeric(group[["Unix"]]), na.rm = TRUE))
+            } else {
+              NA_real_
+            }
+            issues_value <- if ("Issues" %in% names(group)) {
+              suppressWarnings(max(as.numeric(group[["Issues"]]), na.rm = TRUE))
+            } else {
+              NA_real_
+            }
+            data.frame(
+              entity_id = group[["entity_id"]][1L],
+              house_id = group[["house_id"]][1L],
+              channel = group[["channel"]][1L],
+              bucket_time = group[["bucket_time"]][1L],
+              y = aggregate_value(group[["y"]]),
+              unix = unix_value,
+              issues = issues_value,
+              stringsAsFactors = FALSE
+            )
+          }
+        )
+      )
+
+      bad_inf <- !is.finite(resampled[["unix"]])
+      if (any(bad_inf)) {
+        resampled[["unix"]][bad_inf] <- NA_real_
+      }
+      bad_inf <- !is.finite(resampled[["issues"]])
+      if (any(bad_inf)) {
+        resampled[["issues"]][bad_inf] <- NA_real_
+      }
+
+      as.data.frame(resampled, stringsAsFactors = FALSE)
+    }
+  )
+
+  raw_long <- data.table::rbindlist(long_list, use.names = TRUE, fill = TRUE)
+  raw_long <- as.data.frame(raw_long, stringsAsFactors = FALSE)
+  if (isTRUE(drop_na_load)) {
+    raw_long <- raw_long[!is.na(raw_long[["y"]]), , drop = FALSE]
+  }
+
+  normalized <- elcf4r_normalize_panel(
+    data = raw_long,
+    id_col = "entity_id",
+    timestamp_col = "bucket_time",
+    load_col = "y",
+    dataset = "refit",
+    resolution_minutes = resolution_minutes,
+    tz = tz,
+    keep_cols = c("house_id", "channel", "unix", "issues")
+  )
+
+  ord <- order(normalized[["entity_id"]], normalized[["timestamp"]])
+  normalized <- normalized[ord, , drop = FALSE]
+  rownames(normalized) <- NULL
+  normalized
+}
+
 #' Build daily load-curve segments from a normalized panel
 #'
 #' Convert a long-format load table into one row per entity-day and one column
@@ -203,7 +620,8 @@ elcf4r_read_iflex <- function(
 #' @param expected_points_per_day Expected number of samples per day. If `NULL`,
 #'   it is derived from `resolution_minutes`.
 #' @param resolution_minutes Sampling resolution in minutes. If `NULL`, it is
-#'   inferred from timestamps or from a `resolution_minutes` column.
+#'   inferred from timestamps or from a `resolution_minutes` column. Fractional
+#'   minute values are allowed.
 #' @param complete_days_only If `TRUE`, incomplete or duplicated days are
 #'   dropped from the output.
 #' @param drop_na_value If `TRUE`, days with missing load values are dropped.
@@ -256,7 +674,7 @@ elcf4r_build_daily_segments <- function(
 
   timestamp <- .elcf4r_parse_timestamp(data[[timestamp_col]], tz = tz)
   if (is.null(resolution_minutes) && "resolution_minutes" %in% names(data)) {
-    known_resolution <- unique(stats::na.omit(as.integer(data[["resolution_minutes"]])))
+    known_resolution <- unique(stats::na.omit(as.numeric(data[["resolution_minutes"]])))
     if (length(known_resolution) > 0L) {
       resolution_minutes <- known_resolution[1L]
     }
@@ -381,7 +799,7 @@ elcf4r_build_daily_segments <- function(
   list(
     segments = segments,
     covariates = covariates,
-    resolution_minutes = as.integer(resolution_minutes),
+    resolution_minutes = as.numeric(resolution_minutes),
     points_per_day = as.integer(expected_points_per_day)
   )
 }
@@ -394,6 +812,83 @@ elcf4r_build_daily_segments <- function(
     stop("Cannot find iFlex hourly data at ", path)
   }
   path
+}
+
+.elcf4r_resolve_dataset_files <- function(path, pattern, dataset_label) {
+  if (length(path) > 1L) {
+    files <- path
+  } else if (dir.exists(path)) {
+    files <- list.files(path, pattern = pattern, full.names = TRUE)
+  } else {
+    files <- path
+  }
+
+  files <- files[file.exists(files)]
+  if (length(files) == 0L) {
+    stop("Cannot find ", dataset_label, " data at ", path)
+  }
+
+  sort(unique(files))
+}
+
+.elcf4r_resolve_single_dataset_file <- function(path, pattern, dataset_label) {
+  files <- .elcf4r_resolve_dataset_files(path, pattern, dataset_label)
+  if (length(files) > 1L) {
+    stop("Expected one ", dataset_label, " file but found ", length(files), ".")
+  }
+  files[[1L]]
+}
+
+.elcf4r_rename_columns <- function(data, rename_map) {
+  old_names <- names(rename_map)
+  matched <- old_names[old_names %in% names(data)]
+  if (length(matched) > 0L) {
+    names(data)[match(matched, names(data))] <- unname(rename_map[matched])
+  }
+  data
+}
+
+.elcf4r_floor_timestamp <- function(timestamp, resolution_minutes, tz = "UTC") {
+  bucket_seconds <- as.numeric(resolution_minutes) * 60
+  if (!is.finite(bucket_seconds) || bucket_seconds <= 0) {
+    stop("`resolution_minutes` must be positive.")
+  }
+  as.POSIXct(
+    floor(as.numeric(timestamp) / bucket_seconds) * bucket_seconds,
+    origin = "1970-01-01",
+    tz = tz
+  )
+}
+
+.elcf4r_match_agg_fun <- function(agg_fun) {
+  switch(
+    agg_fun,
+    mean = function(x) {
+      x <- as.numeric(x)
+      x <- x[!is.na(x)]
+      if (length(x) == 0L) {
+        return(NA_real_)
+      }
+      mean(x)
+    },
+    sum = function(x) {
+      x <- as.numeric(x)
+      x <- x[!is.na(x)]
+      if (length(x) == 0L) {
+        return(NA_real_)
+      }
+      sum(x)
+    },
+    last = function(x) {
+      x <- as.numeric(x)
+      x <- x[!is.na(x)]
+      if (length(x) == 0L) {
+        return(NA_real_)
+      }
+      x[[length(x)]]
+    },
+    stop("Unknown aggregation function `", agg_fun, "`.")
+  )
 }
 
 .elcf4r_parse_time_bound <- function(x, tz = "UTC") {
@@ -432,43 +927,41 @@ elcf4r_build_daily_segments <- function(
 }
 
 .elcf4r_infer_resolution_minutes <- function(timestamp) {
-  timestamp <- sort(unique(as.numeric(timestamp)))
-  if (length(timestamp) < 2L) {
+  timestamp_seconds <- sort(unique(as.numeric(timestamp)))
+  if (length(timestamp_seconds) < 2L) {
     stop("At least two timestamps are required to infer a resolution.")
   }
 
-  diffs_min <- diff(timestamp) / 60
-  diffs_min <- diffs_min[is.finite(diffs_min) & diffs_min > 0]
-  if (length(diffs_min) == 0L) {
+  diffs_sec <- round(diff(timestamp_seconds))
+  diffs_sec <- diffs_sec[is.finite(diffs_sec) & diffs_sec > 0]
+  if (length(diffs_sec) == 0L) {
     stop("Could not infer a positive sampling resolution from timestamps.")
   }
 
-  resolution_minutes <- min(diffs_min)
-  rounded <- round(resolution_minutes)
-  if (!isTRUE(all.equal(resolution_minutes, rounded))) {
-    stop("Sampling resolution is not an integer number of minutes.")
-  }
-
-  as.integer(rounded)
+  diff_table <- sort(table(diffs_sec), decreasing = TRUE)
+  resolution_seconds <- as.numeric(names(diff_table)[1L])
+  resolution_seconds / 60
 }
 
 .elcf4r_points_per_day <- function(resolution_minutes) {
-  if (is.null(resolution_minutes) || is.na(resolution_minutes) || resolution_minutes <= 0L) {
-    stop("`resolution_minutes` must be a positive integer.")
+  if (is.null(resolution_minutes) || is.na(resolution_minutes) || resolution_minutes <= 0) {
+    stop("`resolution_minutes` must be positive.")
   }
-  minutes_per_day <- 24L * 60L
-  if (minutes_per_day %% resolution_minutes != 0L) {
+  minutes_per_day <- 24 * 60
+  points <- minutes_per_day / as.numeric(resolution_minutes)
+  if (!isTRUE(all.equal(points, round(points), tolerance = 1e-8))) {
     stop("`resolution_minutes` must divide exactly into 24 hours.")
   }
-  as.integer(minutes_per_day / resolution_minutes)
+  as.integer(round(points))
 }
 
 .elcf4r_compute_time_index <- function(timestamp, resolution_minutes, tz = "UTC") {
   midnight <- as.POSIXct(as.Date(timestamp, tz = tz), tz = tz)
-  minutes_since_midnight <- as.integer(
-    difftime(timestamp, midnight, units = "mins")
+  seconds_since_midnight <- as.numeric(
+    difftime(timestamp, midnight, units = "secs")
   )
-  as.integer(floor(minutes_since_midnight / resolution_minutes) + 1L)
+  resolution_seconds <- as.numeric(resolution_minutes) * 60
+  as.integer(floor((seconds_since_midnight + 1e-8) / resolution_seconds) + 1L)
 }
 
 .elcf4r_calendar_features <- function(timestamp, tz = "UTC") {

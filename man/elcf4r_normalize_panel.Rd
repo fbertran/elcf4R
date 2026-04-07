@@ -31,7 +31,8 @@ stamp and a load column.}
 \item{dataset}{Short dataset label stored in the normalized output.}
 
 \item{resolution_minutes}{Sampling resolution in minutes. If \code{NULL}, it is
-inferred from the timestamps.}
+inferred from the timestamps. Fractional minute values are allowed for
+high-frequency data.}
 
 \item{tz}{Time zone used to parse timestamps.}
 

@@ -4,19 +4,23 @@
 \name{elcf4R-package}
 \alias{elcf4R}
 \alias{elcf4R-package}
-\title{elcf4R-package}
+\title{Forecasting Individual Electricity Load Curves}
 \description{
-Implements Kernel Wavelet Functional (KWF), Generalized Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS) and RNN LSTM models to forecast individual electricity load curves, following the methodology described in Fahs (2023) and related articles and posters. Includes small demo datasets and helper functions to download large public datasets such as ELMAS, StoreNet Ireland and IDEAL.
-}
-\examples{
-# TODO
-
-}
-\references{
-TODO
+\code{elcf4R} provides methods and supporting workflows for day-ahead forecasting
+of individual electricity load curves. The current package surface includes
+Kernel Wavelet Functional models, clustered KWF, GAM, MARS and LSTM
+estimators, dataset adapters for iFlex, StoreNet, Low Carbon London and
+REFIT, helpers to build daily segments, and rolling-origin benchmarking
+utilities.
 }
 \seealso{
-TODO
+Useful links:
+\itemize{
+  \item \url{https://fbertran.github.io/eclf4R/}
+  \item \url{https://github.com/fbertran/eclf4R}
+  \item Report bugs at \url{https://github.com/fbertran/eclf4R/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Frederic Bertrand \email{frederic.bertrand@lecnam.net} (\href{https://orcid.org/0000-0002-0837-8281}{ORCID})

@@ -2,18 +2,44 @@
 % Please edit documentation in R/download_datasets.R
 \name{elcf4r_download_storenet}
 \alias{elcf4r_download_storenet}
-\title{Download the StoreNet Ireland dataset}
+\title{Download one or more StoreNet household files from figshare}
 \usage{
-elcf4r_download_storenet(dest_dir = tempdir())
+elcf4r_download_storenet(
+  dest_dir = tempdir(),
+  ids = "H6_W",
+  article_ids = NULL,
+  overwrite = FALSE,
+  archive_url = "https://figshare.com/ndownloader/files/45123456"
+)
 }
 \arguments{
-\item{dest_dir}{Directory where the files should be unpacked.
-Defaults to a temporary directory.}
+\item{dest_dir}{Directory where the downloaded files should be stored.}
+
+\item{ids}{Character vector of StoreNet household identifiers, for example
+\code{"H6_W"}. Use \code{NULL} to extract every \verb{H*_W.csv} file from the archive.}
+
+\item{article_ids}{Optional named integer vector that maps each requested
+household identifier to a figshare article ID. When \code{NULL}, the built-in
+mapping is used.}
+
+\item{overwrite}{Logical; if \code{TRUE}, existing local files are replaced.}
+
+\item{archive_url}{Optional figshare archive download URL used when a
+requested identifier is not present in the article-ID mapping.}
 }
 \value{
-Paths to extracted files.
+A character vector with the downloaded local file paths.
 }
 \description{
-This function downloads the StoreNet electrical load profiles for
-an energy community in Ireland from the authors repository.
+Download one or more StoreNet household files such as \code{H6_W.csv} into a
+local directory. The helper uses the figshare article API to resolve the
+actual file download URL when household-level article IDs are available.
+Otherwise it falls back to the public StoreNet archive and extracts the
+requested household files into \code{dest_dir}.
+}
+\details{
+The default mapping currently covers the \code{H6_W} household file used by the
+package examples. Additional households can be downloaded either by
+providing a named \code{article_ids} vector or by relying on the public archive
+fallback.
 }

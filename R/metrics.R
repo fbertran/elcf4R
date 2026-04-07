@@ -8,10 +8,14 @@
 #' @param seasonal_period Seasonal period for the naive benchmark in
 #'   the MASE denominator (for daily curves with half hourly sampling,
 #'   a value of 48 is appropriate).
+#' @param naive_pred Optional numeric vector or matrix of naive benchmark
+#'   predictions with the same shape as `truth`. When supplied, MASE is computed
+#'   against this explicit naive forecast instead of inferring the denominator
+#'   from `seasonal_period` within `truth`.
 #'
 #' @return A named list with elements `nmae`, `nrmse`, `smape`, `mase`.
 #' @export
-elcf4r_metrics <- function(truth, pred, seasonal_period = NULL) {
+elcf4r_metrics <- function(truth, pred, seasonal_period = NULL, naive_pred = NULL) {
   truth <- as.numeric(truth)
   pred  <- as.numeric(pred)
   stopifnot(length(truth) == length(pred))
@@ -29,7 +33,13 @@ elcf4r_metrics <- function(truth, pred, seasonal_period = NULL) {
     na.rm = TRUE
   )
   
-  if (!is.null(seasonal_period)) {
+  if (!is.null(naive_pred)) {
+    naive_pred <- as.numeric(naive_pred)
+    stopifnot(length(naive_pred) == length(truth))
+    naive_err <- abs(truth - naive_pred)
+    scale_err <- mean(naive_err, na.rm = TRUE)
+    mase <- if (is.finite(scale_err) && scale_err > 0) mae / scale_err else NA_real_
+  } else if (!is.null(seasonal_period)) {
     # naive seasonal: Y_{t} = Y_{t - m}
     if (n <= seasonal_period) {
       mase <- NA_real_
