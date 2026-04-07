@@ -29,16 +29,14 @@ Authors@R: c(
 	person(given = "Myriam", family= "Maumy-Bertrand", role = c("aut"), email = "myriam.maumy@ehesp.fr", comment = c(ORCID = "0000-0002-4615-1512")))
 Author: Frederic Bertrand [cre, aut] (<https://orcid.org/0000-0002-0837-8281>), Fatima Fahs [aut], Myriam Maumy-Bertrand [aut] (<https://orcid.org/0000-0002-4615-1512>)
 Maintainer: Frederic Bertrand <frederic.bertrand@lecnam.net>
-Description: Implements Kernel Wavelet Functional (KWF),
-    clustered KWF, Generalized Additive Models (GAM), Multivariate
-    Adaptive Regression Splines (MARS) and RNN LSTM models to
-    forecast individual electricity load curves, following the
-    methodology described in Fahs (2023) and related articles and
-    posters. Includes normalized dataset adapters for iFlex,
-    StoreNet, Low Carbon London and REFIT, scaffolded download/read
-    support for IDEAL and GX, daily segmentation and rolling-origin
-    benchmark helpers, compact shipped example panels, and saved
-    benchmark-result datasets.
+Description: Provides forecasting methods for individual electricity load
+    curves, including Kernel Wavelet Functional (KWF), clustered KWF,
+    Generalized Additive Models (GAM), Multivariate Adaptive Regression
+    Splines (MARS), and Long Short-Term Memory (LSTM) models. Also includes
+    normalized dataset adapters for iFlex, StoreNet, Low Carbon London, and
+    REFIT; scaffolded download and read support for IDEAL and GX; helpers for
+    daily segmentation and rolling-origin benchmarking; and compact shipped
+    example panels and benchmark-result datasets.
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr
