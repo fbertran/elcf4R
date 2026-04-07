@@ -119,31 +119,19 @@ An object of class `elcf4r_benchmark` with elements `results`,
 ``` r
 bench <- elcf4r_benchmark(
   panel = elcf4r_iflex_example,
-  methods = c("gam", "kwf"),
+  methods = "gam",
   cohort_size = 1,
-  train_days = 10,
-  test_days = 2,
-  include_predictions = FALSE
+  train_days = 5,
+  test_days = 1,
+  include_predictions = TRUE
 )
 head(bench$results)
-#>                                 benchmark_name dataset entity_id method
-#> 1 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    gam
-#> 2 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    kwf
-#> 3 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    gam
-#> 4 iflex_hourly_1_ids_10_train_2_test_2_methods   iflex     Exp_1    kwf
+#>                                benchmark_name dataset entity_id method
+#> 1 iflex_hourly_1_ids_5_train_1_test_1_methods   iflex     Exp_1    gam
 #>    test_date train_start  train_end train_days test_points use_temperature
-#> 1 2020-01-16  2020-01-06 2020-01-15         10          24            TRUE
-#> 2 2020-01-16  2020-01-06 2020-01-15         10          24            TRUE
-#> 3 2020-01-17  2020-01-07 2020-01-16         10          24            TRUE
-#> 4 2020-01-17  2020-01-07 2020-01-16         10          24            TRUE
+#> 1 2020-01-11  2020-01-06 2020-01-10          5          24            TRUE
 #>   thermosensitive     thermosensitivity_status thermosensitivity_ratio
 #> 1              NA insufficient_summer_coverage                      NA
-#> 2              NA insufficient_summer_coverage                      NA
-#> 3              NA insufficient_summer_coverage                      NA
-#> 4              NA insufficient_summer_coverage                      NA
-#>   fit_seconds status error_message      nmae     nrmse     smape      mase
-#> 1       0.052     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
-#> 2       0.021     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
-#> 3       0.019     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
-#> 4       0.013     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
+#>   fit_seconds status error_message      nmae     nrmse     smape     mase
+#> 1       0.052     ok          <NA> 0.2259297 0.2786247 0.2001384 1.110694
 ```

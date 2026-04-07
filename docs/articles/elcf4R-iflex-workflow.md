@@ -130,7 +130,7 @@ fit_lstm <- elcf4r_fit_lstm(
 pred_lstm <- predict(fit_lstm)
 unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 #>      nmae     nrmse     smape      mase 
-#> 0.2247825 0.2573687 0.2088922 1.0628101
+#> 0.2246107 0.2551583 0.2088074 1.0619975
 ```
 
 ``` r
@@ -177,7 +177,7 @@ benchmark_small$results
 #>   fit_seconds status error_message      nmae     nrmse     smape      mase
 #> 1       0.018     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
 #> 2       0.012     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
-#> 3       0.018     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
+#> 3       0.019     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
 #> 4       0.012     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
 ```
 

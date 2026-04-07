@@ -1,4 +1,4 @@
-# eclf4R 0.4.0
+# elcf4R 0.4.0
 
 * Added scaffolded download/read support for IDEAL through
   `elcf4r_download_ideal()` and `elcf4r_read_ideal()`, focused on extracted
@@ -15,7 +15,7 @@
   scaffold with explicit licence re-verification guidance before
   redistribution.
 
-# eclf4R 0.3.0
+# elcf4R 0.3.0
 
 * Replaced the previous KWF baseline with a wavelet-based implementation using
   `wavelets`, deterministic calendar groups, kernel weighting and
@@ -51,7 +51,7 @@
   GX is treated as a secondary transformer-level benchmark candidate that
   requires explicit licence re-verification before any shipped subset is added.
 
-# eclf4R 0.2.0
+# elcf4R 0.2.0
 
 * Added an iFlex preprocessing pipeline with normalized panel readers,
   daily-segment builders, compact shipped example data, and saved benchmark
@@ -65,7 +65,7 @@
 * Cleaned up package metadata, namespace declarations, tests, and examples so
   package checks now pass apart from environment-specific CRAN notes.
 
-# eclf4R 0.1.0
+# elcf4R 0.1.0
 
 * Package creation and initial release containing estimators,
   autoplot helpers, and reliability utilities.

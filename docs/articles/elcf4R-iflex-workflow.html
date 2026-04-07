@@ -199,7 +199,7 @@ benchmark results.</li>
 <span><span class="va">pred_lstm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_lstm</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="../reference/elcf4r_metrics.html">elcf4r_metrics</a></span><span class="op">(</span><span class="va">test_long</span><span class="op">$</span><span class="va">y</span>, <span class="va">pred_lstm</span>, naive_pred <span class="op">=</span> <span class="va">naive_day</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      nmae     nrmse     smape      mase </span></span>
-<span><span class="co">#&gt; 0.2247825 0.2573687 0.2088922 1.0628101</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.2246107 0.2551583 0.2088074 1.0619975</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="st">"LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."</span></span></code></pre></div>
 </div>
@@ -244,7 +244,7 @@ that works on normalized panels produced by the
 <span><span class="co">#&gt;   fit_seconds status error_message      nmae     nrmse     smape      mase</span></span>
 <span><span class="co">#&gt; 1       0.018     ok          &lt;NA&gt; 0.1961463 0.2355394 0.1796715 0.9274129</span></span>
 <span><span class="co">#&gt; 2       0.012     ok          &lt;NA&gt; 0.1404839 0.1821267 0.1394477 0.6642319</span></span>
-<span><span class="co">#&gt; 3       0.018     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
+<span><span class="co">#&gt; 3       0.019     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
 <span><span class="co">#&gt; 4       0.012     ok          &lt;NA&gt; 0.5393512 0.6402973 0.2242763 2.0267394</span></span></code></pre></div>
 </div>
 <div class="section level2">

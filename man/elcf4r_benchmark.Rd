@@ -82,11 +82,11 @@ and returns both aggregate scores and, optionally, saved point forecasts.
 \examples{
 bench <- elcf4r_benchmark(
   panel = elcf4r_iflex_example,
-  methods = c("gam", "kwf"),
+  methods = "gam",
   cohort_size = 1,
-  train_days = 10,
-  test_days = 2,
-  include_predictions = FALSE
+  train_days = 5,
+  test_days = 1,
+  include_predictions = TRUE
 )
 head(bench$results)
 }

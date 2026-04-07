@@ -1,4 +1,4 @@
-# eclf4R: Forecasting Individual Electricity Load Curves ![](reference/figures/eclf4R_hex.svg)
+# eclf4R: Forecasting Individual Electricity Load Curves ![](reference/figures/elcf4R_hex.svg)
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 

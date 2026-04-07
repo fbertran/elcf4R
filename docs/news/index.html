@@ -37,7 +37,40 @@
       <small>Source: <a href="https://github.com/fbertran/eclf4R/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-  </main></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="elcf4r-040">elcf4R 0.4.0<a class="anchor" aria-label="anchor" href="#elcf4r-040"></a></h2>
+<ul><li>Added scaffolded download/read support for IDEAL through <code><a href="../reference/elcf4r_download_ideal.html">elcf4r_download_ideal()</a></code> and <code><a href="../reference/elcf4r_read_ideal.html">elcf4r_read_ideal()</a></code>, focused on extracted hourly aggregate-electricity summaries from <code>auxiliarydata.zip</code>.</li>
+<li>Added scaffolded download/read support for GX through <code><a href="../reference/elcf4r_download_gx.html">elcf4r_download_gx()</a></code> and <code><a href="../reference/elcf4r_read_gx.html">elcf4r_read_gx()</a></code>, with support for either the official SQLite database or flat exports normalized into the common panel schema.</li>
+<li>Added offline tests for IDEAL and GX download-resolution helpers and normalization readers, including GX SQLite-table detection.</li>
+<li>Updated package docs and the dataset vignette to describe IDEAL as an unshipped household-level scaffold under the current <code>CC BY 4.0</code> source record, and GX as an unshipped secondary transformer/community-level scaffold with explicit licence re-verification guidance before redistribution.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="elcf4r-030">elcf4R 0.3.0<a class="anchor" aria-label="anchor" href="#elcf4r-030"></a></h2>
+<ul><li>Replaced the previous KWF baseline with a wavelet-based implementation using <code>wavelets</code>, deterministic calendar groups, kernel weighting and approximation/detail mean correction.</li>
+<li>Replaced the unused <code>src/kwf_core.cpp</code> placeholder with compiled KWF helper routines for distances, kernel weights, group restriction and mean-corrected forecasts, and wired the R KWF path to those accelerators.</li>
+<li>Added a first-class clustered KWF workflow with thermosensitivity classification, wavelet-feature clustering helpers, cluster assignment, and a dedicated <code><a href="../reference/elcf4r_fit_kwf_clustered.html">elcf4r_fit_kwf_clustered()</a></code> model path.</li>
+<li>Generalized dataset ingestion around a common normalized panel schema and added dataset adapters for iFlex, StoreNet, Low Carbon London and REFIT.</li>
+<li>Implemented <code><a href="../reference/elcf4r_download_storenet.html">elcf4r_download_storenet()</a></code> with figshare API resolution for known household article IDs and an archive fallback for broader StoreNet retrieval.</li>
+<li>Added a generic rolling-origin benchmark API through <code><a href="../reference/elcf4r_build_benchmark_index.html">elcf4r_build_benchmark_index()</a></code> and <code><a href="../reference/elcf4r_benchmark.html">elcf4r_benchmark()</a></code>, with saved predictions, backend metadata and support for <code>gam</code>, <code>mars</code>, <code>kwf</code>, <code>kwf_clustered</code> and <code>lstm</code>.</li>
+<li>Completed benchmark metric coverage so shipped benchmark artifacts now carry populated NMAE, NRMSE, sMAPE and MASE values for all shipped result rows.</li>
+<li>Added shipped example panels and saved benchmark-result datasets for StoreNet, Low Carbon London and REFIT, complementing the existing iFlex example and benchmark artifacts.</li>
+<li>Expanded the shipped benchmark cohorts to stronger rolling windows: iFlex now uses 15 households with 28 train days and 7 test days; the shipped LCL and REFIT benchmark cohorts are now filtered to thermosensitive seasonal windows so <code>kwf_clustered</code> rows are benchmarked rather than skipped.</li>
+<li>Reworked dataset-facing documentation to describe the supported reader surface, shipped artifacts and reproducible <code>data-raw/</code> rebuild scripts.</li>
+<li>Clarified the dataset roadmap around IDEAL and GX: IDEAL is a future candidate dataset with a currently verified CC BY 4.0 source record, while GX is treated as a secondary transformer-level benchmark candidate that requires explicit licence re-verification before any shipped subset is added.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="elcf4r-020">elcf4R 0.2.0<a class="anchor" aria-label="anchor" href="#elcf4r-020"></a></h2>
+<ul><li>Added an iFlex preprocessing pipeline with normalized panel readers, daily-segment builders, compact shipped example data, and saved benchmark result datasets.</li>
+<li>Added package documentation and vignettes for the shipped iFlex workflows and benchmark outputs, and documented the bundled <code>elcf4r_elmas_toy</code> dataset.</li>
+<li>Replaced the placeholder KWF/LSTM paths with working model wrappers, unified <code><a href="../reference/predict.elcf4r_model.html">predict.elcf4r_model()</a></code>, and migrated the LSTM implementation to <code>keras3</code> with automatic detection of the <code>r-tensorflow</code> virtualenv.</li>
+<li>Cleaned up package metadata, namespace declarations, tests, and examples so package checks now pass apart from environment-specific CRAN notes.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="elcf4r-010">elcf4R 0.1.0<a class="anchor" aria-label="anchor" href="#elcf4r-010"></a></h2>
+<ul><li>Package creation and initial release containing estimators, autoplot helpers, and reliability utilities.</li>
+</ul></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

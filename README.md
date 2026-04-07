@@ -1,7 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
-# eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/eclf4R_hex.svg" align="right" width="200"/>
+# eclf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/elcf4R_hex.svg" align="right" width="200"/>
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
