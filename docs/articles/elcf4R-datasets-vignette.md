@@ -5,10 +5,10 @@
 `elcf4R` now supports four household-oriented public data sources
 through a common normalized panel schema:
 
-- [`elcf4r_read_iflex()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_iflex.md)
-- [`elcf4r_read_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_storenet.md)
-- [`elcf4r_read_lcl()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_lcl.md)
-- [`elcf4r_read_refit()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_refit.md)
+- [`elcf4r_read_iflex()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_iflex.md)
+- [`elcf4r_read_storenet()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_storenet.md)
+- [`elcf4r_read_lcl()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_lcl.md)
+- [`elcf4r_read_refit()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_refit.md)
 
 The package also ships compact example panels and saved benchmark
 results so the main vignettes run without external downloads. Raw source
@@ -17,13 +17,13 @@ unless a compact derived artifact has been explicitly built and saved.
 
 Two additional unshipped scaffolds are also available:
 
-- [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md)
+- [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md)
   /
-  [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md)
+  [`elcf4r_read_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_ideal.md)
   for aggregate-electricity hourly summaries from IDEAL.
-- [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md)
+- [`elcf4r_download_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_gx.md)
   /
-  [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md)
+  [`elcf4r_read_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_gx.md)
   for the GX transformer/community-level dataset.
 
 ## Supported dataset matrix
@@ -32,10 +32,10 @@ The current dataset surface is:
 
 | Dataset | Reader | Resolution | Temperature in normalized panel | Shipped example | Shipped benchmark |
 |:---|:---|:---|:---|:---|:---|
-| iFlex | [`elcf4r_read_iflex()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_iflex.md) | hourly | yes | `elcf4r_iflex_example` | `elcf4r_iflex_benchmark_results` |
-| StoreNet (`H6_W`) | [`elcf4r_read_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_storenet.md) | 1 minute | optional, source-dependent | `elcf4r_storenet_example` | `elcf4r_storenet_benchmark_results` |
-| Low Carbon London | [`elcf4r_read_lcl()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_lcl.md) | 30 minutes | no | `elcf4r_lcl_example` | `elcf4r_lcl_benchmark_results` |
-| REFIT | [`elcf4r_read_refit()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_refit.md) | user-selected resample | no | `elcf4r_refit_example` | `elcf4r_refit_benchmark_results` |
+| iFlex | [`elcf4r_read_iflex()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_iflex.md) | hourly | yes | `elcf4r_iflex_example` | `elcf4r_iflex_benchmark_results` |
+| StoreNet (`H6_W`) | [`elcf4r_read_storenet()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_storenet.md) | 1 minute | optional, source-dependent | `elcf4r_storenet_example` | `elcf4r_storenet_benchmark_results` |
+| Low Carbon London | [`elcf4r_read_lcl()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_lcl.md) | 30 minutes | no | `elcf4r_lcl_example` | `elcf4r_lcl_benchmark_results` |
+| REFIT | [`elcf4r_read_refit()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_refit.md) | user-selected resample | no | `elcf4r_refit_example` | `elcf4r_refit_benchmark_results` |
 | ELMAS | not part of the common household reader set | hourly | no | `elcf4r_elmas_toy` | none |
 
 All four household readers return the same core columns:
@@ -60,8 +60,8 @@ shipped household matrix.
 
 | Dataset | Helper surface | Level | Current scaffold scope | Shipped example | Shipped benchmark | Licence note |
 |:---|:---|:---|:---|:---|:---|:---|
-| IDEAL | [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md), [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md) | household | aggregate-electricity hourly summaries from `auxiliarydata.zip` | no | no | the current Edinburgh DataShare record states `CC BY 4.0` |
-| GX | [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md), [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md) | transformer/community | SQLite or flat-export normalization to the common panel schema | no | no | treat licence terms as dataset-record specific and recheck before redistribution |
+| IDEAL | [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md), [`elcf4r_read_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_ideal.md) | household | aggregate-electricity hourly summaries from `auxiliarydata.zip` | no | no | the current Edinburgh DataShare record states `CC BY 4.0` |
+| GX | [`elcf4r_download_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_gx.md), [`elcf4r_read_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_gx.md) | transformer/community | SQLite or flat-export normalization to the common panel schema | no | no | treat licence terms as dataset-record specific and recheck before redistribution |
 
 Notes:
 
@@ -97,9 +97,9 @@ if (length(example_sizes) == 0L) {
 
 These objects can be passed directly to:
 
-- [`elcf4r_build_daily_segments()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_daily_segments.md)
-- [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md)
-- [`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md)
+- [`elcf4r_build_daily_segments()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_daily_segments.md)
+- [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md)
+- [`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md)
 
 ## Shipped benchmark result datasets
 
@@ -145,10 +145,10 @@ The general pattern is:
 1.  Place the original raw files in `data-raw/`.
 2.  Read them through `elcf4r_read_*()`.
 3.  Build a normalized day index with
-    [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md).
+    [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md).
 4.  Save a compact example panel.
 5.  Run
-    [`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md)
+    [`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md)
     on a fixed cohort and save the result table.
 
 This keeps the package lightweight while making the shipped examples and

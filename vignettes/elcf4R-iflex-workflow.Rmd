@@ -112,7 +112,9 @@ rbind(
 ```
 
 An LSTM example is available when the `keras3` and `tensorflow` packages are
-installed and configured:
+installed and Python has been selected explicitly for `reticulate`, for example
+with `elcf4r_use_tensorflow_env()` or `reticulate::use_virtualenv()` before
+rendering this vignette:
 
 ```{r, eval = lstm_available}
 fit_lstm <- elcf4r_fit_lstm(
@@ -130,7 +132,7 @@ unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 ```
 
 ```{r, eval = !lstm_available}
-"LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."
+"LSTM example skipped because no explicit Keras/TensorFlow backend is configured in this R environment."
 ```
 
 # Run a small rolling benchmark

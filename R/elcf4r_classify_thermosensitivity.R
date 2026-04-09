@@ -1,6 +1,6 @@
 #' Classify thermosensitivity from daily load data
 #'
-#' Estimate thermosensitivity using the residential thesis rule based on the
+#' Estimate thermosensitivity using the residential rule based on the
 #' ratio between mean winter load and mean summer load.
 #'
 #' @param data Data frame containing at least an identifier, a date and a load

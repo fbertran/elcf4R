@@ -13,7 +13,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/fbertran/eclf4R/blob/HEAD/inst/CITATION)
+[`inst/CITATION`](https://github.com/fbertran/elcf4R/blob/HEAD/inst/CITATION)
 
 Frederic Bertrand, Fatima Fahs and Myriam Maumy-Bertrand (2026).
 Electricity Load Curves Forecasting at Individual Level, R package
@@ -24,5 +24,5 @@ version 0.4.0.
       author = {Frederic Bertrand and Fatima Fahs and Myriam Maumy-Bertrand},
       year = {2026},
       note = {R package version 0.4.0},
-      url = {https://fbertran.github.io/eclf4R/},
+      url = {https://fbertran.github.io/elcf4R/},
     }

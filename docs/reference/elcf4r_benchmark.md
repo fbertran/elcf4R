@@ -39,7 +39,7 @@ elcf4r_benchmark(
 - benchmark_index:
 
   Optional day-level index. If `NULL`, it is created with
-  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md).
+  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md).
 
 - methods:
 
@@ -97,7 +97,7 @@ elcf4r_benchmark(
 - benchmark_index_carry_cols:
 
   Optional `carry_cols` passed to
-  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md)
+  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md)
   when `benchmark_index` is not supplied.
 
 - seed:
@@ -117,21 +117,27 @@ An object of class `elcf4r_benchmark` with elements `results`,
 ## Examples
 
 ``` r
+id1 <- subset(
+  elcf4r_iflex_example,
+  entity_id == unique(elcf4r_iflex_example$entity_id)[1]
+)
+keep_dates <- sort(unique(id1$date))[1:6]
+panel_small <- subset(id1, date %in% keep_dates)
 bench <- elcf4r_benchmark(
-  panel = elcf4r_iflex_example,
+  panel = panel_small,
   methods = "gam",
   cohort_size = 1,
-  train_days = 5,
+  train_days = 4,
   test_days = 1,
   include_predictions = TRUE
 )
 head(bench$results)
 #>                                benchmark_name dataset entity_id method
-#> 1 iflex_hourly_1_ids_5_train_1_test_1_methods   iflex     Exp_1    gam
+#> 1 iflex_hourly_1_ids_4_train_1_test_1_methods   iflex     Exp_1    gam
 #>    test_date train_start  train_end train_days test_points use_temperature
-#> 1 2020-01-11  2020-01-06 2020-01-10          5          24            TRUE
+#> 1 2020-01-10  2020-01-06 2020-01-09          4          24            TRUE
 #>   thermosensitive     thermosensitivity_status thermosensitivity_ratio
 #> 1              NA insufficient_summer_coverage                      NA
 #>   fit_seconds status error_message      nmae     nrmse     smape     mase
-#> 1       0.052     ok          <NA> 0.2259297 0.2786247 0.2001384 1.110694
+#> 1       0.053     ok          <NA> 0.3498549 0.4230886 0.2092393 1.154271
 ```

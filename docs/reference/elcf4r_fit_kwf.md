@@ -57,9 +57,9 @@ elcf4r_fit_kwf(
 
   Wavelet filter name passed to
   [`wavelets::dwt()`](https://rdrr.io/pkg/wavelets/man/dwt.html).
-  Defaults to `"la12"`, the least-asymmetric filter aligned with the
-  thesis implementation. If the series is too short for the requested
-  filter, the function falls back to `"haar"`.
+  Defaults to `"la12"`, the least-asymmetric filter. If the series is
+  too short for the requested filter, the function falls back to
+  `"haar"`.
 
 - bandwidth:
 
@@ -80,7 +80,7 @@ elcf4r_fit_kwf(
 - holidays:
 
   Optional vector of holiday dates used by
-  [`elcf4r_calendar_groups()`](https://fbertran.github.io/eclf4R/reference/elcf4r_calendar_groups.md)
+  [`elcf4r_calendar_groups()`](https://fbertran.github.io/elcf4R/reference/elcf4r_calendar_groups.md)
   when deterministic groups are derived from `date`.
 
 - weights:

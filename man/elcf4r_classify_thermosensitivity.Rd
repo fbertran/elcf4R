@@ -37,7 +37,7 @@ A data frame with one row per entity and columns \code{winter_mean},
 \code{summer_mean}, \code{ratio}, \code{thermosensitive}, and \code{status}.
 }
 \description{
-Estimate thermosensitivity using the residential thesis rule based on the
+Estimate thermosensitivity using the residential rule based on the
 ratio between mean winter load and mean summer load.
 }
 \examples{

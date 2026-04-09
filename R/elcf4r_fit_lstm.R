@@ -23,29 +23,26 @@
 #' @export
 #' @examples
 #' if (interactive() &&
-#'     requireNamespace("keras3", quietly = TRUE) &&
-#'     requireNamespace("tensorflow", quietly = TRUE) &&
-#'     suppressWarnings(
-#'       tryCatch(
-#'         utils::getFromNamespace("is_keras_available", "keras3")(),
-#'         error = function(e) FALSE
-#'       )
-#'     )) {
-#'   id1 <- subset(
-#'     elcf4r_iflex_example,
-#'     entity_id == unique(elcf4r_iflex_example$entity_id)[1]
-#'   )
-#'   daily <- elcf4r_build_daily_segments(id1)
-#'   fit <- elcf4r_fit_lstm(
-#'     segments = daily$segments[1:10, ],
-#'     covariates = daily$covariates[1:10, ],
-#'     use_temperature = TRUE,
-#'     epochs = 1,
-#'     units = 4,
-#'     batch_size = 2,
-#'     verbose = 0
-#'   )
-#'   length(predict(fit))
+#'     requireNamespace("reticulate", quietly = TRUE) &&
+#'     reticulate::virtualenv_exists("r-tensorflow")) {
+#'   elcf4r_use_tensorflow_env(virtualenv = "r-tensorflow")
+#'   if (isTRUE(getFromNamespace(".elcf4r_lstm_backend_available", "elcf4R")())) {
+#'     id1 <- subset(
+#'       elcf4r_iflex_example,
+#'       entity_id == unique(elcf4r_iflex_example$entity_id)[1]
+#'     )
+#'     daily <- elcf4r_build_daily_segments(id1)
+#'     fit <- elcf4r_fit_lstm(
+#'       segments = daily$segments[1:10, ],
+#'       covariates = daily$covariates[1:10, ],
+#'       use_temperature = TRUE,
+#'       epochs = 1,
+#'       units = 4,
+#'       batch_size = 2,
+#'       verbose = 0
+#'     )
+#'     length(predict(fit))
+#'   }
 #' }
 elcf4r_fit_lstm <- function(
     segments,
@@ -59,17 +56,19 @@ elcf4r_fit_lstm <- function(
     seed = NULL,
     verbose = 0L
 ) {
-  if (!requireNamespace("keras3", quietly = TRUE)) {
+  if (!.elcf4r_keras3_available()) {
     stop("Package `keras3` is required for `elcf4r_fit_lstm()`.")
   }
-  if (!requireNamespace("tensorflow", quietly = TRUE)) {
+  if (!.elcf4r_tensorflow_available()) {
     stop("Package `tensorflow` is required for `elcf4r_fit_lstm()`.")
   }
   if (!.elcf4r_lstm_backend_available()) {
     stop(
       "A working Keras/TensorFlow backend is not available. ",
-      "Install TensorFlow for the Python environment used by R before ",
-      "calling `elcf4r_fit_lstm()`."
+      "Configure Python explicitly before calling `elcf4r_fit_lstm()`, ",
+      "for example with `reticulate::use_virtualenv(\"your-env\", required = TRUE)`, ",
+      "`reticulate::use_python(\"/path/to/python\", required = TRUE)`, or ",
+      "`elcf4r_use_tensorflow_env(...)`."
     )
   }
 
@@ -164,25 +163,11 @@ elcf4r_fit_lstm <- function(
 }
 
 .elcf4r_lstm_backend_available <- function() {
-  if (!requireNamespace("keras3", quietly = TRUE)) {
+  if (!.elcf4r_keras3_available()) {
     return(FALSE)
   }
-  if (!requireNamespace("tensorflow", quietly = TRUE)) {
+  if (!.elcf4r_tensorflow_available()) {
     return(FALSE)
-  }
-
-  if (identical(Sys.getenv("RETICULATE_PYTHON"), "")) {
-    if (requireNamespace("reticulate", quietly = TRUE) &&
-        reticulate::virtualenv_exists("r-tensorflow")) {
-      Sys.setenv(
-        RETICULATE_PYTHON = reticulate::virtualenv_python("r-tensorflow")
-      )
-    } else {
-      python_path <- Sys.which("python3")
-      if (nzchar(python_path)) {
-        Sys.setenv(RETICULATE_PYTHON = python_path)
-      }
-    }
   }
 
   isTRUE(

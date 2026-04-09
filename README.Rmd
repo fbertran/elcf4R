@@ -56,7 +56,7 @@ invisible(lapply(
   .elcf4r_load_data
 ))
 ```
-# elcf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/elcf4R_hex.svg" align="right" width="200"/>
+# elcf4R: Forecasting Individual Electricity Load Curves <img src="man/figures/elcf4R_hex.png" align="right" width="200"/>
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
@@ -75,7 +75,7 @@ Implements Kernel Wavelet Functional (KWF),
     support for IDEAL and GX, compact shipped example panels, and
     saved benchmark artifacts.
     
-This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy.
+This site was created by F. Bertrand and the examples reproduced on it were created by F. Bertrand, F. Fahs and M. Maumy-Bertrand.
 
 ## Installation
 
@@ -94,6 +94,11 @@ The exported forecasting methods currently covered by the package are:
 - `elcf4r_fit_kwf()`
 - `elcf4r_fit_kwf_clustered()`
 - `elcf4r_fit_lstm()`
+
+For the LSTM path, Python selection is explicit and user-driven:
+
+- use `elcf4r_use_tensorflow_env()`
+- or call `reticulate::use_virtualenv()` / `reticulate::use_python()` directly
 
 The current dataset adapters and shipped benchmark artifacts cover:
 
@@ -126,6 +131,21 @@ The current unshipped scaffold readers are:
 
 - `elcf4r_read_ideal()`
 - `elcf4r_read_gx()`
+
+## LSTM backend configuration
+
+`elcf4r_fit_lstm()` does not auto-select a Python interpreter. Configure the
+TensorFlow backend explicitly before fitting an LSTM model, for example:
+
+```{r, eval = FALSE}
+library(reticulate)
+library(elcf4R)
+
+elcf4r_use_tensorflow_env(virtualenv = "r-tensorflow", required = TRUE)
+# or:
+# reticulate::use_virtualenv("r-tensorflow", required = TRUE)
+# reticulate::use_python("/path/to/python", required = TRUE)
+```
 
 ## Shipped example and benchmark datasets
 

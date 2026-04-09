@@ -1,7 +1,7 @@
 # Classify thermosensitivity from daily load data
 
-Estimate thermosensitivity using the residential thesis rule based on
-the ratio between mean winter load and mean summer load.
+Estimate thermosensitivity using the residential rule based on the ratio
+between mean winter load and mean summer load.
 
 ## Usage
 

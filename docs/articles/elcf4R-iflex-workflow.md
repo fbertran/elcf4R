@@ -114,7 +114,12 @@ rbind(
 ```
 
 An LSTM example is available when the `keras3` and `tensorflow` packages
-are installed and configured:
+are installed and Python has been selected explicitly for `reticulate`,
+for example with
+[`elcf4r_use_tensorflow_env()`](https://fbertran.github.io/elcf4R/reference/elcf4r_use_tensorflow_env.md)
+or
+[`reticulate::use_virtualenv()`](https://rstudio.github.io/reticulate/reference/use_python.html)
+before rendering this vignette:
 
 ``` r
 fit_lstm <- elcf4r_fit_lstm(
@@ -130,11 +135,11 @@ fit_lstm <- elcf4r_fit_lstm(
 pred_lstm <- predict(fit_lstm)
 unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 #>      nmae     nrmse     smape      mase 
-#> 0.2246107 0.2551583 0.2088074 1.0619975
+#> 0.2198182 0.2551613 0.2046019 1.0393377
 ```
 
 ``` r
-"LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."
+"LSTM example skipped because no explicit Keras/TensorFlow backend is configured in this R environment."
 ```
 
 ## Run a small rolling benchmark
@@ -175,9 +180,9 @@ benchmark_small$results
 #> 3              NA insufficient_summer_coverage                      NA
 #> 4              NA insufficient_summer_coverage                      NA
 #>   fit_seconds status error_message      nmae     nrmse     smape      mase
-#> 1       0.018     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
-#> 2       0.012     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
-#> 3       0.019     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
+#> 1       0.016     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
+#> 2       0.011     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
+#> 3       0.017     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
 #> 4       0.012     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
 ```
 

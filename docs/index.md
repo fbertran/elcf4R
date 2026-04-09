@@ -1,4 +1,4 @@
-# eclf4R: Forecasting Individual Electricity Load Curves ![](reference/figures/elcf4R_hex.svg)
+# elcf4R: Forecasting Individual Electricity Load Curves ![](reference/figures/elcf4R_hex.png)
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
@@ -11,26 +11,36 @@ Low Carbon London and REFIT, scaffolded download/read support for IDEAL
 and GX, compact shipped example panels, and saved benchmark artifacts.
 
 This site was created by F. Bertrand and the examples reproduced on it
-were created by F. Bertrand, F. Fahs and M. Maumy.
+were created by F. Bertrand, F. Fahs and M. Maumy-Bertrand.
 
 ## Installation
 
-You can install the latest version of the eclf4R package from
+You can install the latest version of the elcf4R package from
 [github](https://github.com) with:
 
 ``` r
-devtools::install_github("fbertran/eclf4R")
+devtools::install_github("fbertran/elcf4R")
 ```
 
 ## Current Scope
 
 The exported forecasting methods currently covered by the package are:
 
-- [`elcf4r_fit_gam()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_gam.md)
-- [`elcf4r_fit_mars()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_mars.md)
-- [`elcf4r_fit_kwf()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_kwf.md)
-- [`elcf4r_fit_kwf_clustered()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_kwf_clustered.md)
-- [`elcf4r_fit_lstm()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_lstm.md)
+- [`elcf4r_fit_gam()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_gam.md)
+- [`elcf4r_fit_mars()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_mars.md)
+- [`elcf4r_fit_kwf()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_kwf.md)
+- [`elcf4r_fit_kwf_clustered()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_kwf_clustered.md)
+- [`elcf4r_fit_lstm()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_lstm.md)
+
+For the LSTM path, Python selection is explicit and user-driven:
+
+- use
+  [`elcf4r_use_tensorflow_env()`](https://fbertran.github.io/elcf4R/reference/elcf4r_use_tensorflow_env.md)
+- or call
+  [`reticulate::use_virtualenv()`](https://rstudio.github.io/reticulate/reference/use_python.html)
+  /
+  [`reticulate::use_python()`](https://rstudio.github.io/reticulate/reference/use_python.html)
+  directly
 
 The current dataset adapters and shipped benchmark artifacts cover:
 
@@ -41,25 +51,25 @@ The current dataset adapters and shipped benchmark artifacts cover:
 
 The current download helpers are:
 
-- [`elcf4r_download_elmas()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_elmas.md)
-- [`elcf4r_download_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_storenet.md)
-- [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md)
-- [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md)
+- [`elcf4r_download_elmas()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_elmas.md)
+- [`elcf4r_download_storenet()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_storenet.md)
+- [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md)
+- [`elcf4r_download_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_gx.md)
 
 Scaffolded, unshipped dataset adapters:
 
 - `IDEAL`:
-  [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md)
+  [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md)
   and
-  [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md)
+  [`elcf4r_read_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_ideal.md)
   provide a first-pass aggregate-electricity scaffold built around the
   hourly summaries in `auxiliarydata.zip`. The current Edinburgh
   DataShare record states `CC BY 4.0`. No IDEAL-derived package dataset
   is shipped in this release.
 - `GX`:
-  [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md)
+  [`elcf4r_download_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_gx.md)
   and
-  [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md)
+  [`elcf4r_read_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_gx.md)
   provide a secondary transformer/community-level scaffold from the
   official figshare dataset record. GX is not treated as part of the
   package’s core individual-household benchmark set, and no GX-derived
@@ -69,8 +79,24 @@ Scaffolded, unshipped dataset adapters:
 
 The current unshipped scaffold readers are:
 
-- [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md)
-- [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md)
+- [`elcf4r_read_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_ideal.md)
+- [`elcf4r_read_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_gx.md)
+
+## LSTM backend configuration
+
+[`elcf4r_fit_lstm()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_lstm.md)
+does not auto-select a Python interpreter. Configure the TensorFlow
+backend explicitly before fitting an LSTM model, for example:
+
+``` r
+library(reticulate)
+library(elcf4R)
+
+elcf4r_use_tensorflow_env(virtualenv = "r-tensorflow", required = TRUE)
+# or:
+# reticulate::use_virtualenv("r-tensorflow", required = TRUE)
+# reticulate::use_python("/path/to/python", required = TRUE)
+```
 
 ## Shipped example and benchmark datasets
 
@@ -93,8 +119,8 @@ The current shipped benchmark artifacts are:
 There are more insights and examples in the vignettes.
 
 ``` r
-vignette("elcf4R-iflex-workflow", package = "eclf4R")
-vignette("elcf4R-datasets-vignette", package = "eclf4R")
+vignette("elcf4R-iflex-workflow", package = "elcf4R")
+vignette("elcf4R-datasets-vignette", package = "elcf4R")
 ```
 
 ## Quick Benchmark Summary
@@ -102,9 +128,9 @@ vignette("elcf4R-datasets-vignette", package = "eclf4R")
 The shipped benchmark artifacts now cover iFlex, StoreNet, Low Carbon
 London and REFIT. The same workflow is available programmatically
 through
-[`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md)
+[`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md)
 and
-[`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md).
+[`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md).
 
 ``` r
 benchmark_summary <- Filter(

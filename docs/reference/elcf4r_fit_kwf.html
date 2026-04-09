@@ -32,7 +32,7 @@ approximation/detail correction used for mean-level non-stationarity."></head><b
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/fbertran/eclf4R/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/fbertran/elcf4R/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,7 +42,7 @@ approximation/detail correction used for mean-level non-stationarity."></head><b
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Fit a Kernel Wavelet Functional model for daily load curves</h1>
-      <small class="dont-index">Source: <a href="https://github.com/fbertran/eclf4R/blob/HEAD/R/elcf4r_fit_kwf.R" class="external-link"><code>R/elcf4r_fit_kwf.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fbertran/elcf4R/blob/HEAD/R/elcf4r_fit_kwf.R" class="external-link"><code>R/elcf4r_fit_kwf.R</code></a></small>
       <div class="d-none name"><code>elcf4r_fit_kwf.Rd</code></div>
     </div>
 
@@ -103,9 +103,8 @@ compatibility with earlier package examples.</p></dd>
 
 <dt id="arg-wavelet">wavelet<a class="anchor" aria-label="anchor" href="#arg-wavelet"></a></dt>
 <dd><p>Wavelet filter name passed to <code><a href="https://rdrr.io/pkg/wavelets/man/dwt.html" class="external-link">wavelets::dwt()</a></code>. Defaults to
-<code>"la12"</code>, the least-asymmetric filter aligned with the thesis
-implementation. If the series is too short for the requested filter, the
-function falls back to <code>"haar"</code>.</p></dd>
+<code>"la12"</code>, the least-asymmetric filter. If the series is too short for the
+requested filter, the function falls back to <code>"haar"</code>.</p></dd>
 
 
 <dt id="arg-bandwidth">bandwidth<a class="anchor" aria-label="anchor" href="#arg-bandwidth"></a></dt>

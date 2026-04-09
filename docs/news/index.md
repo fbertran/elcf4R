@@ -3,15 +3,15 @@
 ## elcf4R 0.4.0
 
 - Added scaffolded download/read support for IDEAL through
-  [`elcf4r_download_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_ideal.md)
+  [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md)
   and
-  [`elcf4r_read_ideal()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_ideal.md),
+  [`elcf4r_read_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_ideal.md),
   focused on extracted hourly aggregate-electricity summaries from
   `auxiliarydata.zip`.
 - Added scaffolded download/read support for GX through
-  [`elcf4r_download_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_gx.md)
+  [`elcf4r_download_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_gx.md)
   and
-  [`elcf4r_read_gx()`](https://fbertran.github.io/eclf4R/reference/elcf4r_read_gx.md),
+  [`elcf4r_read_gx()`](https://fbertran.github.io/elcf4R/reference/elcf4r_read_gx.md),
   with support for either the official SQLite database or flat exports
   normalized into the common panel schema.
 - Added offline tests for IDEAL and GX download-resolution helpers and
@@ -34,19 +34,19 @@
 - Added a first-class clustered KWF workflow with thermosensitivity
   classification, wavelet-feature clustering helpers, cluster
   assignment, and a dedicated
-  [`elcf4r_fit_kwf_clustered()`](https://fbertran.github.io/eclf4R/reference/elcf4r_fit_kwf_clustered.md)
+  [`elcf4r_fit_kwf_clustered()`](https://fbertran.github.io/elcf4R/reference/elcf4r_fit_kwf_clustered.md)
   model path.
 - Generalized dataset ingestion around a common normalized panel schema
   and added dataset adapters for iFlex, StoreNet, Low Carbon London and
   REFIT.
 - Implemented
-  [`elcf4r_download_storenet()`](https://fbertran.github.io/eclf4R/reference/elcf4r_download_storenet.md)
+  [`elcf4r_download_storenet()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_storenet.md)
   with figshare API resolution for known household article IDs and an
   archive fallback for broader StoreNet retrieval.
 - Added a generic rolling-origin benchmark API through
-  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_benchmark_index.md)
+  [`elcf4r_build_benchmark_index()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_benchmark_index.md)
   and
-  [`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md),
+  [`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md),
   with saved predictions, backend metadata and support for `gam`,
   `mars`, `kwf`, `kwf_clustered` and `lstm`.
 - Completed benchmark metric coverage so shipped benchmark artifacts now
@@ -79,7 +79,7 @@
   `elcf4r_elmas_toy` dataset.
 - Replaced the placeholder KWF/LSTM paths with working model wrappers,
   unified
-  [`predict.elcf4r_model()`](https://fbertran.github.io/eclf4R/reference/predict.elcf4r_model.md),
+  [`predict.elcf4r_model()`](https://fbertran.github.io/elcf4R/reference/predict.elcf4r_model.md),
   and migrated the LSTM implementation to `keras3` with automatic
   detection of the `r-tensorflow` virtualenv.
 - Cleaned up package metadata, namespace declarations, tests, and

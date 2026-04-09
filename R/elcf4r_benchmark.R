@@ -191,11 +191,17 @@ elcf4r_build_benchmark_index <- function(
 #'   `predictions`, `cohort_index`, `spec` and `backend`.
 #' @export
 #' @examples
+#' id1 <- subset(
+#'   elcf4r_iflex_example,
+#'   entity_id == unique(elcf4r_iflex_example$entity_id)[1]
+#' )
+#' keep_dates <- sort(unique(id1$date))[1:6]
+#' panel_small <- subset(id1, date %in% keep_dates)
 #' bench <- elcf4r_benchmark(
-#'   panel = elcf4r_iflex_example,
+#'   panel = panel_small,
 #'   methods = "gam",
 #'   cohort_size = 1,
-#'   train_days = 5,
+#'   train_days = 4,
 #'   test_days = 1,
 #'   include_predictions = TRUE
 #' )
@@ -723,8 +729,9 @@ elcf4r_benchmark <- function(
   if (isTRUE(out$tensorflow_installed)) {
     out$tensorflow_r_package <- as.character(utils::packageVersion("tensorflow"))
   }
-  if (isTRUE(out$reticulate_installed)) {
-    py_config <- tryCatch(reticulate::py_config(), error = function(e) NULL)
+  if (isTRUE(out$reticulate_installed) &&
+      isTRUE(.elcf4r_reticulate_py_available(initialize = FALSE))) {
+    py_config <- tryCatch(.elcf4r_reticulate_py_config(), error = function(e) NULL)
     if (!is.null(py_config) && !is.null(py_config$python)) {
       out$reticulate_python <- py_config$python
     }

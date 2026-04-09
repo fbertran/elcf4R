@@ -80,11 +80,17 @@ temperature-aware \code{gam}, \code{mars}, \code{kwf}, \code{kwf_clustered} and 
 and returns both aggregate scores and, optionally, saved point forecasts.
 }
 \examples{
+id1 <- subset(
+  elcf4r_iflex_example,
+  entity_id == unique(elcf4r_iflex_example$entity_id)[1]
+)
+keep_dates <- sort(unique(id1$date))[1:6]
+panel_small <- subset(id1, date \%in\% keep_dates)
 bench <- elcf4r_benchmark(
-  panel = elcf4r_iflex_example,
+  panel = panel_small,
   methods = "gam",
   cohort_size = 1,
-  train_days = 5,
+  train_days = 4,
   test_days = 1,
   include_predictions = TRUE
 )

@@ -38,9 +38,8 @@ pre-holiday handling.}
 compatibility with earlier package examples.}
 
 \item{wavelet}{Wavelet filter name passed to \code{\link[wavelets:dwt]{wavelets::dwt()}}. Defaults to
-\code{"la12"}, the least-asymmetric filter aligned with the thesis
-implementation. If the series is too short for the requested filter, the
-function falls back to \code{"haar"}.}
+\code{"la12"}, the least-asymmetric filter. If the series is too short for the
+requested filter, the function falls back to \code{"haar"}.}
 
 \item{bandwidth}{Optional positive bandwidth for the Gaussian kernel on
 wavelet distances. If \code{NULL}, it is inferred from the distances to the last

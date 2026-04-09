@@ -14,7 +14,7 @@ predict(object, segments, ...)
 - object:
 
   An `elcf4r_kwf_clusters` object returned by
-  [`elcf4r_kwf_cluster_days()`](https://fbertran.github.io/eclf4R/reference/elcf4r_kwf_cluster_days.md).
+  [`elcf4r_kwf_cluster_days()`](https://fbertran.github.io/elcf4R/reference/elcf4r_kwf_cluster_days.md).
 
 - segments:
 

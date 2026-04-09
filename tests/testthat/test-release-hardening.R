@@ -90,8 +90,11 @@ test_that("GAM and MARS expose stable elcf4r_model outputs", {
 })
 
 test_that("LSTM exposes stable elcf4r_model outputs when backend is available", {
+  skip_if_not_installed("reticulate")
   skip_if_not_installed("keras3")
   skip_if_not_installed("tensorflow")
+  skip_if_not(reticulate::virtualenv_exists("r-tensorflow"))
+  elcf4r_use_tensorflow_env(virtualenv = "r-tensorflow", required = TRUE)
   skip_if_not(
     getFromNamespace(".elcf4r_lstm_backend_available", "elcf4R")(),
     "Keras/TensorFlow backend not available"

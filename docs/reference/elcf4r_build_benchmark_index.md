@@ -57,12 +57,12 @@ elcf4r_build_benchmark_index(
 - complete_days_only:
 
   Passed to
-  [`elcf4r_build_daily_segments()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_daily_segments.md).
+  [`elcf4r_build_daily_segments()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_daily_segments.md).
 
 - drop_na_value:
 
   Passed to
-  [`elcf4r_build_daily_segments()`](https://fbertran.github.io/eclf4R/reference/elcf4r_build_daily_segments.md).
+  [`elcf4r_build_daily_segments()`](https://fbertran.github.io/elcf4R/reference/elcf4r_build_daily_segments.md).
 
 - tz:
 
@@ -71,7 +71,7 @@ elcf4r_build_benchmark_index(
 ## Value
 
 A day-level data frame suitable for
-[`elcf4r_benchmark()`](https://fbertran.github.io/eclf4R/reference/elcf4r_benchmark.md).
+[`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md).
 
 ## Examples
 

@@ -14,6 +14,11 @@
   record, and GX as an unshipped secondary transformer/community-level
   scaffold with explicit licence re-verification guidance before
   redistribution.
+* Removed implicit `RETICULATE_PYTHON` mutation from the LSTM backend probe
+  and added explicit, user-driven Python selection through
+  `elcf4r_use_tensorflow_env()`.
+* Tightened CRAN-facing package metadata and examples, including a shorter
+  `elcf4r_benchmark()` help example that runs on a toy single-entity panel.
 
 # elcf4R 0.3.0
 

@@ -241,29 +241,11 @@ test_that("predict.elcf4r_model works for clustered kwf objects", {
 })
 
 test_that("elcf4r_fit_lstm returns a model when keras3 is available", {
+  skip_if_not_installed("reticulate")
   skip_if_not_installed("keras3")
   skip_if_not_installed("tensorflow")
-  old_managed <- Sys.getenv("RETICULATE_USE_MANAGED_VENV", unset = NA_character_)
-  old_python <- Sys.getenv("RETICULATE_PYTHON", unset = NA_character_)
-  on.exit({
-    if (is.na(old_managed)) {
-      Sys.unsetenv("RETICULATE_USE_MANAGED_VENV")
-    } else {
-      Sys.setenv(RETICULATE_USE_MANAGED_VENV = old_managed)
-    }
-    if (is.na(old_python)) {
-      Sys.unsetenv("RETICULATE_PYTHON")
-    } else {
-      Sys.setenv(RETICULATE_PYTHON = old_python)
-    }
-  }, add = TRUE)
-  Sys.setenv(RETICULATE_USE_MANAGED_VENV = "false")
-  if (requireNamespace("reticulate", quietly = TRUE) &&
-      reticulate::virtualenv_exists("r-tensorflow")) {
-    Sys.setenv(
-      RETICULATE_PYTHON = reticulate::virtualenv_python("r-tensorflow")
-    )
-  }
+  skip_if_not(reticulate::virtualenv_exists("r-tensorflow"))
+  elcf4r_use_tensorflow_env(virtualenv = "r-tensorflow", required = TRUE)
   skip_if_not(.elcf4r_lstm_backend_available())
 
   set.seed(1)

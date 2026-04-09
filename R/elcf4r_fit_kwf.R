@@ -20,9 +20,8 @@
 #' @param use_temperature Deprecated and ignored. Kept for backward
 #'   compatibility with earlier package examples.
 #' @param wavelet Wavelet filter name passed to [wavelets::dwt()]. Defaults to
-#'   `"la12"`, the least-asymmetric filter aligned with the thesis
-#'   implementation. If the series is too short for the requested filter, the
-#'   function falls back to `"haar"`.
+#'   `"la12"`, the least-asymmetric filter. If the series is too short for the 
+#'   requested filter, the function falls back to `"haar"`.
 #' @param bandwidth Optional positive bandwidth for the Gaussian kernel on
 #'   wavelet distances. If `NULL`, it is inferred from the distances to the last
 #'   observed segment.

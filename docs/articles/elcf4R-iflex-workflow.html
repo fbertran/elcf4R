@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/fbertran/eclf4R/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/fbertran/elcf4R/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -62,7 +62,7 @@
 package</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/fbertran/eclf4R/blob/HEAD/vignettes/elcf4R-iflex-workflow.Rmd" class="external-link"><code>vignettes/elcf4R-iflex-workflow.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fbertran/elcf4R/blob/HEAD/vignettes/elcf4R-iflex-workflow.Rmd" class="external-link"><code>vignettes/elcf4R-iflex-workflow.Rmd</code></a></small>
       <div class="d-none name"><code>elcf4R-iflex-workflow.Rmd</code></div>
     </div>
 
@@ -184,7 +184,11 @@ benchmark results.</li>
 <span><span class="co">#&gt; kwf           0.1404839 0.1821267 0.1394477 0.6642319</span></span>
 <span><span class="co">#&gt; kwf_clustered 0.1640983 0.1907997 0.1529166 0.7758848</span></span></code></pre></div>
 <p>An LSTM example is available when the <code>keras3</code> and
-<code>tensorflow</code> packages are installed and configured:</p>
+<code>tensorflow</code> packages are installed and Python has been
+selected explicitly for <code>reticulate</code>, for example with
+<code><a href="../reference/elcf4r_use_tensorflow_env.html">elcf4r_use_tensorflow_env()</a></code> or
+<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv()</a></code> before rendering this
+vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_lstm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/elcf4r_fit_lstm.html">elcf4r_fit_lstm</a></span><span class="op">(</span></span>
 <span>  segments <span class="op">=</span> <span class="va">daily</span><span class="op">$</span><span class="va">segments</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
@@ -199,9 +203,9 @@ benchmark results.</li>
 <span><span class="va">pred_lstm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_lstm</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="../reference/elcf4r_metrics.html">elcf4r_metrics</a></span><span class="op">(</span><span class="va">test_long</span><span class="op">$</span><span class="va">y</span>, <span class="va">pred_lstm</span>, naive_pred <span class="op">=</span> <span class="va">naive_day</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      nmae     nrmse     smape      mase </span></span>
-<span><span class="co">#&gt; 0.2246107 0.2551583 0.2088074 1.0619975</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.2198182 0.2551613 0.2046019 1.0393377</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="st">"LSTM example skipped because a working Keras/TensorFlow backend is not available in this R environment."</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="st">"LSTM example skipped because no explicit Keras/TensorFlow backend is configured in this R environment."</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-a-small-rolling-benchmark">Run a small rolling benchmark<a class="anchor" aria-label="anchor" href="#run-a-small-rolling-benchmark"></a>
@@ -242,9 +246,9 @@ that works on normalized panels produced by the
 <span><span class="co">#&gt; 3              NA insufficient_summer_coverage                      NA</span></span>
 <span><span class="co">#&gt; 4              NA insufficient_summer_coverage                      NA</span></span>
 <span><span class="co">#&gt;   fit_seconds status error_message      nmae     nrmse     smape      mase</span></span>
-<span><span class="co">#&gt; 1       0.018     ok          &lt;NA&gt; 0.1961463 0.2355394 0.1796715 0.9274129</span></span>
-<span><span class="co">#&gt; 2       0.012     ok          &lt;NA&gt; 0.1404839 0.1821267 0.1394477 0.6642319</span></span>
-<span><span class="co">#&gt; 3       0.019     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
+<span><span class="co">#&gt; 1       0.016     ok          &lt;NA&gt; 0.1961463 0.2355394 0.1796715 0.9274129</span></span>
+<span><span class="co">#&gt; 2       0.011     ok          &lt;NA&gt; 0.1404839 0.1821267 0.1394477 0.6642319</span></span>
+<span><span class="co">#&gt; 3       0.017     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
 <span><span class="co">#&gt; 4       0.012     ok          &lt;NA&gt; 0.5393512 0.6402973 0.2242763 2.0267394</span></span></code></pre></div>
 </div>
 <div class="section level2">
