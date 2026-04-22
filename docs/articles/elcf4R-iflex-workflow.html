@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">elcf4R</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -203,7 +203,7 @@ vignette:</p>
 <span><span class="va">pred_lstm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_lstm</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="../reference/elcf4r_metrics.html">elcf4r_metrics</a></span><span class="op">(</span><span class="va">test_long</span><span class="op">$</span><span class="va">y</span>, <span class="va">pred_lstm</span>, naive_pred <span class="op">=</span> <span class="va">naive_day</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      nmae     nrmse     smape      mase </span></span>
-<span><span class="co">#&gt; 0.2198182 0.2551613 0.2046019 1.0393377</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.2247290 0.2558531 0.2088818 1.0625571</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="st">"LSTM example skipped because no explicit Keras/TensorFlow backend is configured in this R environment."</span></span></code></pre></div>
 </div>
@@ -246,10 +246,10 @@ that works on normalized panels produced by the
 <span><span class="co">#&gt; 3              NA insufficient_summer_coverage                      NA</span></span>
 <span><span class="co">#&gt; 4              NA insufficient_summer_coverage                      NA</span></span>
 <span><span class="co">#&gt;   fit_seconds status error_message      nmae     nrmse     smape      mase</span></span>
-<span><span class="co">#&gt; 1       0.016     ok          &lt;NA&gt; 0.1961463 0.2355394 0.1796715 0.9274129</span></span>
-<span><span class="co">#&gt; 2       0.011     ok          &lt;NA&gt; 0.1404839 0.1821267 0.1394477 0.6642319</span></span>
-<span><span class="co">#&gt; 3       0.017     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
-<span><span class="co">#&gt; 4       0.012     ok          &lt;NA&gt; 0.5393512 0.6402973 0.2242763 2.0267394</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       0.021     ok          &lt;NA&gt; 0.1961463 0.2355394 0.1796715 0.9274129</span></span>
+<span><span class="co">#&gt; 2       0.015     ok          &lt;NA&gt; 0.1404839 0.1821267 0.1394477 0.6642319</span></span>
+<span><span class="co">#&gt; 3       0.020     ok          &lt;NA&gt; 0.3692809 0.4462295 0.1641611 1.3876600</span></span>
+<span><span class="co">#&gt; 4       0.016     ok          &lt;NA&gt; 0.5393512 0.6402973 0.2242763 2.0267394</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-shipped-benchmark-results">Inspect shipped benchmark results<a class="anchor" aria-label="anchor" href="#inspect-shipped-benchmark-results"></a>

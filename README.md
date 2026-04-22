@@ -5,6 +5,8 @@
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
+<https://doi.org/10.32614/CRAN.package.elcf4R>
+
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/fbertran/elcf4R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fbertran/elcf4R/actions/workflows/R-CMD-check.yaml)
 [![R-hub](https://github.com/fbertran/elcf4R/actions/workflows/rhub.yaml/badge.svg)](https://github.com/fbertran/elcf4R/actions/workflows/rhub.yaml)

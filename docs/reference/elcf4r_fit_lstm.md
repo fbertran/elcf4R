@@ -101,4 +101,5 @@ if (interactive() &&
     length(predict(fit))
   }
 }
+#> [1] 24
 ```

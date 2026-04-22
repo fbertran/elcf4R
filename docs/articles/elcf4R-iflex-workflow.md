@@ -135,7 +135,7 @@ fit_lstm <- elcf4r_fit_lstm(
 pred_lstm <- predict(fit_lstm)
 unlist(elcf4r_metrics(test_long$y, pred_lstm, naive_pred = naive_day))
 #>      nmae     nrmse     smape      mase 
-#> 0.2198182 0.2551613 0.2046019 1.0393377
+#> 0.2247290 0.2558531 0.2088818 1.0625571
 ```
 
 ``` r
@@ -180,10 +180,10 @@ benchmark_small$results
 #> 3              NA insufficient_summer_coverage                      NA
 #> 4              NA insufficient_summer_coverage                      NA
 #>   fit_seconds status error_message      nmae     nrmse     smape      mase
-#> 1       0.016     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
-#> 2       0.011     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
-#> 3       0.017     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
-#> 4       0.012     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
+#> 1       0.021     ok          <NA> 0.1961463 0.2355394 0.1796715 0.9274129
+#> 2       0.015     ok          <NA> 0.1404839 0.1821267 0.1394477 0.6642319
+#> 3       0.020     ok          <NA> 0.3692809 0.4462295 0.1641611 1.3876600
+#> 4       0.016     ok          <NA> 0.5393512 0.6402973 0.2242763 2.0267394
 ```
 
 ## Inspect shipped benchmark results

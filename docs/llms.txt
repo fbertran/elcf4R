@@ -2,6 +2,8 @@
 
 ## Frédéric Bertrand, Fatima Fahs and Myriam Maumy
 
+<https://doi.org/10.32614/CRAN.package.elcf4R>
+
 Implements Kernel Wavelet Functional (KWF), clustered KWF, Generalized
 Additive Models (GAM), Multivariate Adaptive Regression Splines (MARS)
 and RNN LSTM models to forecast individual electricity load curves,

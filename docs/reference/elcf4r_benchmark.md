@@ -123,6 +123,7 @@ id1 <- subset(
 )
 keep_dates <- sort(unique(id1$date))[1:6]
 panel_small <- subset(id1, date %in% keep_dates)
+# \donttest{
 bench <- elcf4r_benchmark(
   panel = panel_small,
   methods = "gam",
@@ -139,5 +140,6 @@ head(bench$results)
 #>   thermosensitive     thermosensitivity_status thermosensitivity_ratio
 #> 1              NA insufficient_summer_coverage                      NA
 #>   fit_seconds status error_message      nmae     nrmse     smape     mase
-#> 1       0.053     ok          <NA> 0.3498549 0.4230886 0.2092393 1.154271
+#> 1       0.044     ok          <NA> 0.3498549 0.4230886 0.2092393 1.154271
+# }
 ```

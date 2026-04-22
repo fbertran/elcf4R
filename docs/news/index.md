@@ -2,6 +2,8 @@
 
 ## elcf4R 0.4.0
 
+CRAN release: 2026-04-21
+
 - Added scaffolded download/read support for IDEAL through
   [`elcf4r_download_ideal()`](https://fbertran.github.io/elcf4R/reference/elcf4r_download_ideal.md)
   and
@@ -21,6 +23,13 @@
   source record, and GX as an unshipped secondary
   transformer/community-level scaffold with explicit licence
   re-verification guidance before redistribution.
+- Removed implicit `RETICULATE_PYTHON` mutation from the LSTM backend
+  probe and added explicit, user-driven Python selection through
+  [`elcf4r_use_tensorflow_env()`](https://fbertran.github.io/elcf4R/reference/elcf4r_use_tensorflow_env.md).
+- Tightened CRAN-facing package metadata and examples, including a
+  shorter
+  [`elcf4r_benchmark()`](https://fbertran.github.io/elcf4R/reference/elcf4r_benchmark.md)
+  help example that runs on a toy single-entity panel.
 
 ## elcf4R 0.3.0
 

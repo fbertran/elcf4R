@@ -1,6 +1,6 @@
 Package: elcf4R
 Title: Electricity Load Curves Forecasting at Individual Level
-Version: 0.4.0
+Version: 0.4.1
 Date: 2026-04-07
 Depends: R (>= 3.5.0)
 Imports:

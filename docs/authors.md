@@ -17,12 +17,13 @@ Source:
 
 Frederic Bertrand, Fatima Fahs and Myriam Maumy-Bertrand (2026).
 Electricity Load Curves Forecasting at Individual Level, R package
-version 0.4.0.
+version 0.4.1. doi:10.32614/CRAN.package.elcf4R.
 
     @Manual{,
       title = {Electricity Load Curves Forecasting at Individual Level},
       author = {Frederic Bertrand and Fatima Fahs and Myriam Maumy-Bertrand},
       year = {2026},
-      note = {R package version 0.4.0},
+      note = {R package version 0.4.1},
       url = {https://fbertran.github.io/elcf4R/},
+      doi = {10.32614/CRAN.package.elcf4R},
     }

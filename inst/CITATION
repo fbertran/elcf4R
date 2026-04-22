@@ -3,6 +3,8 @@ citHeader("To cite the elcf4R package in publications use:")
 titl <- meta$Title
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("R package version", meta$Version)
+doi <- paste0("10.32614/CRAN.package.", meta$Package)
+urldoi <- paste0("https://doi.org/", doi)
 
 bibentry(bibtype="Manual",
          title = titl,
@@ -13,9 +15,10 @@ bibentry(bibtype="Manual",
          year         = year,
          note         = vers,
          url          = "https://fbertran.github.io/elcf4R/",
+         doi          = doi,
          textVersion = 
          paste("Frederic Bertrand, Fatima Fahs and Myriam Maumy-Bertrand (",year ,"). ", 
-               titl, ", ", vers, 
+               titl, ", ", vers, ". doi:", doi, 
                ".", sep=""
                )
 )

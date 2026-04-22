@@ -86,6 +86,7 @@ id1 <- subset(
 )
 keep_dates <- sort(unique(id1$date))[1:6]
 panel_small <- subset(id1, date \%in\% keep_dates)
+\donttest{
 bench <- elcf4r_benchmark(
   panel = panel_small,
   methods = "gam",
@@ -95,4 +96,5 @@ bench <- elcf4r_benchmark(
   include_predictions = TRUE
 )
 head(bench$results)
+}
 }
